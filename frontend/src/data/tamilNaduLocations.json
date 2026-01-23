@@ -1,0 +1,1461 @@
+{
+    "state": "Tamil Nadu",
+    "stateCode": "TN",
+    "districts": [
+        {
+            "id": "ariyalur",
+            "name": {
+                "en": "Ariyalur",
+                "ta": "அரியலூர்"
+            },
+            "cities": [
+                {
+                    "id": "ariyalur",
+                    "name": {
+                        "en": "Ariyalur",
+                        "ta": "அரியலூர்"
+                    }
+                },
+                {
+                    "id": "jayankondam",
+                    "name": {
+                        "en": "Jayankondam",
+                        "ta": "ஜெயங்கொண்டம்"
+                    }
+                },
+                {
+                    "id": "sendurai",
+                    "name": {
+                        "en": "Sendurai",
+                        "ta": "சென்துறை"
+                    }
+                },
+                {
+                    "id": "udayarpalayam",
+                    "name": {
+                        "en": "Udayarpalayam",
+                        "ta": "உடையார்பாளையம்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "chengalpattu",
+            "name": {
+                "en": "Chengalpattu",
+                "ta": "செங்கல்பட்டு"
+            },
+            "cities": [
+                {
+                    "id": "chengalpattu",
+                    "name": {
+                        "en": "Chengalpattu",
+                        "ta": "செங்கல்பட்டு"
+                    }
+                },
+                {
+                    "id": "mahabalipuram",
+                    "name": {
+                        "en": "Mahabalipuram",
+                        "ta": "மகாபலிபுரம்"
+                    }
+                },
+                {
+                    "id": "tambaram",
+                    "name": {
+                        "en": "Tambaram",
+                        "ta": "தாம்பரம்"
+                    }
+                },
+                {
+                    "id": "kelambakkam",
+                    "name": {
+                        "en": "Kelambakkam",
+                        "ta": "கேளம்பாக்கம்"
+                    }
+                },
+                {
+                    "id": "guduvancheri",
+                    "name": {
+                        "en": "Guduvancheri",
+                        "ta": "குடுவாஞ்சேரி"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "chennai",
+            "name": {
+                "en": "Chennai",
+                "ta": "சென்னை"
+            },
+            "cities": [
+                {
+                    "id": "t-nagar",
+                    "name": {
+                        "en": "T. Nagar",
+                        "ta": "தி. நகர்"
+                    }
+                },
+                {
+                    "id": "anna-nagar",
+                    "name": {
+                        "en": "Anna Nagar",
+                        "ta": "அண்ணா நகர்"
+                    }
+                },
+                {
+                    "id": "velachery",
+                    "name": {
+                        "en": "Velachery",
+                        "ta": "வேளச்சேரி"
+                    }
+                },
+                {
+                    "id": "adyar",
+                    "name": {
+                        "en": "Adyar",
+                        "ta": "அடையாறு"
+                    }
+                },
+                {
+                    "id": "mylapore",
+                    "name": {
+                        "en": "Mylapore",
+                        "ta": "மயிலாப்பூர்"
+                    }
+                },
+                {
+                    "id": "guindy",
+                    "name": {
+                        "en": "Guindy",
+                        "ta": "கிண்டி"
+                    }
+                },
+                {
+                    "id": "porur",
+                    "name": {
+                        "en": "Porur",
+                        "ta": "பூரூர்"
+                    }
+                },
+                {
+                    "id": "ambattur",
+                    "name": {
+                        "en": "Ambattur",
+                        "ta": "அம்பத்தூர்"
+                    }
+                },
+                {
+                    "id": "kodambakkam",
+                    "name": {
+                        "en": "Kodambakkam",
+                        "ta": "கோடம்பாக்கம்"
+                    }
+                },
+                {
+                    "id": "thiruvanmiyur",
+                    "name": {
+                        "en": "Thiruvanmiyur",
+                        "ta": "திருவான்மியூர்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "coimbatore",
+            "name": {
+                "en": "Coimbatore",
+                "ta": "கோயம்புத்தூர்"
+            },
+            "cities": [
+                {
+                    "id": "gandhipuram",
+                    "name": {
+                        "en": "Gandhipuram",
+                        "ta": "காந்திபுரம்"
+                    }
+                },
+                {
+                    "id": "peelamedu",
+                    "name": {
+                        "en": "Peelamedu",
+                        "ta": "பீளமேடு"
+                    }
+                },
+                {
+                    "id": "singanallur",
+                    "name": {
+                        "en": "Singanallur",
+                        "ta": "சிங்காநல்லூர்"
+                    }
+                },
+                {
+                    "id": "saibaba-colony",
+                    "name": {
+                        "en": "Saibaba Colony",
+                        "ta": "சாய்பாபா காலனி"
+                    }
+                },
+                {
+                    "id": "rs-puram",
+                    "name": {
+                        "en": "RS Puram",
+                        "ta": "ஆர்.எஸ். புரம்"
+                    }
+                },
+                {
+                    "id": "pollachi",
+                    "name": {
+                        "en": "Pollachi",
+                        "ta": "பொள்ளாச்சி"
+                    }
+                },
+                {
+                    "id": "mettupalayam",
+                    "name": {
+                        "en": "Mettupalayam",
+                        "ta": "மேட்டுப்பாளையம்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "cuddalore",
+            "name": {
+                "en": "Cuddalore",
+                "ta": "கடலூர்"
+            },
+            "cities": [
+                {
+                    "id": "cuddalore",
+                    "name": {
+                        "en": "Cuddalore",
+                        "ta": "கடலூர்"
+                    }
+                },
+                {
+                    "id": "chidambaram",
+                    "name": {
+                        "en": "Chidambaram",
+                        "ta": "சிதம்பரம்"
+                    }
+                },
+                {
+                    "id": "virudhachalam",
+                    "name": {
+                        "en": "Virudhachalam",
+                        "ta": "விருத்தாச்சலம்"
+                    }
+                },
+                {
+                    "id": "neyveli",
+                    "name": {
+                        "en": "Neyveli",
+                        "ta": "நெய்வேலி"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "dharmapuri",
+            "name": {
+                "en": "Dharmapuri",
+                "ta": "தர்மபுரி"
+            },
+            "cities": [
+                {
+                    "id": "dharmapuri",
+                    "name": {
+                        "en": "Dharmapuri",
+                        "ta": "தர்மபுரி"
+                    }
+                },
+                {
+                    "id": "palacode",
+                    "name": {
+                        "en": "Palacode",
+                        "ta": "பாலக்கோடு"
+                    }
+                },
+                {
+                    "id": "pennagaram",
+                    "name": {
+                        "en": "Pennagaram",
+                        "ta": "பென்னாகரம்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "dindigul",
+            "name": {
+                "en": "Dindigul",
+                "ta": "திண்டுக்கல்"
+            },
+            "cities": [
+                {
+                    "id": "dindigul",
+                    "name": {
+                        "en": "Dindigul",
+                        "ta": "திண்டுக்கல்"
+                    }
+                },
+                {
+                    "id": "palani",
+                    "name": {
+                        "en": "Palani",
+                        "ta": "பழனி"
+                    }
+                },
+                {
+                    "id": "oddanchatram",
+                    "name": {
+                        "en": "Oddanchatram",
+                        "ta": "ஒட்டன்சத்திரம்"
+                    }
+                },
+                {
+                    "id": "kodaikanal",
+                    "name": {
+                        "en": "Kodaikanal",
+                        "ta": "கொடைக்கானல்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "erode",
+            "name": {
+                "en": "Erode",
+                "ta": "ஈரோடு"
+            },
+            "cities": [
+                {
+                    "id": "erode",
+                    "name": {
+                        "en": "Erode",
+                        "ta": "ஈரோடு"
+                    }
+                },
+                {
+                    "id": "bhavani",
+                    "name": {
+                        "en": "Bhavani",
+                        "ta": "பவானி"
+                    }
+                },
+                {
+                    "id": "gobichettipalayam",
+                    "name": {
+                        "en": "Gobichettipalayam",
+                        "ta": "கோபிச்செட்டிபாளையம்"
+                    }
+                },
+                {
+                    "id": "sathyamangalam",
+                    "name": {
+                        "en": "Sathyamangalam",
+                        "ta": "சத்தியமங்கலம்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "kallakurichi",
+            "name": {
+                "en": "Kallakurichi",
+                "ta": "கள்ளக்குறிச்சி"
+            },
+            "cities": [
+                {
+                    "id": "kallakurichi",
+                    "name": {
+                        "en": "Kallakurichi",
+                        "ta": "கள்ளக்குறிச்சி"
+                    }
+                },
+                {
+                    "id": "ulundurpet",
+                    "name": {
+                        "en": "Ulundurpet",
+                        "ta": "உளுந்தூர்பேட்டை"
+                    }
+                },
+                {
+                    "id": "chinnasalem",
+                    "name": {
+                        "en": "Chinnasalem",
+                        "ta": "சின்னசேலம்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "kancheepuram",
+            "name": {
+                "en": "Kancheepuram",
+                "ta": "காஞ்சிபுரம்"
+            },
+            "cities": [
+                {
+                    "id": "kancheepuram",
+                    "name": {
+                        "en": "Kancheepuram",
+                        "ta": "காஞ்சிபுரம்"
+                    }
+                },
+                {
+                    "id": "sriperumbudur",
+                    "name": {
+                        "en": "Sriperumbudur",
+                        "ta": "ஸ்ரீபெரும்புதூர்"
+                    }
+                },
+                {
+                    "id": "uthiramerur",
+                    "name": {
+                        "en": "Uthiramerur",
+                        "ta": "உத்திரமேரூர்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "kanniyakumari",
+            "name": {
+                "en": "Kanniyakumari",
+                "ta": "கன்னியாகுமரி"
+            },
+            "cities": [
+                {
+                    "id": "nagercoil",
+                    "name": {
+                        "en": "Nagercoil",
+                        "ta": "நாகர்கோவில்"
+                    }
+                },
+                {
+                    "id": "marthandam",
+                    "name": {
+                        "en": "Marthandam",
+                        "ta": "மார்த்தாண்டம்"
+                    }
+                },
+                {
+                    "id": "colachel",
+                    "name": {
+                        "en": "Colachel",
+                        "ta": "கொளச்சல்"
+                    }
+                },
+                {
+                    "id": "kanniyakumari",
+                    "name": {
+                        "en": "Kanniyakumari",
+                        "ta": "கன்னியாகுமரி"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "karur",
+            "name": {
+                "en": "Karur",
+                "ta": "கரூர்"
+            },
+            "cities": [
+                {
+                    "id": "karur",
+                    "name": {
+                        "en": "Karur",
+                        "ta": "கரூர்"
+                    }
+                },
+                {
+                    "id": "kulithalai",
+                    "name": {
+                        "en": "Kulithalai",
+                        "ta": "குளித்தலை"
+                    }
+                },
+                {
+                    "id": "aravakurichi",
+                    "name": {
+                        "en": "Aravakurichi",
+                        "ta": "அரவக்குறிச்சி"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "krishnagiri",
+            "name": {
+                "en": "Krishnagiri",
+                "ta": "கிருஷ்ணகிரி"
+            },
+            "cities": [
+                {
+                    "id": "krishnagiri",
+                    "name": {
+                        "en": "Krishnagiri",
+                        "ta": "கிருஷ்ணகிரி"
+                    }
+                },
+                {
+                    "id": "hosur",
+                    "name": {
+                        "en": "Hosur",
+                        "ta": "ஓசூர்"
+                    }
+                },
+                {
+                    "id": "denkanikottai",
+                    "name": {
+                        "en": "Denkanikottai",
+                        "ta": "தென்கனிக்கோட்டை"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "madurai",
+            "name": {
+                "en": "Madurai",
+                "ta": "மதுரை"
+            },
+            "cities": [
+                {
+                    "id": "madurai-north",
+                    "name": {
+                        "en": "Madurai North",
+                        "ta": "மதுரை வடக்கு"
+                    }
+                },
+                {
+                    "id": "madurai-south",
+                    "name": {
+                        "en": "Madurai South",
+                        "ta": "மதுரை தெற்கு"
+                    }
+                },
+                {
+                    "id": "anna-nagar-madurai",
+                    "name": {
+                        "en": "Anna Nagar",
+                        "ta": "அண்ணா நகர்"
+                    }
+                },
+                {
+                    "id": "thiruparankundram",
+                    "name": {
+                        "en": "Thiruparankundram",
+                        "ta": "திருப்பரங்குன்றம்"
+                    }
+                },
+                {
+                    "id": "melur",
+                    "name": {
+                        "en": "Melur",
+                        "ta": "மேலூர்"
+                    }
+                },
+                {
+                    "id": "usilampatti",
+                    "name": {
+                        "en": "Usilampatti",
+                        "ta": "உசிலம்பட்டி"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "mayiladuthurai",
+            "name": {
+                "en": "Mayiladuthurai",
+                "ta": "மயிலாடுதுறை"
+            },
+            "cities": [
+                {
+                    "id": "mayiladuthurai",
+                    "name": {
+                        "en": "Mayiladuthurai",
+                        "ta": "மயிலாடுதுறை"
+                    }
+                },
+                {
+                    "id": "sirkazhi",
+                    "name": {
+                        "en": "Sirkazhi",
+                        "ta": "சீர்காழி"
+                    }
+                },
+                {
+                    "id": "kuthalam",
+                    "name": {
+                        "en": "Kuthalam",
+                        "ta": "குத்தாலம்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "nagapattinam",
+            "name": {
+                "en": "Nagapattinam",
+                "ta": "நாகப்பட்டினம்"
+            },
+            "cities": [
+                {
+                    "id": "nagapattinam",
+                    "name": {
+                        "en": "Nagapattinam",
+                        "ta": "நாகப்பட்டினம்"
+                    }
+                },
+                {
+                    "id": "velankanni",
+                    "name": {
+                        "en": "Velankanni",
+                        "ta": "வேளாங்கண்ணி"
+                    }
+                },
+                {
+                    "id": "thirukkuvalai",
+                    "name": {
+                        "en": "Thirukkuvalai",
+                        "ta": "திருக்குவளை"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "namakkal",
+            "name": {
+                "en": "Namakkal",
+                "ta": "நாமக்கல்"
+            },
+            "cities": [
+                {
+                    "id": "namakkal",
+                    "name": {
+                        "en": "Namakkal",
+                        "ta": "நாமக்கல்"
+                    }
+                },
+                {
+                    "id": "rasipuram",
+                    "name": {
+                        "en": "Rasipuram",
+                        "ta": "இராசிபுரம்"
+                    }
+                },
+                {
+                    "id": "tiruchengode",
+                    "name": {
+                        "en": "Tiruchengode",
+                        "ta": "திருச்செங்கோடு"
+                    }
+                },
+                {
+                    "id": "paramathi",
+                    "name": {
+                        "en": "Paramathi",
+                        "ta": "பரமத்தி"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "nilgiris",
+            "name": {
+                "en": "Nilgiris",
+                "ta": "நீலகிரி"
+            },
+            "cities": [
+                {
+                    "id": "ooty",
+                    "name": {
+                        "en": "Ooty",
+                        "ta": "ஊட்டி"
+                    }
+                },
+                {
+                    "id": "coonoor",
+                    "name": {
+                        "en": "Coonoor",
+                        "ta": "குன்னூர்"
+                    }
+                },
+                {
+                    "id": "kotagiri",
+                    "name": {
+                        "en": "Kotagiri",
+                        "ta": "கோத்தகிரி"
+                    }
+                },
+                {
+                    "id": "gudalur",
+                    "name": {
+                        "en": "Gudalur",
+                        "ta": "குடலூர்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "perambalur",
+            "name": {
+                "en": "Perambalur",
+                "ta": "பெரம்பலூர்"
+            },
+            "cities": [
+                {
+                    "id": "perambalur",
+                    "name": {
+                        "en": "Perambalur",
+                        "ta": "பெரம்பலூர்"
+                    }
+                },
+                {
+                    "id": "kunnam",
+                    "name": {
+                        "en": "Kunnam",
+                        "ta": "குன்னம்"
+                    }
+                },
+                {
+                    "id": "veppanthattai",
+                    "name": {
+                        "en": "Veppanthattai",
+                        "ta": "வேப்பந்தட்டை"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "pudukkottai",
+            "name": {
+                "en": "Pudukkottai",
+                "ta": "புதுக்கோட்டை"
+            },
+            "cities": [
+                {
+                    "id": "pudukkottai",
+                    "name": {
+                        "en": "Pudukkottai",
+                        "ta": "புதுக்கோட்டை"
+                    }
+                },
+                {
+                    "id": "aranthangi",
+                    "name": {
+                        "en": "Aranthangi",
+                        "ta": "அறந்தாங்கி"
+                    }
+                },
+                {
+                    "id": "alangudi",
+                    "name": {
+                        "en": "Alangudi",
+                        "ta": "ஆலங்குடி"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "ramanathapuram",
+            "name": {
+                "en": "Ramanathapuram",
+                "ta": "ராமநாதபுரம்"
+            },
+            "cities": [
+                {
+                    "id": "ramanathapuram",
+                    "name": {
+                        "en": "Ramanathapuram",
+                        "ta": "ராமநாதபுரம்"
+                    }
+                },
+                {
+                    "id": "paramakudi",
+                    "name": {
+                        "en": "Paramakudi",
+                        "ta": "பரமக்குடி"
+                    }
+                },
+                {
+                    "id": "rameswaram",
+                    "name": {
+                        "en": "Rameswaram",
+                        "ta": "ராமேஸ்வரம்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "ranipet",
+            "name": {
+                "en": "Ranipet",
+                "ta": "ராணிப்பேட்டை"
+            },
+            "cities": [
+                {
+                    "id": "ranipet",
+                    "name": {
+                        "en": "Ranipet",
+                        "ta": "ராணிப்பேட்டை"
+                    }
+                },
+                {
+                    "id": "arcot",
+                    "name": {
+                        "en": "Arcot",
+                        "ta": "ஆற்காடு"
+                    }
+                },
+                {
+                    "id": "walajah",
+                    "name": {
+                        "en": "Walajah",
+                        "ta": "வாலாஜா"
+                    }
+                },
+                {
+                    "id": "sholingur",
+                    "name": {
+                        "en": "Sholingur",
+                        "ta": "சோளிங்கர்"
+                    }
+                },
+                {
+                    "id": "nemili",
+                    "name": {
+                        "en": "Nemili",
+                        "ta": "நெமிலி"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "salem",
+            "name": {
+                "en": "Salem",
+                "ta": "சேலம்"
+            },
+            "cities": [
+                {
+                    "id": "salem",
+                    "name": {
+                        "en": "Salem",
+                        "ta": "சேலம்"
+                    }
+                },
+                {
+                    "id": "attur",
+                    "name": {
+                        "en": "Attur",
+                        "ta": "ஆத்தூர்"
+                    }
+                },
+                {
+                    "id": "mettur",
+                    "name": {
+                        "en": "Mettur",
+                        "ta": "மேட்டூர்"
+                    }
+                },
+                {
+                    "id": "omalur",
+                    "name": {
+                        "en": "Omalur",
+                        "ta": "ஓமலூர்"
+                    }
+                },
+                {
+                    "id": "yercaud",
+                    "name": {
+                        "en": "Yercaud",
+                        "ta": "ஏற்காடு"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "sivagangai",
+            "name": {
+                "en": "Sivagangai",
+                "ta": "சிவகங்கை"
+            },
+            "cities": [
+                {
+                    "id": "sivagangai",
+                    "name": {
+                        "en": "Sivagangai",
+                        "ta": "சிவகங்கை"
+                    }
+                },
+                {
+                    "id": "karaikudi",
+                    "name": {
+                        "en": "Karaikudi",
+                        "ta": "காரைக்குடி"
+                    }
+                },
+                {
+                    "id": "devakottai",
+                    "name": {
+                        "en": "Devakottai",
+                        "ta": "தேவகோட்டை"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "tenkasi",
+            "name": {
+                "en": "Tenkasi",
+                "ta": "தென்காசி"
+            },
+            "cities": [
+                {
+                    "id": "tenkasi",
+                    "name": {
+                        "en": "Tenkasi",
+                        "ta": "தென்காசி"
+                    }
+                },
+                {
+                    "id": "sankarankovil",
+                    "name": {
+                        "en": "Sankarankovil",
+                        "ta": "சங்கரன்கோவில்"
+                    }
+                },
+                {
+                    "id": "kadayanallur",
+                    "name": {
+                        "en": "Kadayanallur",
+                        "ta": "கடையநல்லூர்"
+                    }
+                },
+                {
+                    "id": "courtallam",
+                    "name": {
+                        "en": "Courtallam",
+                        "ta": "குற்றாலம்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "thanjavur",
+            "name": {
+                "en": "Thanjavur",
+                "ta": "தஞ்சாவூர்"
+            },
+            "cities": [
+                {
+                    "id": "thanjavur",
+                    "name": {
+                        "en": "Thanjavur",
+                        "ta": "தஞ்சாவூர்"
+                    }
+                },
+                {
+                    "id": "kumbakonam",
+                    "name": {
+                        "en": "Kumbakonam",
+                        "ta": "கும்பகோணம்"
+                    }
+                },
+                {
+                    "id": "pattukkottai",
+                    "name": {
+                        "en": "Pattukkottai",
+                        "ta": "பட்டுக்கோட்டை"
+                    }
+                },
+                {
+                    "id": "orathanadu",
+                    "name": {
+                        "en": "Orathanadu",
+                        "ta": "ஒரத்தநாடு"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "theni",
+            "name": {
+                "en": "Theni",
+                "ta": "தேனி"
+            },
+            "cities": [
+                {
+                    "id": "theni",
+                    "name": {
+                        "en": "Theni",
+                        "ta": "தேனி"
+                    }
+                },
+                {
+                    "id": "bodinayakanur",
+                    "name": {
+                        "en": "Bodinayakanur",
+                        "ta": "போடிநாயக்கனூர்"
+                    }
+                },
+                {
+                    "id": "periyakulam",
+                    "name": {
+                        "en": "Periyakulam",
+                        "ta": "பெரியகுளம்"
+                    }
+                },
+                {
+                    "id": "andipatti",
+                    "name": {
+                        "en": "Andipatti",
+                        "ta": "ஆண்டிபட்டி"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "thoothukudi",
+            "name": {
+                "en": "Thoothukudi",
+                "ta": "தூத்துக்குடி"
+            },
+            "cities": [
+                {
+                    "id": "thoothukudi",
+                    "name": {
+                        "en": "Thoothukudi",
+                        "ta": "தூத்துக்குடி"
+                    }
+                },
+                {
+                    "id": "kovilpatti",
+                    "name": {
+                        "en": "Kovilpatti",
+                        "ta": "கோவில்பட்டி"
+                    }
+                },
+                {
+                    "id": "tiruchendur",
+                    "name": {
+                        "en": "Tiruchendur",
+                        "ta": "திருச்செந்தூர்"
+                    }
+                },
+                {
+                    "id": "ettayapuram",
+                    "name": {
+                        "en": "Ettayapuram",
+                        "ta": "எட்டையபுரம்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "tiruchirappalli",
+            "name": {
+                "en": "Tiruchirappalli",
+                "ta": "திருச்சிராப்பள்ளி"
+            },
+            "cities": [
+                {
+                    "id": "trichy-main",
+                    "name": {
+                        "en": "Trichy Main",
+                        "ta": "திருச்சி மெயின்"
+                    }
+                },
+                {
+                    "id": "srirangam",
+                    "name": {
+                        "en": "Srirangam",
+                        "ta": "ஸ்ரீரங்கம்"
+                    }
+                },
+                {
+                    "id": "lalgudi",
+                    "name": {
+                        "en": "Lalgudi",
+                        "ta": "லால்குடி"
+                    }
+                },
+                {
+                    "id": "musiri",
+                    "name": {
+                        "en": "Musiri",
+                        "ta": "முசிறி"
+                    }
+                },
+                {
+                    "id": "thuraiyur",
+                    "name": {
+                        "en": "Thuraiyur",
+                        "ta": "துறையூர்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "tirunelveli",
+            "name": {
+                "en": "Tirunelveli",
+                "ta": "திருநெல்வேலி"
+            },
+            "cities": [
+                {
+                    "id": "tirunelveli",
+                    "name": {
+                        "en": "Tirunelveli",
+                        "ta": "திருநெல்வேலி"
+                    }
+                },
+                {
+                    "id": "palayamkottai",
+                    "name": {
+                        "en": "Palayamkottai",
+                        "ta": "பாளையங்கோட்டை"
+                    }
+                },
+                {
+                    "id": "ambasamudram",
+                    "name": {
+                        "en": "Ambasamudram",
+                        "ta": "அம்பாசமுத்திரம்"
+                    }
+                },
+                {
+                    "id": "nanguneri",
+                    "name": {
+                        "en": "Nanguneri",
+                        "ta": "நாங்குநேரி"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "tirupathur",
+            "name": {
+                "en": "Tirupathur",
+                "ta": "திருப்பத்தூர்"
+            },
+            "cities": [
+                {
+                    "id": "tirupathur",
+                    "name": {
+                        "en": "Tirupathur",
+                        "ta": "திருப்பத்தூர்"
+                    }
+                },
+                {
+                    "id": "vaniyambadi",
+                    "name": {
+                        "en": "Vaniyambadi",
+                        "ta": "வாணியம்பாடி"
+                    }
+                },
+                {
+                    "id": "ambur",
+                    "name": {
+                        "en": "Ambur",
+                        "ta": "ஆம்பூர்"
+                    }
+                },
+                {
+                    "id": "natrampalli",
+                    "name": {
+                        "en": "Natrampalli",
+                        "ta": "நாட்றாம்பள்ளி"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "tiruppur",
+            "name": {
+                "en": "Tiruppur",
+                "ta": "திருப்பூர்"
+            },
+            "cities": [
+                {
+                    "id": "tiruppur",
+                    "name": {
+                        "en": "Tiruppur",
+                        "ta": "திருப்பூர்"
+                    }
+                },
+                {
+                    "id": "avinashi",
+                    "name": {
+                        "en": "Avinashi",
+                        "ta": "அவினாசி"
+                    }
+                },
+                {
+                    "id": "palladam",
+                    "name": {
+                        "en": "Palladam",
+                        "ta": "பல்லடம்"
+                    }
+                },
+                {
+                    "id": "udumalpet",
+                    "name": {
+                        "en": "Udumalpet",
+                        "ta": "உடுமலைப்பேட்டை"
+                    }
+                },
+                {
+                    "id": "dharapuram",
+                    "name": {
+                        "en": "Dharapuram",
+                        "ta": "தாராபுரம்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "tiruvannamalai",
+            "name": {
+                "en": "Tiruvannamalai",
+                "ta": "திருவண்ணாமலை"
+            },
+            "cities": [
+                {
+                    "id": "tiruvannamalai",
+                    "name": {
+                        "en": "Tiruvannamalai",
+                        "ta": "திருவண்ணாமலை"
+                    }
+                },
+                {
+                    "id": "arani",
+                    "name": {
+                        "en": "Arani",
+                        "ta": "ஆரணி"
+                    }
+                },
+                {
+                    "id": "polur",
+                    "name": {
+                        "en": "Polur",
+                        "ta": "போளூர்"
+                    }
+                },
+                {
+                    "id": "cheyyar",
+                    "name": {
+                        "en": "Cheyyar",
+                        "ta": "செய்யாறு"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "tiruvallur",
+            "name": {
+                "en": "Tiruvallur",
+                "ta": "திருவள்ளூர்"
+            },
+            "cities": [
+                {
+                    "id": "tiruvallur",
+                    "name": {
+                        "en": "Tiruvallur",
+                        "ta": "திருவள்ளூர்"
+                    }
+                },
+                {
+                    "id": "poonamallee",
+                    "name": {
+                        "en": "Poonamallee",
+                        "ta": "பூந்தமல்லி"
+                    }
+                },
+                {
+                    "id": "avadi",
+                    "name": {
+                        "en": "Avadi",
+                        "ta": "ஆவடி"
+                    }
+                },
+                {
+                    "id": "tiruttani",
+                    "name": {
+                        "en": "Tiruttani",
+                        "ta": "திருத்தணி"
+                    }
+                },
+                {
+                    "id": "gummidipoondi",
+                    "name": {
+                        "en": "Gummidipoondi",
+                        "ta": "கும்மிடிப்பூண்டி"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "tiruvarur",
+            "name": {
+                "en": "Tiruvarur",
+                "ta": "திருவாரூர்"
+            },
+            "cities": [
+                {
+                    "id": "tiruvarur",
+                    "name": {
+                        "en": "Tiruvarur",
+                        "ta": "திருவாரூர்"
+                    }
+                },
+                {
+                    "id": "mannargudi",
+                    "name": {
+                        "en": "Mannargudi",
+                        "ta": "மன்னார்குடி"
+                    }
+                },
+                {
+                    "id": "nannilam",
+                    "name": {
+                        "en": "Nannilam",
+                        "ta": "நன்னிலம்"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "vellore",
+            "name": {
+                "en": "Vellore",
+                "ta": "வேலூர்"
+            },
+            "cities": [
+                {
+                    "id": "vellore",
+                    "name": {
+                        "en": "Vellore",
+                        "ta": "வேலூர்"
+                    }
+                },
+                {
+                    "id": "katpadi",
+                    "name": {
+                        "en": "Katpadi",
+                        "ta": "காட்பாடி"
+                    }
+                },
+                {
+                    "id": "gudiyatham",
+                    "name": {
+                        "en": "Gudiyatham",
+                        "ta": "குடியாத்தம்"
+                    }
+                },
+                {
+                    "id": "pernambut",
+                    "name": {
+                        "en": "Pernambut",
+                        "ta": "பேர்ணாம்பட்டு"
+                    }
+                },
+                {
+                    "id": "anaicut",
+                    "name": {
+                        "en": "Anaicut",
+                        "ta": "அணைக்கட்டு"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "viluppuram",
+            "name": {
+                "en": "Viluppuram",
+                "ta": "விழுப்புரம்"
+            },
+            "cities": [
+                {
+                    "id": "viluppuram",
+                    "name": {
+                        "en": "Viluppuram",
+                        "ta": "விழுப்புரம்"
+                    }
+                },
+                {
+                    "id": "tindivanam",
+                    "name": {
+                        "en": "Tindivanam",
+                        "ta": "திண்டிவனம்"
+                    }
+                },
+                {
+                    "id": "gingee",
+                    "name": {
+                        "en": "Gingee",
+                        "ta": "செஞ்சி"
+                    }
+                },
+                {
+                    "id": "kallakurichi-old",
+                    "name": {
+                        "en": "Kallakurichi",
+                        "ta": "கள்ளக்குறிச்சி"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "virudhunagar",
+            "name": {
+                "en": "Virudhunagar",
+                "ta": "விருதுநகர்"
+            },
+            "cities": [
+                {
+                    "id": "virudhunagar",
+                    "name": {
+                        "en": "Virudhunagar",
+                        "ta": "விருதுநகர்"
+                    }
+                },
+                {
+                    "id": "sivakasi",
+                    "name": {
+                        "en": "Sivakasi",
+                        "ta": "சிவகாசி"
+                    }
+                },
+                {
+                    "id": "srivilliputhur",
+                    "name": {
+                        "en": "Srivilliputhur",
+                        "ta": "ஸ்ரீவில்லிபுத்தூர்"
+                    }
+                },
+                {
+                    "id": "rajapalayam",
+                    "name": {
+                        "en": "Rajapalayam",
+                        "ta": "ராஜபாளையம்"
+                    }
+                },
+                {
+                    "id": "aruppukottai",
+                    "name": {
+                        "en": "Aruppukottai",
+                        "ta": "அருப்புக்கோட்டை"
+                    }
+                }
+            ]
+        }
+    ]
+}

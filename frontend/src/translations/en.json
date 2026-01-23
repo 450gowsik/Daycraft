@@ -1,0 +1,129 @@
+{
+    "nav": {
+        "home": "Home",
+        "jobs": "Jobs",
+        "workers": "Workers",
+        "dashboard": "Dashboard",
+        "login": "Login",
+        "register": "Register",
+        "logout": "Logout"
+    },
+    "hero": {
+        "tagline": "Connect. Work. Thrive.",
+        "title": "Find Daily-Wage Workers Instantly",
+        "subtitle": "DayCraft connects skilled workers with employers seamlessly. Post jobs or find work in your area with just a few clicks.",
+        "findWorkers": "Find Workers",
+        "postJob": "Post a Job"
+    },
+    "features": {
+        "title": "Why Choose DayCraft?",
+        "subtitle": "Simple, fast, and reliable platform for daily-wage employment",
+        "verified": {
+            "title": "Verified Workers",
+            "description": "All workers are verified for quality and reliability"
+        },
+        "instant": {
+            "title": "Instant Matching",
+            "description": "Find the right worker or job within minutes"
+        },
+        "secure": {
+            "title": "Secure Payments",
+            "description": "Safe and transparent payment system"
+        },
+        "support": {
+            "title": "24/7 Support",
+            "description": "Always here to help you succeed"
+        }
+    },
+    "categories": {
+        "title": "Popular Categories",
+        "subtitle": "Browse jobs by category",
+        "viewAll": "View All Jobs"
+    },
+    "jobs": {
+        "title": "Available Jobs",
+        "subtitle": "Find work that matches your skills",
+        "search": "Search jobs by title, location...",
+        "filter": "Filter by Category",
+        "all": "All Categories",
+        "perDay": "per day",
+        "apply": "Apply Now",
+        "posted": "Posted",
+        "noJobs": "No jobs found",
+        "clearFilters": "Clear Filters"
+    },
+    "workers": {
+        "title": "Skilled Workers",
+        "subtitle": "Find trusted professionals in your area",
+        "search": "Search workers by skill, location...",
+        "experience": "years experience",
+        "rating": "Rating",
+        "hire": "Hire Now",
+        "perDay": "per day",
+        "verified": "Verified",
+        "noWorkers": "No workers found"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "welcome": "Welcome back",
+        "stats": {
+            "activeJobs": "Active Jobs",
+            "applications": "Applications",
+            "completed": "Completed",
+            "earnings": "Total Earnings"
+        },
+        "recentJobs": "Recent Jobs",
+        "viewAll": "View All"
+    },
+    "auth": {
+        "login": {
+            "title": "Welcome Back",
+            "subtitle": "Sign in to your account",
+            "email": "Email Address",
+            "password": "Password",
+            "remember": "Remember me",
+            "forgot": "Forgot password?",
+            "submit": "Sign In",
+            "noAccount": "Don't have an account?",
+            "register": "Register",
+            "google": "Continue with Google"
+        },
+        "register": {
+            "title": "Create Account",
+            "subtitle": "Join thousands of daily wage workers and employers",
+            "name": "Full Name",
+            "email": "Email Address",
+            "phone": "Phone Number",
+            "password": "Password",
+            "confirmPassword": "Confirm Password",
+            "role": "I am a",
+            "employer": "Employer",
+            "worker": "Job Seeker",
+            "terms": "I agree to the Terms of Service",
+            "submit": "Create Account",
+            "hasAccount": "Already have an account?",
+            "login": "Sign in"
+        }
+    },
+    "footer": {
+        "description": "Connecting daily-wage workers with employers across Tamil Nadu.",
+        "quickLinks": "Quick Links",
+        "contact": "Contact Us",
+        "email": "info@daycraft.com",
+        "phone": "+91 98765 43210",
+        "address": "Chennai, Tamil Nadu",
+        "rights": "All rights reserved."
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "Something went wrong",
+        "retry": "Try Again",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "view": "View",
+        "close": "Close",
+        "back": "Back"
+    }
+}

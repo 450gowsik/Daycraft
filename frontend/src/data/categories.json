@@ -1,0 +1,828 @@
+[
+    {
+        "id": "construction",
+        "name": {
+            "en": "Construction",
+            "ta": "கட்டுமானம்"
+        },
+        "icon": "🏗️",
+        "description": {
+            "en": "Building, masonry, carpentry work",
+            "ta": "கட்டிடம், கொத்து வேலை, தச்சு வேலை"
+        },
+        "jobCount": 245,
+        "type": "labor"
+    },
+    {
+        "id": "cleaning",
+        "name": {
+            "en": "Cleaning",
+            "ta": "சுத்தம் செய்தல்"
+        },
+        "icon": "🧹",
+        "description": {
+            "en": "House cleaning, office cleaning",
+            "ta": "வீடு சுத்தம், அலுவலக சுத்தம்"
+        },
+        "jobCount": 189,
+        "type": "labor"
+    },
+    {
+        "id": "driving",
+        "name": {
+            "en": "Driving",
+            "ta": "வாகனம் ஓட்டுதல்"
+        },
+        "icon": "🚗",
+        "description": {
+            "en": "Taxi, delivery, transport",
+            "ta": "டாக்சி, டெலிவரி, போக்குவரத்து"
+        },
+        "jobCount": 312,
+        "type": "labor"
+    },
+    {
+        "id": "gardening",
+        "name": {
+            "en": "Gardening",
+            "ta": "தோட்டக்கலை"
+        },
+        "icon": "🌱",
+        "description": {
+            "en": "Lawn care, planting, landscaping",
+            "ta": "புல்வெளி பராமரிப்பு, நடவு, நிலத்தோற்றம்"
+        },
+        "jobCount": 87,
+        "type": "labor"
+    },
+    {
+        "id": "cooking",
+        "name": {
+            "en": "Cooking",
+            "ta": "சமையல்"
+        },
+        "icon": "👨‍🍳",
+        "description": {
+            "en": "Home cooking, catering, events",
+            "ta": "வீட்டு சமையல், உணவு வழங்கல், நிகழ்வுகள்"
+        },
+        "jobCount": 156,
+        "type": "labor"
+    },
+    {
+        "id": "painting",
+        "name": {
+            "en": "Painting",
+            "ta": "வண்ணம் பூசுதல்"
+        },
+        "icon": "🎨",
+        "description": {
+            "en": "House painting, wall art",
+            "ta": "வீடு வண்ணம், சுவர் கலை"
+        },
+        "jobCount": 98,
+        "type": "labor"
+    },
+    {
+        "id": "plumbing",
+        "name": {
+            "en": "Plumbing",
+            "ta": "குழாய் பணி"
+        },
+        "icon": "🔧",
+        "description": {
+            "en": "Pipe repair, installation",
+            "ta": "குழாய் பழுது, நிறுவல்"
+        },
+        "jobCount": 134,
+        "type": "labor"
+    },
+    {
+        "id": "electrical",
+        "name": {
+            "en": "Electrical",
+            "ta": "மின்சாரம்"
+        },
+        "icon": "⚡",
+        "description": {
+            "en": "Wiring, repairs, installation",
+            "ta": "மின்கம்பி, பழுதுபார்ப்பு, நிறுவல்"
+        },
+        "jobCount": 167,
+        "type": "labor"
+    },
+    {
+        "id": "loading",
+        "name": {
+            "en": "Loading & Moving",
+            "ta": "ஏற்றுதல் & நகர்த்துதல்"
+        },
+        "icon": "📦",
+        "description": {
+            "en": "Packing, moving, heavy lifting",
+            "ta": "பேக்கிங், நகர்த்துதல், கனமான தூக்குதல்"
+        },
+        "jobCount": 223,
+        "type": "labor"
+    },
+    {
+        "id": "agriculture",
+        "name": {
+            "en": "Agriculture",
+            "ta": "விவசாயம்"
+        },
+        "icon": "🌾",
+        "description": {
+            "en": "Farming, harvesting, field work",
+            "ta": "வேளாண்மை, அறுவடை, வயல் வேலை"
+        },
+        "jobCount": 178,
+        "type": "labor"
+    },
+    {
+        "id": "security",
+        "name": {
+            "en": "Security Guard",
+            "ta": "பாதுகாப்பு காவலர்"
+        },
+        "icon": "🛡️",
+        "description": {
+            "en": "Watchman, building security",
+            "ta": "காவலாளி, கட்டிட பாதுகாப்பு"
+        },
+        "jobCount": 145,
+        "type": "labor"
+    },
+    {
+        "id": "carpentry",
+        "name": {
+            "en": "Carpentry",
+            "ta": "தச்சு வேலை"
+        },
+        "icon": "🪚",
+        "description": {
+            "en": "Furniture making, wood work",
+            "ta": "மரச்சாமான் செய்தல், மர வேலை"
+        },
+        "jobCount": 89,
+        "type": "labor"
+    },
+    {
+        "id": "welding",
+        "name": {
+            "en": "Welding",
+            "ta": "வெல்டிங்"
+        },
+        "icon": "🔥",
+        "description": {
+            "en": "Metal welding, fabrication",
+            "ta": "உலோக வெல்டிங், கட்டமைப்பு"
+        },
+        "jobCount": 67,
+        "type": "labor"
+    },
+    {
+        "id": "tailoring",
+        "name": {
+            "en": "Tailoring",
+            "ta": "தையல்"
+        },
+        "icon": "🧵",
+        "description": {
+            "en": "Stitching, alterations, repairs",
+            "ta": "தைத்தல், மாற்றங்கள், பழுது"
+        },
+        "jobCount": 78,
+        "type": "labor"
+    },
+    {
+        "id": "dishwashing",
+        "name": {
+            "en": "Dishwashing",
+            "ta": "பாத்திரம் கழுவுதல்"
+        },
+        "icon": "🍽️",
+        "description": {
+            "en": "Restaurant, hotel dishwashing",
+            "ta": "உணவகம், ஓட்டல் பாத்திரம் கழுவுதல்"
+        },
+        "jobCount": 112,
+        "type": "labor"
+    },
+    {
+        "id": "laundry",
+        "name": {
+            "en": "Laundry",
+            "ta": "சலவை"
+        },
+        "icon": "👕",
+        "description": {
+            "en": "Washing, ironing, dry cleaning",
+            "ta": "துவைத்தல், இஸ்திரி, உலர் சுத்தம்"
+        },
+        "jobCount": 92,
+        "type": "labor"
+    },
+    {
+        "id": "babysitting",
+        "name": {
+            "en": "Babysitting",
+            "ta": "குழந்தை பராமரிப்பு"
+        },
+        "icon": "👶",
+        "description": {
+            "en": "Child care, nanny services",
+            "ta": "குழந்தை பராமரிப்பு, ஆயா சேவைகள்"
+        },
+        "jobCount": 134,
+        "type": "labor"
+    },
+    {
+        "id": "eldercare",
+        "name": {
+            "en": "Elder Care",
+            "ta": "முதியோர் பராமரிப்பு"
+        },
+        "icon": "👴",
+        "description": {
+            "en": "Senior care, assistance",
+            "ta": "மூத்தவர் பராமரிப்பு, உதவி"
+        },
+        "jobCount": 98,
+        "type": "labor"
+    },
+    {
+        "id": "petcare",
+        "name": {
+            "en": "Pet Care",
+            "ta": "செல்லப்பிராணி பராமரிப்பு"
+        },
+        "icon": "🐕",
+        "description": {
+            "en": "Dog walking, pet sitting",
+            "ta": "நாய் நடத்துதல், செல்லப்பிராணி பராமரிப்பு"
+        },
+        "jobCount": 45,
+        "type": "labor"
+    },
+    {
+        "id": "ac-repair",
+        "name": {
+            "en": "AC Repair",
+            "ta": "ஏசி பழுது"
+        },
+        "icon": "❄️",
+        "description": {
+            "en": "AC service, installation, repair",
+            "ta": "ஏசி சர்வீஸ், நிறுவல், பழுது"
+        },
+        "jobCount": 156,
+        "type": "labor"
+    },
+    {
+        "id": "appliance-repair",
+        "name": {
+            "en": "Appliance Repair",
+            "ta": "சாதன பழுது"
+        },
+        "icon": "🔌",
+        "description": {
+            "en": "TV, fridge, washing machine repair",
+            "ta": "டிவி, ஃப்ரிட்ஜ், வாஷிங் மெஷின் பழுது"
+        },
+        "jobCount": 123,
+        "type": "labor"
+    },
+    {
+        "id": "mobile-repair",
+        "name": {
+            "en": "Mobile Repair",
+            "ta": "மொபைல் பழுது"
+        },
+        "icon": "📱",
+        "description": {
+            "en": "Phone screen, battery repair",
+            "ta": "போன் திரை, பேட்டரி பழுது"
+        },
+        "jobCount": 89,
+        "type": "labor"
+    },
+    {
+        "id": "factory-worker",
+        "name": {
+            "en": "Factory Worker",
+            "ta": "தொழிற்சாலை தொழிலாளி"
+        },
+        "icon": "🏭",
+        "description": {
+            "en": "Assembly line, packaging, production",
+            "ta": "அசெம்பிளி லைன், பேக்கேஜிங், உற்பத்தி"
+        },
+        "jobCount": 289,
+        "type": "labor"
+    },
+    {
+        "id": "warehouse",
+        "name": {
+            "en": "Warehouse",
+            "ta": "கிடங்கு"
+        },
+        "icon": "🏪",
+        "description": {
+            "en": "Stock management, loading, unloading",
+            "ta": "ஸ்டாக் மேலாண்மை, ஏற்றுதல், இறக்குதல்"
+        },
+        "jobCount": 198,
+        "type": "labor"
+    },
+    {
+        "id": "helper",
+        "name": {
+            "en": "Helper",
+            "ta": "உதவியாளர்"
+        },
+        "icon": "🤝",
+        "description": {
+            "en": "General helper, assistant work",
+            "ta": "பொது உதவியாளர், உதவி வேலை"
+        },
+        "jobCount": 345,
+        "type": "labor"
+    },
+    {
+        "id": "peon",
+        "name": {
+            "en": "Peon/Office Boy",
+            "ta": "அலுவலக பையன்"
+        },
+        "icon": "📋",
+        "description": {
+            "en": "Office errands, document delivery",
+            "ta": "அலுவலக வேலைகள், ஆவண விநியோகம்"
+        },
+        "jobCount": 167,
+        "type": "labor"
+    },
+    {
+        "id": "sweeper",
+        "name": {
+            "en": "Sweeper",
+            "ta": "துப்புரவு பணியாளர்"
+        },
+        "icon": "🧹",
+        "description": {
+            "en": "Street cleaning, area cleaning",
+            "ta": "தெரு சுத்தம், பகுதி சுத்தம்"
+        },
+        "jobCount": 234,
+        "type": "labor"
+    },
+    {
+        "id": "garbage-collector",
+        "name": {
+            "en": "Garbage Collector",
+            "ta": "குப்பை சேகரிப்பாளர்"
+        },
+        "icon": "🗑️",
+        "description": {
+            "en": "Waste collection, disposal",
+            "ta": "கழிவு சேகரிப்பு, அகற்றல்"
+        },
+        "jobCount": 145,
+        "type": "labor"
+    },
+    {
+        "id": "delivery",
+        "name": {
+            "en": "Delivery",
+            "ta": "டெலிவரி"
+        },
+        "icon": "🛵",
+        "description": {
+            "en": "Food delivery, parcel delivery",
+            "ta": "உணவு டெலிவரி, பார்சல் டெலிவரி"
+        },
+        "jobCount": 456,
+        "type": "labor"
+    },
+    {
+        "id": "web-development",
+        "name": {
+            "en": "Web Development",
+            "ta": "இணைய மேம்பாடு"
+        },
+        "icon": "💻",
+        "description": {
+            "en": "Frontend, backend, full-stack",
+            "ta": "ஃப்ரண்ட்எண்ட், பேக்எண்ட், ஃபுல்-ஸ்டேக்"
+        },
+        "jobCount": 567,
+        "type": "it"
+    },
+    {
+        "id": "mobile-development",
+        "name": {
+            "en": "Mobile Development",
+            "ta": "மொபைல் மேம்பாடு"
+        },
+        "icon": "📲",
+        "description": {
+            "en": "iOS, Android, React Native, Flutter",
+            "ta": "iOS, ஆண்ட்ராய்டு, ரியாக்ட் நேட்டிவ், ஃப்ளட்டர்"
+        },
+        "jobCount": 345,
+        "type": "it"
+    },
+    {
+        "id": "ui-ux-design",
+        "name": {
+            "en": "UI/UX Design",
+            "ta": "UI/UX வடிவமைப்பு"
+        },
+        "icon": "🎨",
+        "description": {
+            "en": "User interface, experience design",
+            "ta": "பயனர் இடைமுகம், அனுபவ வடிவமைப்பு"
+        },
+        "jobCount": 234,
+        "type": "it"
+    },
+    {
+        "id": "graphic-design",
+        "name": {
+            "en": "Graphic Design",
+            "ta": "கிராஃபிக் வடிவமைப்பு"
+        },
+        "icon": "🖼️",
+        "description": {
+            "en": "Logo, banner, poster design",
+            "ta": "லோகோ, பேனர், போஸ்டர் வடிவமைப்பு"
+        },
+        "jobCount": 289,
+        "type": "it"
+    },
+    {
+        "id": "data-entry",
+        "name": {
+            "en": "Data Entry",
+            "ta": "தரவு உள்ளீடு"
+        },
+        "icon": "⌨️",
+        "description": {
+            "en": "Typing, data processing, excel",
+            "ta": "டைப்பிங், தரவு செயலாக்கம், எக்செல்"
+        },
+        "jobCount": 456,
+        "type": "it"
+    },
+    {
+        "id": "content-writing",
+        "name": {
+            "en": "Content Writing",
+            "ta": "உள்ளடக்க எழுத்து"
+        },
+        "icon": "✍️",
+        "description": {
+            "en": "Blog, article, copywriting",
+            "ta": "வலைப்பதிவு, கட்டுரை, காப்பிரைட்டிங்"
+        },
+        "jobCount": 312,
+        "type": "it"
+    },
+    {
+        "id": "digital-marketing",
+        "name": {
+            "en": "Digital Marketing",
+            "ta": "டிஜிட்டல் மார்க்கெட்டிங்"
+        },
+        "icon": "📈",
+        "description": {
+            "en": "SEO, SEM, social media marketing",
+            "ta": "SEO, SEM, சமூக ஊடக மார்க்கெட்டிங்"
+        },
+        "jobCount": 234,
+        "type": "it"
+    },
+    {
+        "id": "video-editing",
+        "name": {
+            "en": "Video Editing",
+            "ta": "வீடியோ எடிட்டிங்"
+        },
+        "icon": "🎬",
+        "description": {
+            "en": "YouTube, reels, promotional videos",
+            "ta": "யூடியூப், ரீல்ஸ், விளம்பர வீடியோக்கள்"
+        },
+        "jobCount": 178,
+        "type": "it"
+    },
+    {
+        "id": "photography",
+        "name": {
+            "en": "Photography",
+            "ta": "புகைப்படம்"
+        },
+        "icon": "📷",
+        "description": {
+            "en": "Event, product, portrait photography",
+            "ta": "நிகழ்வு, தயாரிப்பு, போர்ட்ரெய்ட் புகைப்படம்"
+        },
+        "jobCount": 145,
+        "type": "it"
+    },
+    {
+        "id": "software-testing",
+        "name": {
+            "en": "Software Testing",
+            "ta": "மென்பொருள் சோதனை"
+        },
+        "icon": "🔍",
+        "description": {
+            "en": "QA, manual testing, automation",
+            "ta": "QA, கைமுறை சோதனை, ஆட்டோமேஷன்"
+        },
+        "jobCount": 198,
+        "type": "it"
+    },
+    {
+        "id": "database-admin",
+        "name": {
+            "en": "Database Admin",
+            "ta": "தரவுத்தள நிர்வாகி"
+        },
+        "icon": "🗄️",
+        "description": {
+            "en": "MySQL, MongoDB, PostgreSQL",
+            "ta": "MySQL, MongoDB, PostgreSQL"
+        },
+        "jobCount": 123,
+        "type": "it"
+    },
+    {
+        "id": "cloud-services",
+        "name": {
+            "en": "Cloud Services",
+            "ta": "கிளவுட் சேவைகள்"
+        },
+        "icon": "☁️",
+        "description": {
+            "en": "AWS, Azure, Google Cloud",
+            "ta": "AWS, Azure, Google Cloud"
+        },
+        "jobCount": 167,
+        "type": "it"
+    },
+    {
+        "id": "network-admin",
+        "name": {
+            "en": "Network Admin",
+            "ta": "நெட்வொர்க் நிர்வாகி"
+        },
+        "icon": "🌐",
+        "description": {
+            "en": "Network setup, maintenance, security",
+            "ta": "நெட்வொர்க் அமைப்பு, பராமரிப்பு, பாதுகாப்பு"
+        },
+        "jobCount": 89,
+        "type": "it"
+    },
+    {
+        "id": "cybersecurity",
+        "name": {
+            "en": "Cybersecurity",
+            "ta": "சைபர் பாதுகாப்பு"
+        },
+        "icon": "🔐",
+        "description": {
+            "en": "Security audits, penetration testing",
+            "ta": "பாதுகாப்பு தணிக்கை, ஊடுருவல் சோதனை"
+        },
+        "jobCount": 78,
+        "type": "it"
+    },
+    {
+        "id": "devops",
+        "name": {
+            "en": "DevOps",
+            "ta": "டெவ்ஆப்ஸ்"
+        },
+        "icon": "⚙️",
+        "description": {
+            "en": "CI/CD, Docker, Kubernetes",
+            "ta": "CI/CD, Docker, Kubernetes"
+        },
+        "jobCount": 134,
+        "type": "it"
+    },
+    {
+        "id": "data-science",
+        "name": {
+            "en": "Data Science",
+            "ta": "தரவு அறிவியல்"
+        },
+        "icon": "📊",
+        "description": {
+            "en": "Machine learning, AI, analytics",
+            "ta": "மெஷின் லர்னிங், AI, பகுப்பாய்வு"
+        },
+        "jobCount": 156,
+        "type": "it"
+    },
+    {
+        "id": "python-developer",
+        "name": {
+            "en": "Python Developer",
+            "ta": "பைதான் டெவலப்பர்"
+        },
+        "icon": "🐍",
+        "description": {
+            "en": "Django, Flask, automation scripts",
+            "ta": "ஜாங்கோ, ஃப்ளாஸ்க், ஆட்டோமேஷன் ஸ்கிரிப்ட்ஸ்"
+        },
+        "jobCount": 234,
+        "type": "it"
+    },
+    {
+        "id": "java-developer",
+        "name": {
+            "en": "Java Developer",
+            "ta": "ஜாவா டெவலப்பர்"
+        },
+        "icon": "☕",
+        "description": {
+            "en": "Spring Boot, enterprise applications",
+            "ta": "ஸ்பிரிங் பூட், நிறுவன பயன்பாடுகள்"
+        },
+        "jobCount": 198,
+        "type": "it"
+    },
+    {
+        "id": "wordpress",
+        "name": {
+            "en": "WordPress",
+            "ta": "வேர்ட்பிரஸ்"
+        },
+        "icon": "🔷",
+        "description": {
+            "en": "Theme, plugin development, maintenance",
+            "ta": "தீம், பிளகின் மேம்பாடு, பராமரிப்பு"
+        },
+        "jobCount": 267,
+        "type": "it"
+    },
+    {
+        "id": "ecommerce",
+        "name": {
+            "en": "E-commerce",
+            "ta": "இ-காமர்ஸ்"
+        },
+        "icon": "🛒",
+        "description": {
+            "en": "Shopify, WooCommerce, online stores",
+            "ta": "ஷாப்பிஃபை, வூகாமர்ஸ், ஆன்லைன் கடைகள்"
+        },
+        "jobCount": 189,
+        "type": "it"
+    },
+    {
+        "id": "tech-support",
+        "name": {
+            "en": "Tech Support",
+            "ta": "தொழில்நுட்ப ஆதரவு"
+        },
+        "icon": "🎧",
+        "description": {
+            "en": "IT helpdesk, troubleshooting",
+            "ta": "IT ஹெல்ப்டெஸ்க், சரிசெய்தல்"
+        },
+        "jobCount": 312,
+        "type": "it"
+    },
+    {
+        "id": "computer-repair",
+        "name": {
+            "en": "Computer Repair",
+            "ta": "கணினி பழுது"
+        },
+        "icon": "🖥️",
+        "description": {
+            "en": "Hardware repair, OS installation",
+            "ta": "ஹார்ட்வேர் பழுது, OS நிறுவல்"
+        },
+        "jobCount": 156,
+        "type": "it"
+    },
+    {
+        "id": "cctv-installation",
+        "name": {
+            "en": "CCTV Installation",
+            "ta": "CCTV நிறுவல்"
+        },
+        "icon": "📹",
+        "description": {
+            "en": "Security camera setup, maintenance",
+            "ta": "பாதுகாப்பு கேமரா அமைப்பு, பராமரிப்பு"
+        },
+        "jobCount": 123,
+        "type": "it"
+    },
+    {
+        "id": "seo-specialist",
+        "name": {
+            "en": "SEO Specialist",
+            "ta": "SEO நிபுணர்"
+        },
+        "icon": "🔎",
+        "description": {
+            "en": "Search engine optimization",
+            "ta": "தேடுபொறி மேம்படுத்தல்"
+        },
+        "jobCount": 145,
+        "type": "it"
+    },
+    {
+        "id": "social-media",
+        "name": {
+            "en": "Social Media Manager",
+            "ta": "சமூக ஊடக மேலாளர்"
+        },
+        "icon": "📱",
+        "description": {
+            "en": "Facebook, Instagram, Twitter management",
+            "ta": "பேஸ்புக், இன்ஸ்டாகிராம், ட்விட்டர் மேலாண்மை"
+        },
+        "jobCount": 178,
+        "type": "it"
+    },
+    {
+        "id": "virtual-assistant",
+        "name": {
+            "en": "Virtual Assistant",
+            "ta": "மெய்நிகர் உதவியாளர்"
+        },
+        "icon": "💼",
+        "description": {
+            "en": "Admin support, scheduling, emails",
+            "ta": "நிர்வாக ஆதரவு, திட்டமிடல், மின்னஞ்சல்கள்"
+        },
+        "jobCount": 234,
+        "type": "it"
+    },
+    {
+        "id": "transcription",
+        "name": {
+            "en": "Transcription",
+            "ta": "டிரான்ஸ்கிரிப்ஷன்"
+        },
+        "icon": "🎙️",
+        "description": {
+            "en": "Audio to text, subtitles",
+            "ta": "ஆடியோ டு டெக்ஸ்ட், சப்டைட்டில்ஸ்"
+        },
+        "jobCount": 89,
+        "type": "it"
+    },
+    {
+        "id": "translation",
+        "name": {
+            "en": "Translation",
+            "ta": "மொழிபெயர்ப்பு"
+        },
+        "icon": "🌍",
+        "description": {
+            "en": "Tamil, English, Hindi translation",
+            "ta": "தமிழ், ஆங்கிலம், இந்தி மொழிபெயர்ப்பு"
+        },
+        "jobCount": 112,
+        "type": "it"
+    },
+    {
+        "id": "voiceover",
+        "name": {
+            "en": "Voice Over",
+            "ta": "குரல் பதிவு"
+        },
+        "icon": "🎤",
+        "description": {
+            "en": "Audio recording, dubbing",
+            "ta": "ஆடியோ பதிவு, டப்பிங்"
+        },
+        "jobCount": 67,
+        "type": "it"
+    },
+    {
+        "id": "animation",
+        "name": {
+            "en": "Animation",
+            "ta": "அனிமேஷன்"
+        },
+        "icon": "🎥",
+        "description": {
+            "en": "2D, 3D animation, motion graphics",
+            "ta": "2D, 3D அனிமேஷன், மோஷன் கிராபிக்ஸ்"
+        },
+        "jobCount": 78,
+        "type": "it"
+    }
+]

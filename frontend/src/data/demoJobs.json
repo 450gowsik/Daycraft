@@ -1,0 +1,2282 @@
+[
+    {
+        "id": "1",
+        "title": {
+            "en": "Construction Helper Needed",
+            "ta": "கட்டுமான உதவியாளர் தேவை"
+        },
+        "description": {
+            "en": "Need experienced construction helper for a 5-day building project. Must be able to carry materials and assist masons.",
+            "ta": "5 நாள் கட்டிட திட்டத்திற்கு அனுபவமுள்ள கட்டுமான உதவியாளர் தேவை. பொருட்களை சுமக்கவும் கொத்தனார்களுக்கு உதவ வேண்டும்."
+        },
+        "category": "construction",
+        "wage": 800,
+        "location": "Chennai, Velachery",
+        "duration": "5 days",
+        "employer": "Raj Homes",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "2",
+        "title": {
+            "en": "House Cleaning - Weekly",
+            "ta": "வீடு சுத்தம் - வாராந்திரம்"
+        },
+        "description": {
+            "en": "Looking for reliable house cleaner for weekly cleaning of 3BHK apartment. Must bring own supplies.",
+            "ta": "3BHK அபார்ட்மெண்ட் வாராந்திர சுத்தம் செய்ய நம்பகமான வீட்டு சுத்தம் செய்பவர் தேவை. சொந்த பொருட்கள் கொண்டு வர வேண்டும்."
+        },
+        "category": "cleaning",
+        "wage": 600,
+        "location": "Chennai, Anna Nagar",
+        "duration": "1 day/week",
+        "employer": "Anand Family",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-05"
+    },
+    {
+        "id": "3",
+        "title": {
+            "en": "Bathroom Plumber Required",
+            "ta": "குளியலறை குழாய் பணியாளர் தேவை"
+        },
+        "description": {
+            "en": "Need plumber to fix leaking pipes and install new fixtures in bathroom. Urgent requirement.",
+            "ta": "கசியும் குழாய்களை சரிசெய்து குளியலறையில் புதிய பொருத்துதல்களை நிறுவ குழாய் பணியாளர் தேவை. அவசரத் தேவை."
+        },
+        "category": "plumbing",
+        "wage": 1000,
+        "location": "Chennai, T Nagar",
+        "duration": "2 days",
+        "employer": "Home Renovations Co.",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "4",
+        "title": {
+            "en": "AC Service & Repair",
+            "ta": "ஏசி சர்வீஸ் & பழுது"
+        },
+        "description": {
+            "en": "Required AC technician for servicing 3 split ACs. Experience with Samsung and LG preferred.",
+            "ta": "3 ஸ்பிளிட் ஏசிகளை சர்வீஸ் செய்ய ஏசி தொழில்நுட்ப வல்லுநர் தேவை. சாம்சங் மற்றும் எல்ஜி அனுபவம் விரும்பத்தக்கது."
+        },
+        "category": "ac-repair",
+        "wage": 1500,
+        "location": "Chennai, Adyar",
+        "duration": "1 day",
+        "employer": "Cool Solutions",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-04"
+    },
+    {
+        "id": "5",
+        "title": {
+            "en": "Delivery Executive",
+            "ta": "டெலிவரி நிர்வாகி"
+        },
+        "description": {
+            "en": "Food delivery partner needed. Must have own bike and smartphone. Flexible hours.",
+            "ta": "உணவு டெலிவரி பார்ட்னர் தேவை. சொந்த பைக் மற்றும் ஸ்மார்ட்போன் இருக்க வேண்டும். நெகிழ்வான நேரம்."
+        },
+        "category": "delivery",
+        "wage": 700,
+        "location": "Chennai, Guindy",
+        "duration": "Daily",
+        "employer": "FastFood Delivery",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "6",
+        "title": {
+            "en": "Security Guard - Night Shift",
+            "ta": "பாதுகாப்பு காவலர் - இரவு ஷிப்ட்"
+        },
+        "description": {
+            "en": "Night security guard required for apartment complex. 8 PM to 8 AM shift.",
+            "ta": "அபார்ட்மெண்ட் வளாகத்திற்கு இரவு பாதுகாப்பு காவலர் தேவை. இரவு 8 மணி முதல் காலை 8 மணி வரை ஷிப்ட்."
+        },
+        "category": "security",
+        "wage": 650,
+        "location": "Chennai, Porur",
+        "duration": "Monthly",
+        "employer": "Safe Guard Services",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-03"
+    },
+    {
+        "id": "7",
+        "title": {
+            "en": "Web Developer - React",
+            "ta": "வெப் டெவலப்பர் - ரியாக்ட்"
+        },
+        "description": {
+            "en": "Looking for React developer for e-commerce website. 2+ years experience required.",
+            "ta": "இ-காமர்ஸ் இணையதளத்திற்கு ரியாக்ட் டெவலப்பர் தேவை. 2+ ஆண்டுகள் அனுபவம் தேவை."
+        },
+        "category": "web-development",
+        "wage": 3500,
+        "location": "Remote",
+        "duration": "1 month",
+        "employer": "TechStart Offices",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "8",
+        "title": {
+            "en": "Graphic Designer for Logo",
+            "ta": "லோகோவுக்கான கிராஃபிக் டிசைனர்"
+        },
+        "description": {
+            "en": "Need creative designer for company logo and brand identity. Portfolio required.",
+            "ta": "நிறுவன லோகோ மற்றும் பிராண்ட் அடையாளத்திற்கு படைப்பாற்றல் மிக்க டிசைனர் தேவை. போர்ட்ஃபோலியோ தேவை."
+        },
+        "category": "graphic-design",
+        "wage": 5000,
+        "location": "Chennai, Nungambakkam",
+        "duration": "3 days",
+        "employer": "Brand Builders",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-05"
+    },
+    {
+        "id": "9",
+        "title": {
+            "en": "Data Entry Operator",
+            "ta": "தரவு உள்ளீட்டு ஆபரேட்டர்"
+        },
+        "description": {
+            "en": "Typing speed 40 WPM required. MS Excel knowledge must. Work from home available.",
+            "ta": "40 WPM டைப்பிங் வேகம் தேவை. MS Excel அறிவு அவசியம். வீட்டிலிருந்து வேலை செய்யலாம்."
+        },
+        "category": "data-entry",
+        "wage": 800,
+        "location": "Remote",
+        "duration": "15 days",
+        "employer": "DataPro Solutions",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-04"
+    },
+    {
+        "id": "10",
+        "title": {
+            "en": "Video Editor for YouTube",
+            "ta": "யூடியூப்புக்கான வீடியோ எடிட்டர்"
+        },
+        "description": {
+            "en": "Need video editor for YouTube cooking channel. Premiere Pro skills required.",
+            "ta": "யூடியூப் சமையல் சேனலுக்கு வீடியோ எடிட்டர் தேவை. ப்ரீமியர் ப்ரோ திறன்கள் தேவை."
+        },
+        "category": "video-editing",
+        "wage": 2000,
+        "location": "Chennai, Mylapore",
+        "duration": "Per video",
+        "employer": "Taste of Tamil",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "11",
+        "title": {
+            "en": "Factory Helper Needed",
+            "ta": "தொழிற்சாலை உதவியாளர் தேவை"
+        },
+        "description": {
+            "en": "Manufacturing unit needs helpers for packaging department. No experience required.",
+            "ta": "உற்பத்தி பிரிவுக்கு பேக்கேஜிங் துறையில் உதவியாளர்கள் தேவை. அனுபவம் தேவையில்லை."
+        },
+        "category": "factory-worker",
+        "wage": 550,
+        "location": "Chennai, Ambattur",
+        "duration": "Monthly",
+        "employer": "Star Manufacturing",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-05"
+    },
+    {
+        "id": "12",
+        "title": {
+            "en": "Babysitter - Part Time",
+            "ta": "குழந்தை பராமரிப்பாளர் - பகுதி நேரம்"
+        },
+        "description": {
+            "en": "Need loving babysitter for 3-year-old. Morning shift 9 AM to 1 PM.",
+            "ta": "3 வயது குழந்தைக்கு அன்பான குழந்தை பராமரிப்பாளர் தேவை. காலை ஷிப்ட் 9 AM முதல் 1 PM வரை."
+        },
+        "category": "babysitting",
+        "wage": 400,
+        "location": "Chennai, Besant Nagar",
+        "duration": "Daily",
+        "employer": "Kumar Family",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "13",
+        "title": {
+            "en": "Python Developer - Backend",
+            "ta": "பைதான் டெவலப்பர் - பேக்எண்ட்"
+        },
+        "description": {
+            "en": "Django developer needed for API development. REST API experience required.",
+            "ta": "API மேம்பாட்டிற்கு ஜாங்கோ டெவலப்பர் தேவை. REST API அனுபவம் தேவை."
+        },
+        "category": "python-developer",
+        "wage": 4000,
+        "location": "Remote",
+        "duration": "2 weeks",
+        "employer": "CodeCraft Technologies",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "14",
+        "title": {
+            "en": "House Painter Required",
+            "ta": "வீட்டு வண்ணம் பூசுபவர் தேவை"
+        },
+        "description": {
+            "en": "Need painter for 2BHK apartment painting. Include materials in quote.",
+            "ta": "2BHK அபார்ட்மெண்ட் வண்ணம் பூசுவதற்கு பெயின்டர் தேவை. மேற்கோளில் பொருட்களை சேர்க்கவும்."
+        },
+        "category": "painting",
+        "wage": 1200,
+        "location": "Chennai, Vadapalani",
+        "duration": "4 days",
+        "employer": "Fresh Paint Home",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-04"
+    },
+    {
+        "id": "15",
+        "title": {
+            "en": "Social Media Manager",
+            "ta": "சமூக ஊடக மேலாளர்"
+        },
+        "description": {
+            "en": "Manage Facebook, Instagram for restaurant. Content creation included.",
+            "ta": "உணவகத்திற்கு பேஸ்புக், இன்ஸ்டாகிராம் நிர்வகிக்கவும். உள்ளடக்க உருவாக்கம் சேர்க்கப்பட்டுள்ளது."
+        },
+        "category": "social-media",
+        "wage": 15000,
+        "location": "Chennai, OMR",
+        "duration": "Monthly",
+        "employer": "Spice Garden Restaurant",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-05"
+    },
+    {
+        "id": "16",
+        "title": {
+            "en": "Warehouse Loading Staff",
+            "ta": "கிடங்கு ஏற்றுதல் ஊழியர்"
+        },
+        "description": {
+            "en": "Loading and unloading goods in warehouse. Physical fitness required.",
+            "ta": "கிடங்கில் பொருட்களை ஏற்றுவது மற்றும் இறக்குவது. உடல் தகுதி தேவை."
+        },
+        "category": "warehouse",
+        "wage": 600,
+        "location": "Chennai, Redhills",
+        "duration": "Daily",
+        "employer": "Logistics Hub",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "17",
+        "title": {
+            "en": "CCTV Camera Installation",
+            "ta": "CCTV கேமரா நிறுவல்"
+        },
+        "description": {
+            "en": "Install 8 CCTV cameras in office building. Experience with Hikvision required.",
+            "ta": "அலுவலக கட்டிடத்தில் 8 CCTV கேமராக்களை நிறுவவும். Hikvision அனுபவம் தேவை."
+        },
+        "category": "cctv-installation",
+        "wage": 2500,
+        "location": "Chennai, Guindy",
+        "duration": "2 days",
+        "employer": "SecureTech Solutions",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-05"
+    },
+    {
+        "id": "18",
+        "title": {
+            "en": "Cook for Family Events",
+            "ta": "குடும்ப நிகழ்வுகளுக்கு சமையல்காரர்"
+        },
+        "description": {
+            "en": "Need experienced cook for wedding reception. South Indian cuisine.",
+            "ta": "திருமண வரவேற்புக்கு அனுபவமுள்ள சமையல்காரர் தேவை. தென்னிந்திய உணவு வகைகள்."
+        },
+        "category": "cooking",
+        "wage": 3000,
+        "location": "Chennai, Perambur",
+        "duration": "1 day",
+        "employer": "Sundaram Wedding",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "19",
+        "title": {
+            "en": "WordPress Website Development",
+            "ta": "வேர்ட்பிரஸ் இணையதள மேம்பாடு"
+        },
+        "description": {
+            "en": "Create portfolio website using WordPress. Theme customization needed.",
+            "ta": "வேர்ட்பிரஸ் பயன்படுத்தி போர்ட்ஃபோலியோ இணையதளம் உருவாக்கவும். தீம் தனிப்பயனாக்கம் தேவை."
+        },
+        "category": "wordpress",
+        "wage": 8000,
+        "location": "Remote",
+        "duration": "1 week",
+        "employer": "Creative Studios",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-04"
+    },
+    {
+        "id": "20",
+        "title": {
+            "en": "Elder Care - Full Time",
+            "ta": "முதியோர் பராமரிப்பு - முழு நேரம்"
+        },
+        "description": {
+            "en": "Caring person needed to look after elderly grandparent. Basic medical knowledge preferred.",
+            "ta": "வயதான தாத்தா பாட்டியை பராமரிக்க அக்கறையுள்ள நபர் தேவை. அடிப்படை மருத்துவ அறிவு விரும்பத்தக்கது."
+        },
+        "category": "eldercare",
+        "wage": 800,
+        "location": "Chennai, Kilpauk",
+        "duration": "Monthly",
+        "employer": "Rajan Family",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-05"
+    },
+    {
+        "id": "21",
+        "title": {
+            "en": "Construction Site Supervisor",
+            "ta": "கட்டுமான தள மேற்பார்வையாளர்"
+        },
+        "description": {
+            "en": "Experienced supervisor needed for residential construction project. Must manage team of 10+ workers.",
+            "ta": "குடியிருப்பு கட்டுமான திட்டத்திற்கு அனுபவமுள்ள மேற்பார்வையாளர் தேவை. 10+ தொழிலாளர்களை நிர்வகிக்க வேண்டும்."
+        },
+        "category": "construction",
+        "wage": 1500,
+        "location": "Chennai, Sholinganallur",
+        "duration": "3 months",
+        "employer": "Premier Builders",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "22",
+        "title": {
+            "en": "Exterior House Painting",
+            "ta": "வெளிப்புற வீடு வண்ணம் பூசுதல்"
+        },
+        "description": {
+            "en": "Need skilled painters for exterior painting of 3-floor building. Weather-resistant paint experience required.",
+            "ta": "3 மாடி கட்டிடத்தின் வெளிப்புற வண்ணம் பூசுவதற்கு திறமையான பெயின்டர்கள் தேவை. வானிலை எதிர்ப்பு வண்ணப்பூச்சு அனுபவம் தேவை."
+        },
+        "category": "painting",
+        "wage": 1300,
+        "location": "Chennai, Tambaram",
+        "duration": "7 days",
+        "employer": "Color Masters",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "23",
+        "title": {
+            "en": "Water Tank Plumbing Work",
+            "ta": "நீர் தொட்டி குழாய் வேலை"
+        },
+        "description": {
+            "en": "Install overhead water tank and connect plumbing for new house. Experience with PVC pipes required.",
+            "ta": "புதிய வீட்டிற்கு மேல்நிலை நீர் தொட்டியை நிறுவி குழாய்களை இணைக்கவும். PVC குழாய்கள் அனுபவம் தேவை."
+        },
+        "category": "plumbing",
+        "wage": 1200,
+        "location": "Chennai, Chromepet",
+        "duration": "3 days",
+        "employer": "Home Solutions",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "24",
+        "title": {
+            "en": "Electrical Wiring for Office",
+            "ta": "அலுவலகத்திற்கு மின்சார வயரிங்"
+        },
+        "description": {
+            "en": "Complete electrical wiring for new office space. Must have license and experience with commercial buildings.",
+            "ta": "புதிய அலுவலக இடத்திற்கு முழுமையான மின்சார வயரிங். வர்த்தக கட்டிடங்களில் உரிமம் மற்றும் அனுபவம் வேண்டும்."
+        },
+        "category": "electrical",
+        "wage": 1800,
+        "location": "Chennai, Mount Road",
+        "duration": "5 days",
+        "employer": "Tech Park Offices",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "25",
+        "title": {
+            "en": "Carpenter for Modular Kitchen",
+            "ta": "மாடுலர் சமையலறைக்கு தச்சர்"
+        },
+        "description": {
+            "en": "Skilled carpenter needed to install modular kitchen cabinets and countertops.",
+            "ta": "மாடுலர் சமையலறை அலமாரிகள் மற்றும் கவுன்டர்டாப்களை நிறுவ திறமையான தச்சர் தேவை."
+        },
+        "category": "carpentry",
+        "wage": 1400,
+        "location": "Chennai, Velachery",
+        "duration": "4 days",
+        "employer": "Dream Kitchens",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "26",
+        "title": {
+            "en": "Deep Cleaning Service",
+            "ta": "ஆழமான சுத்தம் செய்யும் சேவை"
+        },
+        "description": {
+            "en": "Looking for team of cleaners for deep cleaning of 4BHK apartment before tenant moves in.",
+            "ta": "குத்தகைதாரர் குடியேறுவதற்கு முன் 4BHK அபார்ட்மெண்ட் ஆழமான சுத்தம் செய்ய சுத்தம் செய்பவர்கள் குழு தேவை."
+        },
+        "category": "cleaning",
+        "wage": 500,
+        "location": "Chennai, OMR",
+        "duration": "2 days",
+        "employer": "Property Managers",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "27",
+        "title": {
+            "en": "Garden Landscaping Project",
+            "ta": "தோட்ட நிலத்தோற்றம் திட்டம்"
+        },
+        "description": {
+            "en": "Need experienced gardener for landscaping villa garden. Knowledge of local plants required.",
+            "ta": "வில்லா தோட்ட நிலத்தோற்றத்திற்கு அனுபவமுள்ள தோட்டக்காரர் தேவை. உள்ளூர் தாவரங்கள் அறிவு தேவை."
+        },
+        "category": "gardening",
+        "wage": 900,
+        "location": "Chennai, ECR",
+        "duration": "1 week",
+        "employer": "Greenscape Villas",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "28",
+        "title": {
+            "en": "Personal Driver Needed",
+            "ta": "தனிப்பட்ட டிரைவர் தேவை"
+        },
+        "description": {
+            "en": "Looking for experienced driver for family. Must know Chennai routes well. Full-time position.",
+            "ta": "குடும்பத்திற்கு அனுபவமுள்ள டிரைவர் தேவை. சென்னை வழித்தடங்களை நன்கு அறிந்திருக்க வேண்டும். முழு நேர பதவி."
+        },
+        "category": "driving",
+        "wage": 800,
+        "location": "Chennai, Boat Club",
+        "duration": "Monthly",
+        "employer": "Sharma Family",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "29",
+        "title": {
+            "en": "Party Cooking Staff",
+            "ta": "விருந்து சமையல் ஊழியர்"
+        },
+        "description": {
+            "en": "Need cooks for birthday party catering. 100 guests expected. North and South Indian cuisine.",
+            "ta": "பிறந்தநாள் விருந்து உணவு வழங்கலுக்கு சமையல்காரர்கள் தேவை. 100 விருந்தினர்கள் எதிர்பார்க்கப்படுகிறார்கள். வட மற்றும் தென்னிந்திய உணவு வகைகள்."
+        },
+        "category": "cooking",
+        "wage": 2500,
+        "location": "Chennai, Egmore",
+        "duration": "1 day",
+        "employer": "Celebration Events",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "30",
+        "title": {
+            "en": "Day Security Guard",
+            "ta": "பகல் பாதுகாப்பு காவலர்"
+        },
+        "description": {
+            "en": "Security guard needed for commercial complex. 8 AM to 8 PM shift. Prior experience required.",
+            "ta": "வணிக வளாகத்திற்கு பாதுகாப்பு காவலர் தேவை. காலை 8 மணி முதல் மாலை 8 மணி வரை ஷிப்ட். முந்தைய அனுபவம் தேவை."
+        },
+        "category": "security",
+        "wage": 700,
+        "location": "Chennai, Nungambakkam",
+        "duration": "Monthly",
+        "employer": "Business Park Ltd",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "31",
+        "title": {
+            "en": "Brick Mason for Compound Wall",
+            "ta": "வளாகச் சுவருக்கு செங்கல் கொத்தனார்"
+        },
+        "description": {
+            "en": "Need skilled mason to build compound wall around property. Materials will be provided.",
+            "ta": "சொத்தைச் சுற்றி வளாகச் சுவர் கட்ட திறமையான கொத்தனார் தேவை. பொருட்கள் வழங்கப்படும்."
+        },
+        "category": "construction",
+        "wage": 1100,
+        "location": "Chennai, Medavakkam",
+        "duration": "10 days",
+        "employer": "Residential Plots",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "32",
+        "title": {
+            "en": "Wall Texture Painting",
+            "ta": "சுவர் அமைப்பு வண்ணம் பூசுதல்"
+        },
+        "description": {
+            "en": "Artist painter needed for texture painting on living room walls. Portfolio required.",
+            "ta": "வாழ்க்கை அறை சுவர்களில் அமைப்பு வண்ணம் பூசுவதற்கு கலைஞர் பெயின்டர் தேவை. போர்ட்ஃபோலியோ தேவை."
+        },
+        "category": "painting",
+        "wage": 2000,
+        "location": "Chennai, Adyar",
+        "duration": "3 days",
+        "employer": "Luxury Homes",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "33",
+        "title": {
+            "en": "Drainage Pipe Cleaning",
+            "ta": "வடிகால் குழாய் சுத்தம் செய்தல்"
+        },
+        "description": {
+            "en": "Urgent need for plumber to clear blocked drainage pipes in apartment building.",
+            "ta": "அபார்ட்மெண்ட் கட்டிடத்தில் அடைபட்ட வடிகால் குழாய்களை சுத்தம் செய்ய குழாய் பணியாளர் அவசரமாக தேவை."
+        },
+        "category": "plumbing",
+        "wage": 800,
+        "location": "Chennai, Kodambakkam",
+        "duration": "1 day",
+        "employer": "Apartment Association",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "34",
+        "title": {
+            "en": "Fan and Light Installation",
+            "ta": "விசிறி மற்றும் விளக்கு நிறுவல்"
+        },
+        "description": {
+            "en": "Electrician needed to install ceiling fans and LED lights in new apartment.",
+            "ta": "புதிய அபார்ட்மெண்டில் சீலிங் ஃபேன்கள் மற்றும் LED விளக்குகளை நிறுவ மின்சாரத் தொழிலாளி தேவை."
+        },
+        "category": "electrical",
+        "wage": 600,
+        "location": "Chennai, Pallikaranai",
+        "duration": "1 day",
+        "employer": "New Home Owners",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "35",
+        "title": {
+            "en": "Wooden Door Repair",
+            "ta": "மர கதவு பழுது"
+        },
+        "description": {
+            "en": "Carpenter needed to repair and refinish old wooden doors. Bring your own tools.",
+            "ta": "பழைய மர கதவுகளை பழுதுபார்க்க மற்றும் மறுபூச்சு செய்ய தச்சர் தேவை. உங்கள் சொந்த கருவிகளை கொண்டு வரவும்."
+        },
+        "category": "carpentry",
+        "wage": 700,
+        "location": "Chennai, Mylapore",
+        "duration": "2 days",
+        "employer": "Heritage Home",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "36",
+        "title": {
+            "en": "Office Cleaning Staff",
+            "ta": "அலுவலக சுத்தம் செய்யும் ஊழியர்"
+        },
+        "description": {
+            "en": "Daily cleaning staff needed for IT office. Morning shift 6 AM to 10 AM.",
+            "ta": "IT அலுவலகத்திற்கு தினசரி சுத்தம் செய்யும் ஊழியர் தேவை. காலை ஷிப்ட் 6 AM முதல் 10 AM வரை."
+        },
+        "category": "cleaning",
+        "wage": 400,
+        "location": "Chennai, Tidel Park",
+        "duration": "Monthly",
+        "employer": "Tech Solutions Inc",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "37",
+        "title": {
+            "en": "Lawn Maintenance Weekly",
+            "ta": "புல்வெளி பராமரிப்பு வாராந்திர"
+        },
+        "description": {
+            "en": "Regular gardener needed for weekly lawn mowing and garden maintenance.",
+            "ta": "வாராந்திர புல்வெளி வெட்டுதல் மற்றும் தோட்ட பராமரிப்புக்கு வழக்கமான தோட்டக்காரர் தேவை."
+        },
+        "category": "gardening",
+        "wage": 500,
+        "location": "Chennai, Besant Nagar",
+        "duration": "1 day/week",
+        "employer": "Beach View Villa",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "38",
+        "title": {
+            "en": "School Van Driver",
+            "ta": "பள்ளி வேன் டிரைவர்"
+        },
+        "description": {
+            "en": "Driver needed for school van. Morning and evening pickup/drop. Must have valid license.",
+            "ta": "பள்ளி வேனுக்கு டிரைவர் தேவை. காலை மற்றும் மாலை பிக்கப்/டிராப். செல்லுபடியாகும் உரிமம் இருக்க வேண்டும்."
+        },
+        "category": "driving",
+        "wage": 600,
+        "location": "Chennai, Thiruvanmiyur",
+        "duration": "Monthly",
+        "employer": "Little Stars School",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "39",
+        "title": {
+            "en": "Home Cook for Bachelor",
+            "ta": "பேச்சிலருக்கு வீட்டு சமையல்காரர்"
+        },
+        "description": {
+            "en": "Looking for cook to prepare lunch and dinner for working professional. Simple vegetarian meals.",
+            "ta": "வேலை செய்யும் நிபுணருக்கு மதிய உணவு மற்றும் இரவு உணவு தயாரிக்க சமையல்காரர் தேவை. எளிய சைவ உணவுகள்."
+        },
+        "category": "cooking",
+        "wage": 350,
+        "location": "Chennai, Guindy",
+        "duration": "Monthly",
+        "employer": "IT Professional",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "40",
+        "title": {
+            "en": "ATM Security Guard",
+            "ta": "ATM பாதுகாப்பு காவலர்"
+        },
+        "description": {
+            "en": "Security guard needed for bank ATM location. Rotational shifts available.",
+            "ta": "வங்கி ATM இடத்திற்கு பாதுகாப்பு காவலர் தேவை. சுழற்சி ஷிப்ட்கள் கிடைக்கும்."
+        },
+        "category": "security",
+        "wage": 550,
+        "location": "Chennai, T Nagar",
+        "duration": "Monthly",
+        "employer": "National Bank",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "41",
+        "title": {
+            "en": "Concrete Mixer Operator",
+            "ta": "கான்கிரீட் கலவை இயக்குனர்"
+        },
+        "description": {
+            "en": "Experienced concrete mixer operator needed for commercial building project.",
+            "ta": "வணிக கட்டிட திட்டத்திற்கு அனுபவமுள்ள கான்கிரீட் கலவை இயக்குனர் தேவை."
+        },
+        "category": "construction",
+        "wage": 950,
+        "location": "Chennai, Perungudi",
+        "duration": "2 months",
+        "employer": "Metro Constructions",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "42",
+        "title": {
+            "en": "Waterproofing Work",
+            "ta": "நீர்ப்புகா வேலை"
+        },
+        "description": {
+            "en": "Need experienced worker for terrace waterproofing. Knowledge of latest materials required.",
+            "ta": "மொட்டை மாடி நீர்ப்புகா வேலைக்கு அனுபவமுள்ள தொழிலாளர் தேவை. சமீபத்திய பொருட்கள் அறிவு தேவை."
+        },
+        "category": "construction",
+        "wage": 1100,
+        "location": "Chennai, Valasaravakkam",
+        "duration": "3 days",
+        "employer": "Roof Care Services",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "43",
+        "title": {
+            "en": "Interior Wall Painting",
+            "ta": "உள்புற சுவர் வண்ணம் பூசுதல்"
+        },
+        "description": {
+            "en": "Looking for painters for interior painting of 2BHK flat. Light colors only.",
+            "ta": "2BHK பிளாட்டின் உள்புற வண்ணம் பூசுவதற்கு பெயின்டர்கள் தேவை. வெளிர் நிறங்கள் மட்டும்."
+        },
+        "category": "painting",
+        "wage": 800,
+        "location": "Chennai, Ashok Nagar",
+        "duration": "3 days",
+        "employer": "Flat Owner",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "44",
+        "title": {
+            "en": "Bathroom Fittings Installation",
+            "ta": "குளியலறை பொருத்துதல்கள் நிறுவல்"
+        },
+        "description": {
+            "en": "Plumber needed to install new bathroom fittings including basin, commode, and shower.",
+            "ta": "பேசின், கமோட் மற்றும் ஷவர் உள்ளிட்ட புதிய குளியலறை பொருத்துதல்களை நிறுவ குழாய் பணியாளர் தேவை."
+        },
+        "category": "plumbing",
+        "wage": 1500,
+        "location": "Chennai, Alwarpet",
+        "duration": "2 days",
+        "employer": "Home Renovation Co",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "45",
+        "title": {
+            "en": "Electrical Panel Repair",
+            "ta": "மின்சார பேனல் பழுது"
+        },
+        "description": {
+            "en": "Experienced electrician needed to repair and upgrade electrical panel in old building.",
+            "ta": "பழைய கட்டிடத்தில் மின்சார பேனலை பழுதுபார்த்து மேம்படுத்த அனுபவமுள்ள மின்சாரத் தொழிலாளி தேவை."
+        },
+        "category": "electrical",
+        "wage": 1200,
+        "location": "Chennai, George Town",
+        "duration": "1 day",
+        "employer": "Old Building Committee",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "46",
+        "title": {
+            "en": "Custom Furniture Making",
+            "ta": "தனிப்பயன் தளபாடங்கள் செய்தல்"
+        },
+        "description": {
+            "en": "Skilled carpenter needed to make custom bookshelf and study table. Design will be provided.",
+            "ta": "தனிப்பயன் புத்தக அலமாரி மற்றும் படிப்பு மேசை செய்ய திறமையான தச்சர் தேவை. வடிவமைப்பு வழங்கப்படும்."
+        },
+        "category": "carpentry",
+        "wage": 2500,
+        "location": "Chennai, Anna Nagar",
+        "duration": "1 week",
+        "employer": "Home Decor Studio",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "47",
+        "title": {
+            "en": "Post-Construction Cleaning",
+            "ta": "கட்டுமானத்திற்குப் பின் சுத்தம் செய்தல்"
+        },
+        "description": {
+            "en": "Team needed for cleaning newly constructed house. Remove debris, dust, and polish surfaces.",
+            "ta": "புதிதாக கட்டப்பட்ட வீட்டை சுத்தம் செய்ய குழு தேவை. குப்பை, தூசி அகற்றி மேற்பரப்புகளை பளபளப்பாக்கவும்."
+        },
+        "category": "cleaning",
+        "wage": 700,
+        "location": "Chennai, Porur",
+        "duration": "2 days",
+        "employer": "New Home Builder",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "48",
+        "title": {
+            "en": "Terrace Garden Setup",
+            "ta": "மொட்டை மாடி தோட்ட அமைப்பு"
+        },
+        "description": {
+            "en": "Gardener needed to set up terrace garden with vegetables and flower plants.",
+            "ta": "காய்கறிகள் மற்றும் பூச்செடிகளுடன் மொட்டை மாடி தோட்டம் அமைக்க தோட்டக்காரர் தேவை."
+        },
+        "category": "gardening",
+        "wage": 1000,
+        "location": "Chennai, Kilpauk",
+        "duration": "3 days",
+        "employer": "Green Home Family",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "49",
+        "title": {
+            "en": "Truck Driver for Logistics",
+            "ta": "லாஜிஸ்டிக்ஸுக்கு டிரக் டிரைவர்"
+        },
+        "description": {
+            "en": "Heavy vehicle driver needed for goods transportation. Inter-city routes. Valid HMV license required.",
+            "ta": "பொருட்கள் போக்குவரத்துக்கு கனரக வாகன டிரைவர் தேவை. நகரங்களுக்கு இடையே வழித்தடங்கள். செல்லுபடியாகும் HMV உரிமம் தேவை."
+        },
+        "category": "driving",
+        "wage": 1200,
+        "location": "Chennai, Redhills",
+        "duration": "Monthly",
+        "employer": "Fast Logistics",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "50",
+        "title": {
+            "en": "Restaurant Helper Cook",
+            "ta": "உணவக உதவி சமையல்காரர்"
+        },
+        "description": {
+            "en": "Helper cook needed for South Indian restaurant. Will assist main chef with prep work.",
+            "ta": "தென்னிந்திய உணவகத்திற்கு உதவி சமையல்காரர் தேவை. முக்கிய செஃப்புக்கு தயாரிப்பு வேலையில் உதவுவார்."
+        },
+        "category": "cooking",
+        "wage": 500,
+        "location": "Chennai, Saidapet",
+        "duration": "Monthly",
+        "employer": "Taste of Chennai",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "51",
+        "title": {
+            "en": "Construction Worker",
+            "ta": "கட்டுமான தொழிலாளி"
+        },
+        "description": {
+            "en": "Need construction workers for new building project in Vellore.",
+            "ta": "வேலூரில் புதிய கட்டிட திட்டத்திற்கு கட்டுமான தொழிலாளர்கள் தேவை."
+        },
+        "category": "construction",
+        "wage": 750,
+        "location": "Vellore",
+        "duration": "3 months",
+        "employer": "VIT Builders",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "52",
+        "title": {
+            "en": "House Painter",
+            "ta": "வீட்டு வண்ணம் பூசுபவர்"
+        },
+        "description": {
+            "en": "Painter required for 2BHK apartment in Katpadi.",
+            "ta": "காட்பாடியில் 2BHK அபார்ட்மெண்ட்டுக்கு பெயின்டர் தேவை."
+        },
+        "category": "painting",
+        "wage": 900,
+        "location": "Vellore, Katpadi",
+        "duration": "5 days",
+        "employer": "Modern Homes",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "53",
+        "title": {
+            "en": "Electrician for Wiring",
+            "ta": "வயரிங்கிற்கு மின்சாரத் தொழிலாளி"
+        },
+        "description": {
+            "en": "Complete electrical work for new house in Vellore.",
+            "ta": "வேலூரில் புதிய வீட்டிற்கு முழுமையான மின்சார வேலை."
+        },
+        "category": "electrical",
+        "wage": 1200,
+        "location": "Vellore",
+        "duration": "1 week",
+        "employer": "Safe Electric",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "54",
+        "title": {
+            "en": "Plumber Required",
+            "ta": "குழாய் பணியாளர் தேவை"
+        },
+        "description": {
+            "en": "Need plumber for bathroom fitting in Gudiyatham.",
+            "ta": "குடியாத்தத்தில் குளியலறை பொருத்துதலுக்கு குழாய் பணியாளர் தேவை."
+        },
+        "category": "plumbing",
+        "wage": 800,
+        "location": "Vellore, Gudiyatham",
+        "duration": "2 days",
+        "employer": "Home Services",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "55",
+        "title": {
+            "en": "Security Guard - Night",
+            "ta": "பாதுகாப்பு காவலர் - இரவு"
+        },
+        "description": {
+            "en": "Night security guard for apartment complex in Vellore.",
+            "ta": "வேலூரில் அபார்ட்மெண்ட் வளாகத்திற்கு இரவு பாதுகாப்பு காவலர்."
+        },
+        "category": "security",
+        "wage": 600,
+        "location": "Vellore",
+        "duration": "Monthly",
+        "employer": "Secure Living",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "56",
+        "title": {
+            "en": "Driver for Family",
+            "ta": "குடும்பத்திற்கு டிரைவர்"
+        },
+        "description": {
+            "en": "Looking for family driver in Ranipet area.",
+            "ta": "ராணிப்பேட்டை பகுதியில் குடும்ப டிரைவர் தேவை."
+        },
+        "category": "driving",
+        "wage": 700,
+        "location": "Ranipet",
+        "duration": "Monthly",
+        "employer": "Rajan Family",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "57",
+        "title": {
+            "en": "Mason for Wall",
+            "ta": "சுவருக்கு கொத்தனார்"
+        },
+        "description": {
+            "en": "Skilled mason needed for compound wall in Arcot.",
+            "ta": "ஆற்காட்டில் வளாகச் சுவருக்கு திறமையான கொத்தனார் தேவை."
+        },
+        "category": "construction",
+        "wage": 950,
+        "location": "Ranipet, Arcot",
+        "duration": "10 days",
+        "employer": "Build Right",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "58",
+        "title": {
+            "en": "House Cleaner",
+            "ta": "வீட்டு சுத்தம் செய்பவர்"
+        },
+        "description": {
+            "en": "Weekly house cleaning in Vellore town.",
+            "ta": "வேலூர் நகரத்தில் வாராந்திர வீட்டு சுத்தம்."
+        },
+        "category": "cleaning",
+        "wage": 500,
+        "location": "Vellore",
+        "duration": "Weekly",
+        "employer": "Kumar House",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "59",
+        "title": {
+            "en": "Cook for Hostel",
+            "ta": "விடுதிக்கு சமையல்காரர்"
+        },
+        "description": {
+            "en": "Cook needed for college hostel near VIT.",
+            "ta": "VIT அருகே கல்லூரி விடுதிக்கு சமையல்காரர் தேவை."
+        },
+        "category": "cooking",
+        "wage": 650,
+        "location": "Vellore, Katpadi",
+        "duration": "Monthly",
+        "employer": "Student Hostel",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "60",
+        "title": {
+            "en": "Gardener",
+            "ta": "தோட்டக்காரர்"
+        },
+        "description": {
+            "en": "Garden maintenance for villa in Vellore.",
+            "ta": "வேலூரில் வில்லாவுக்கு தோட்ட பராமரிப்பு."
+        },
+        "category": "gardening",
+        "wage": 550,
+        "location": "Vellore",
+        "duration": "Weekly",
+        "employer": "Green Villa",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "61",
+        "title": {
+            "en": "Carpenter for Furniture",
+            "ta": "மரச்சாமான்களுக்கு தச்சர்"
+        },
+        "description": {
+            "en": "Carpenter to make wooden furniture in Gudiyatham.",
+            "ta": "குடியாத்தத்தில் மர மரச்சாமான்கள் செய்ய தச்சர்."
+        },
+        "category": "carpentry",
+        "wage": 1000,
+        "location": "Vellore, Gudiyatham",
+        "duration": "1 week",
+        "employer": "Wood Works",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "62",
+        "title": {
+            "en": "AC Technician",
+            "ta": "ஏசி தொழில்நுட்ப வல்லுநர்"
+        },
+        "description": {
+            "en": "AC service and repair in Vellore.",
+            "ta": "வேலூரில் ஏசி சர்வீஸ் மற்றும் பழுது."
+        },
+        "category": "ac-repair",
+        "wage": 1100,
+        "location": "Vellore",
+        "duration": "1 day",
+        "employer": "Cool Care",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "63",
+        "title": {
+            "en": "Delivery Boy",
+            "ta": "டெலிவரி பாய்"
+        },
+        "description": {
+            "en": "Food delivery in Vellore area.",
+            "ta": "வேலூர் பகுதியில் உணவு டெலிவரி."
+        },
+        "category": "delivery",
+        "wage": 600,
+        "location": "Vellore",
+        "duration": "Daily",
+        "employer": "Quick Eats",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "64",
+        "title": {
+            "en": "Babysitter",
+            "ta": "குழந்தை பராமரிப்பாளர்"
+        },
+        "description": {
+            "en": "Part-time babysitter needed in Katpadi.",
+            "ta": "காட்பாடியில் பகுதி நேர குழந்தை பராமரிப்பாளர் தேவை."
+        },
+        "category": "babysitting",
+        "wage": 400,
+        "location": "Vellore, Katpadi",
+        "duration": "Daily",
+        "employer": "Working Mom",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "65",
+        "title": {
+            "en": "Warehouse Helper",
+            "ta": "கிடங்கு உதவியாளர்"
+        },
+        "description": {
+            "en": "Loading work in Ranipet industrial area.",
+            "ta": "ராணிப்பேட்டை தொழிற்சாலை பகுதியில் ஏற்றுதல் வேலை."
+        },
+        "category": "warehouse",
+        "wage": 550,
+        "location": "Ranipet",
+        "duration": "Daily",
+        "employer": "Logistics Hub",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "66",
+        "title": {
+            "en": "Factory Worker",
+            "ta": "தொழிற்சாலை தொழிலாளி"
+        },
+        "description": {
+            "en": "Workers needed for leather factory in Ranipet.",
+            "ta": "ராணிப்பேட்டையில் தோல் தொழிற்சாலைக்கு தொழிலாளர்கள் தேவை."
+        },
+        "category": "factory-worker",
+        "wage": 600,
+        "location": "Ranipet",
+        "duration": "Monthly",
+        "employer": "Leather Works",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "67",
+        "title": {
+            "en": "Tile Laying Work",
+            "ta": "ஓடு போடும் வேலை"
+        },
+        "description": {
+            "en": "Floor tiling for new house in Vellore.",
+            "ta": "வேலூரில் புதிய வீட்டிற்கு தரை ஓடு போடுதல்."
+        },
+        "category": "construction",
+        "wage": 1000,
+        "location": "Vellore",
+        "duration": "4 days",
+        "employer": "Tile Masters",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "68",
+        "title": {
+            "en": "Elder Care",
+            "ta": "முதியோர் பராமரிப்பு"
+        },
+        "description": {
+            "en": "Caretaker for elderly person in Vellore.",
+            "ta": "வேலூரில் முதியவருக்கு பராமரிப்பாளர்."
+        },
+        "category": "eldercare",
+        "wage": 700,
+        "location": "Vellore",
+        "duration": "Monthly",
+        "employer": "Senior Care",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "69",
+        "title": {
+            "en": "CCTV Installation",
+            "ta": "CCTV நிறுவல்"
+        },
+        "description": {
+            "en": "Install CCTV in shop in Katpadi.",
+            "ta": "காட்பாடியில் கடையில் CCTV நிறுவ."
+        },
+        "category": "cctv-installation",
+        "wage": 1500,
+        "location": "Vellore, Katpadi",
+        "duration": "1 day",
+        "employer": "SecureTech",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "70",
+        "title": {
+            "en": "Roof Repair Work",
+            "ta": "கூரை பழுதுபார்ப்பு"
+        },
+        "description": {
+            "en": "Roof waterproofing in Pernambut.",
+            "ta": "பேர்ணாம்பட்டில் கூரை நீர்ப்புகா வேலை."
+        },
+        "category": "construction",
+        "wage": 900,
+        "location": "Vellore, Pernambut",
+        "duration": "2 days",
+        "employer": "Roof Care",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "71",
+        "title": {
+            "en": "Textile Mill Worker",
+            "ta": "ஜவுளி ஆலை தொழிலாளி"
+        },
+        "description": {
+            "en": "Workers needed for textile factory in Coimbatore.",
+            "ta": "கோயம்புத்தூரில் ஜவுளி தொழிற்சாலைக்கு தொழிலாளர்கள் தேவை."
+        },
+        "category": "factory-worker",
+        "wage": 650,
+        "location": "Coimbatore",
+        "duration": "Monthly",
+        "employer": "Lakshmi Mills",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "72",
+        "title": {
+            "en": "Construction Supervisor",
+            "ta": "கட்டுமான மேற்பார்வையாளர்"
+        },
+        "description": {
+            "en": "Experienced supervisor for building project in Gandhipuram.",
+            "ta": "காந்திபுரத்தில் கட்டிட திட்டத்திற்கு அனுபவமுள்ள மேற்பார்வையாளர்."
+        },
+        "category": "construction",
+        "wage": 1500,
+        "location": "Coimbatore, Gandhipuram",
+        "duration": "3 months",
+        "employer": "Premier Builders",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "73",
+        "title": {
+            "en": "IT Company Security",
+            "ta": "IT நிறுவன பாதுகாப்பு"
+        },
+        "description": {
+            "en": "Security staff for IT park in Peelamedu.",
+            "ta": "பீளமேட்டில் IT பார்க்கிற்கு பாதுகாப்பு ஊழியர்."
+        },
+        "category": "security",
+        "wage": 700,
+        "location": "Coimbatore, Peelamedu",
+        "duration": "Monthly",
+        "employer": "Tech Park Security",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "74",
+        "title": {
+            "en": "Interior Painter",
+            "ta": "உட்புற வண்ணம் பூசுபவர்"
+        },
+        "description": {
+            "en": "Interior painting for office in RS Puram.",
+            "ta": "RS புரத்தில் அலுவலகத்திற்கு உட்புற வண்ணம் பூசுதல்."
+        },
+        "category": "painting",
+        "wage": 1100,
+        "location": "Coimbatore, RS Puram",
+        "duration": "1 week",
+        "employer": "Design Studio",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "75",
+        "title": {
+            "en": "Plumber for Hotel",
+            "ta": "ஹோட்டலுக்கு குழாய் பணியாளர்"
+        },
+        "description": {
+            "en": "Experienced plumber for hotel maintenance.",
+            "ta": "ஹோட்டல் பராமரிப்புக்கு அனுபவமுள்ள குழாய் பணியாளர்."
+        },
+        "category": "plumbing",
+        "wage": 1000,
+        "location": "Coimbatore",
+        "duration": "Monthly",
+        "employer": "Grand Hotel",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "76",
+        "title": {
+            "en": "Electrician - Industrial",
+            "ta": "மின்சாரத் தொழிலாளி - தொழில்துறை"
+        },
+        "description": {
+            "en": "Industrial electrician for factory in Singanallur.",
+            "ta": "சிங்காநல்லூரில் தொழிற்சாலைக்கு தொழில்துறை மின்சாரத் தொழிலாளி."
+        },
+        "category": "electrical",
+        "wage": 1400,
+        "location": "Coimbatore, Singanallur",
+        "duration": "Monthly",
+        "employer": "Auto Parts Factory",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "77",
+        "title": {
+            "en": "Driver - Tourism",
+            "ta": "சுற்றுலா டிரைவர்"
+        },
+        "description": {
+            "en": "Driver for tourist vehicles in Pollachi.",
+            "ta": "பொள்ளாச்சியில் சுற்றுலா வாகனங்களுக்கு டிரைவர்."
+        },
+        "category": "driving",
+        "wage": 800,
+        "location": "Coimbatore, Pollachi",
+        "duration": "Daily",
+        "employer": "Hill Tours",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "78",
+        "title": {
+            "en": "House Maid",
+            "ta": "வீட்டு வேலைக்காரி"
+        },
+        "description": {
+            "en": "Full-time maid for family in Saibaba Colony.",
+            "ta": "சாய்பாபா காலனியில் குடும்பத்திற்கு முழு நேர வேலைக்காரி."
+        },
+        "category": "cleaning",
+        "wage": 15000,
+        "location": "Coimbatore, Saibaba Colony",
+        "duration": "Monthly",
+        "employer": "Sharma Family",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "79",
+        "title": {
+            "en": "Hotel Cook",
+            "ta": "ஹோட்டல் சமையல்காரர்"
+        },
+        "description": {
+            "en": "Cook for South Indian restaurant in Gandhipuram.",
+            "ta": "காந்திபுரத்தில் தென்னிந்திய உணவகத்திற்கு சமையல்காரர்."
+        },
+        "category": "cooking",
+        "wage": 800,
+        "location": "Coimbatore, Gandhipuram",
+        "duration": "Monthly",
+        "employer": "Annapoorna Hotel",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "80",
+        "title": {
+            "en": "Carpenter - Furniture",
+            "ta": "மரச்சாமான் தச்சர்"
+        },
+        "description": {
+            "en": "Furniture making for showroom in Coimbatore.",
+            "ta": "கோயம்புத்தூரில் ஷோரூமுக்கு மரச்சாமான் செய்தல்."
+        },
+        "category": "carpentry",
+        "wage": 1100,
+        "location": "Coimbatore",
+        "duration": "2 weeks",
+        "employer": "Wood Craft",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "81",
+        "title": {
+            "en": "Garden Designer",
+            "ta": "தோட்ட வடிவமைப்பாளர்"
+        },
+        "description": {
+            "en": "Garden landscaping for villa in Mettupalayam.",
+            "ta": "மேட்டுப்பாளையத்தில் வில்லாவுக்கு தோட்ட நிலத்தோற்றம்."
+        },
+        "category": "gardening",
+        "wage": 1200,
+        "location": "Coimbatore, Mettupalayam",
+        "duration": "1 week",
+        "employer": "Green Spaces",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "82",
+        "title": {
+            "en": "AC Installation",
+            "ta": "ஏசி நிறுவல்"
+        },
+        "description": {
+            "en": "Split AC installation in Peelamedu office.",
+            "ta": "பீளமேட்டு அலுவலகத்தில் ஸ்பிளிட் ஏசி நிறுவல்."
+        },
+        "category": "ac-repair",
+        "wage": 1500,
+        "location": "Coimbatore, Peelamedu",
+        "duration": "1 day",
+        "employer": "Tech Office",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "83",
+        "title": {
+            "en": "Delivery Partner",
+            "ta": "டெலிவரி பார்ட்னர்"
+        },
+        "description": {
+            "en": "E-commerce delivery in Coimbatore city.",
+            "ta": "கோயம்புத்தூர் நகரத்தில் இ-காமர்ஸ் டெலிவரி."
+        },
+        "category": "delivery",
+        "wage": 650,
+        "location": "Coimbatore",
+        "duration": "Daily",
+        "employer": "Quick Delivery",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "84",
+        "title": {
+            "en": "Nanny for Baby",
+            "ta": "குழந்தைக்கு நான்னி"
+        },
+        "description": {
+            "en": "Experienced nanny for infant in RS Puram.",
+            "ta": "RS புரத்தில் குழந்தைக்கு அனுபவமுள்ள நான்னி."
+        },
+        "category": "babysitting",
+        "wage": 12000,
+        "location": "Coimbatore, RS Puram",
+        "duration": "Monthly",
+        "employer": "Doctor Family",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "85",
+        "title": {
+            "en": "Warehouse Supervisor",
+            "ta": "கிடங்கு மேற்பார்வையாளர்"
+        },
+        "description": {
+            "en": "Supervise warehouse operations in Singanallur.",
+            "ta": "சிங்காநல்லூரில் கிடங்கு செயல்பாடுகளை மேற்பார்வையிட."
+        },
+        "category": "warehouse",
+        "wage": 900,
+        "location": "Coimbatore, Singanallur",
+        "duration": "Monthly",
+        "employer": "Logistics Co",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "86",
+        "title": {
+            "en": "Weaving Mill Worker",
+            "ta": "நெசவு ஆலை தொழிலாளி"
+        },
+        "description": {
+            "en": "Skilled weavers for textile mill.",
+            "ta": "ஜவுளி ஆலைக்கு திறமையான நெசவாளர்கள்."
+        },
+        "category": "factory-worker",
+        "wage": 700,
+        "location": "Coimbatore",
+        "duration": "Monthly",
+        "employer": "Cotton Mills",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "87",
+        "title": {
+            "en": "Temple Priest Assistant",
+            "ta": "கோவில் பூசாரி உதவியாளர்"
+        },
+        "description": {
+            "en": "Helper needed for temple in Madurai.",
+            "ta": "மதுரையில் கோவிலுக்கு உதவியாளர் தேவை."
+        },
+        "category": "helper",
+        "wage": 500,
+        "location": "Madurai",
+        "duration": "Monthly",
+        "employer": "Meenakshi Temple",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "88",
+        "title": {
+            "en": "Construction Mason",
+            "ta": "கட்டுமான கொத்தனார்"
+        },
+        "description": {
+            "en": "Experienced mason for house building in Madurai.",
+            "ta": "மதுரையில் வீடு கட்டுவதற்கு அனுபவமுள்ள கொத்தனார்."
+        },
+        "category": "construction",
+        "wage": 1000,
+        "location": "Madurai",
+        "duration": "2 months",
+        "employer": "Home Builders",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "89",
+        "title": {
+            "en": "Wedding Event Cook",
+            "ta": "திருமண நிகழ்வு சமையல்காரர்"
+        },
+        "description": {
+            "en": "Cook for wedding catering in Madurai.",
+            "ta": "மதுரையில் திருமண உணவு வழங்கலுக்கு சமையல்காரர்."
+        },
+        "category": "cooking",
+        "wage": 2500,
+        "location": "Madurai",
+        "duration": "2 days",
+        "employer": "Wedding Planners",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "90",
+        "title": {
+            "en": "Auto Driver",
+            "ta": "ஆட்டோ டிரைவர்"
+        },
+        "description": {
+            "en": "Auto driver for tourist service in Madurai.",
+            "ta": "மதுரையில் சுற்றுலா சேவைக்கு ஆட்டோ டிரைவர்."
+        },
+        "category": "driving",
+        "wage": 600,
+        "location": "Madurai",
+        "duration": "Daily",
+        "employer": "Temple Tours",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "91",
+        "title": {
+            "en": "Shop Security",
+            "ta": "கடை பாதுகாப்பு"
+        },
+        "description": {
+            "en": "Security for textile shop in Anna Nagar Madurai.",
+            "ta": "மதுரை அண்ணா நகரில் ஜவுளி கடைக்கு பாதுகாப்பு."
+        },
+        "category": "security",
+        "wage": 550,
+        "location": "Madurai, Anna Nagar",
+        "duration": "Monthly",
+        "employer": "Silk Sarees",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "92",
+        "title": {
+            "en": "Hospital Cleaner",
+            "ta": "மருத்துவமனை சுத்தம் செய்பவர்"
+        },
+        "description": {
+            "en": "Cleaning staff for private hospital.",
+            "ta": "தனியார் மருத்துவமனைக்கு சுத்தம் செய்யும் ஊழியர்."
+        },
+        "category": "cleaning",
+        "wage": 450,
+        "location": "Madurai",
+        "duration": "Monthly",
+        "employer": "City Hospital",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "93",
+        "title": {
+            "en": "Exterior Painter",
+            "ta": "வெளிப்புற வண்ணம் பூசுபவர்"
+        },
+        "description": {
+            "en": "Building painting in Melur.",
+            "ta": "மேலூரில் கட்டிடம் வண்ணம் பூசுதல்."
+        },
+        "category": "painting",
+        "wage": 1000,
+        "location": "Madurai, Melur",
+        "duration": "1 week",
+        "employer": "Paint Pro",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "94",
+        "title": {
+            "en": "Electrical Repair",
+            "ta": "மின்சார பழுது"
+        },
+        "description": {
+            "en": "Electrician for home repairs in Madurai.",
+            "ta": "மதுரையில் வீட்டு பழுதுக்கு மின்சாரத் தொழிலாளி."
+        },
+        "category": "electrical",
+        "wage": 800,
+        "location": "Madurai",
+        "duration": "1 day",
+        "employer": "Quick Fix",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "95",
+        "title": {
+            "en": "Water Tank Plumber",
+            "ta": "நீர் தொட்டி குழாய் பணியாளர்"
+        },
+        "description": {
+            "en": "Plumber for water tank installation.",
+            "ta": "நீர் தொட்டி நிறுவலுக்கு குழாய் பணியாளர்."
+        },
+        "category": "plumbing",
+        "wage": 900,
+        "location": "Madurai",
+        "duration": "2 days",
+        "employer": "Plumb Solutions",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "96",
+        "title": {
+            "en": "Cafe Kitchen Helper",
+            "ta": "கஃபே சமையலறை உதவியாளர்"
+        },
+        "description": {
+            "en": "Kitchen helper for new cafe in Thiruparankundram.",
+            "ta": "திருப்பரங்குன்றத்தில் புதிய கஃபேவுக்கு சமையலறை உதவியாளர்."
+        },
+        "category": "cooking",
+        "wage": 400,
+        "location": "Madurai, Thiruparankundram",
+        "duration": "Monthly",
+        "employer": "Coffee House",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "97",
+        "title": {
+            "en": "Home Carpenter",
+            "ta": "வீட்டு தச்சர்"
+        },
+        "description": {
+            "en": "Carpenter for door and window work.",
+            "ta": "கதவு மற்றும் ஜன்னல் வேலைக்கு தச்சர்."
+        },
+        "category": "carpentry",
+        "wage": 850,
+        "location": "Madurai",
+        "duration": "3 days",
+        "employer": "Wood Works",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "98",
+        "title": {
+            "en": "Garden Maintenance",
+            "ta": "தோட்ட பராமரிப்பு"
+        },
+        "description": {
+            "en": "Regular gardener for bungalow.",
+            "ta": "பங்களாவுக்கு வழக்கமான தோட்டக்காரர்."
+        },
+        "category": "gardening",
+        "wage": 600,
+        "location": "Madurai",
+        "duration": "Weekly",
+        "employer": "Big House",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "99",
+        "title": {
+            "en": "AC Service",
+            "ta": "ஏசி சர்வீஸ்"
+        },
+        "description": {
+            "en": "AC servicing for multiple offices.",
+            "ta": "பல அலுவலகங்களுக்கு ஏசி சர்வீஸ்."
+        },
+        "category": "ac-repair",
+        "wage": 1200,
+        "location": "Madurai",
+        "duration": "1 day",
+        "employer": "Office Complex",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "100",
+        "title": {
+            "en": "Food Delivery",
+            "ta": "உணவு டெலிவரி"
+        },
+        "description": {
+            "en": "Delivery partner for restaurant chain.",
+            "ta": "உணவக சங்கிலிக்கு டெலிவரி பார்ட்னர்."
+        },
+        "category": "delivery",
+        "wage": 550,
+        "location": "Madurai",
+        "duration": "Daily",
+        "employer": "Food Express",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "101",
+        "title": {
+            "en": "Child Care",
+            "ta": "குழந்தை பராமரிப்பு"
+        },
+        "description": {
+            "en": "Babysitter for twins in Usilampatti.",
+            "ta": "உசிலம்பட்டியில் இரட்டை குழந்தைகளுக்கு பராமரிப்பாளர்."
+        },
+        "category": "babysitting",
+        "wage": 500,
+        "location": "Madurai, Usilampatti",
+        "duration": "Daily",
+        "employer": "Young Parents",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "102",
+        "title": {
+            "en": "Godown Worker",
+            "ta": "கிடங்கு தொழிலாளி"
+        },
+        "description": {
+            "en": "Loading and unloading in warehouse.",
+            "ta": "கிடங்கில் ஏற்றுதல் மற்றும் இறக்குதல்."
+        },
+        "category": "warehouse",
+        "wage": 500,
+        "location": "Madurai",
+        "duration": "Daily",
+        "employer": "Storage Hub",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "103",
+        "title": {
+            "en": "Textile Factory",
+            "ta": "ஜவுளி தொழிற்சாலை"
+        },
+        "description": {
+            "en": "Workers for cotton spinning unit.",
+            "ta": "பருத்தி நூற்பு பிரிவுக்கு தொழிலாளர்கள்."
+        },
+        "category": "factory-worker",
+        "wage": 550,
+        "location": "Madurai",
+        "duration": "Monthly",
+        "employer": "Cotton Mills",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-06"
+    },
+    {
+        "id": "104",
+        "title": {
+            "en": "Night Watchman",
+            "ta": "இரவு காவலர்"
+        },
+        "description": {
+            "en": "Night security for industrial area.",
+            "ta": "தொழிற்சாலை பகுதிக்கு இரவு பாதுகாப்பு."
+        },
+        "category": "security",
+        "wage": 600,
+        "location": "Madurai",
+        "duration": "Monthly",
+        "employer": "Industrial Estate",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "105",
+        "title": {
+            "en": "RCC Work",
+            "ta": "RCC வேலை"
+        },
+        "description": {
+            "en": "RCC workers for commercial building.",
+            "ta": "வணிக கட்டிடத்திற்கு RCC தொழிலாளர்கள்."
+        },
+        "category": "construction",
+        "wage": 1100,
+        "location": "Madurai",
+        "duration": "1 month",
+        "employer": "Metro Builders",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "106",
+        "title": {
+            "en": "Senior Care",
+            "ta": "மூத்த பராமரிப்பு"
+        },
+        "description": {
+            "en": "Caregiver for elderly couple.",
+            "ta": "முதியோர் தம்பதியருக்கு பராமரிப்பாளர்."
+        },
+        "category": "eldercare",
+        "wage": 750,
+        "location": "Madurai",
+        "duration": "Monthly",
+        "employer": "Retired Family",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "107",
+        "title": {
+            "en": "Farm Helper Needed",
+            "ta": "பண்ணை உதவியாளர் தேவை"
+        },
+        "description": {
+            "en": "Need farm helper for paddy field work. Daily wages with food provided.",
+            "ta": "நெல் வயல் வேலைக்கு பண்ணை உதவியாளர் தேவை. உணவுடன் தினசரி கூலி."
+        },
+        "category": "farming",
+        "wage": 600,
+        "location": "Ariyalur, Jayankondam",
+        "duration": "Weekly",
+        "employer": "Local Farmer",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "108",
+        "title": {
+            "en": "Construction Worker",
+            "ta": "கட்டுமான தொழிலாளர்"
+        },
+        "description": {
+            "en": "Construction workers needed for building work in Ariyalur town.",
+            "ta": "அரியலூர் நகரத்தில் கட்டிட வேலைக்கு கட்டுமான தொழிலாளர்கள் தேவை."
+        },
+        "category": "construction",
+        "wage": 750,
+        "location": "Ariyalur",
+        "duration": "2 weeks",
+        "employer": "Ariyalur Builders",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "109",
+        "title": {
+            "en": "House Painting Work",
+            "ta": "வீட்டு வண்ணம் பூசும் வேலை"
+        },
+        "description": {
+            "en": "Painter required for new house in Jayankondam. Interior and exterior work.",
+            "ta": "ஜெயங்கொண்டத்தில் புதிய வீட்டிற்கு பெயின்டர் தேவை. உள்புறம் மற்றும் வெளிப்புறம்."
+        },
+        "category": "painting",
+        "wage": 800,
+        "location": "Jayankondam, Ariyalur",
+        "duration": "5 days",
+        "employer": "New Home Owner",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "110",
+        "title": {
+            "en": "Electrician for Shop",
+            "ta": "கடைக்கு மின்சாரி"
+        },
+        "description": {
+            "en": "Electrician needed for wiring new shop in Ariyalur market.",
+            "ta": "அரியலூர் சந்தையில் புதிய கடைக்கு மின் வயரிங் தேவை."
+        },
+        "category": "electrical",
+        "wage": 900,
+        "location": "Ariyalur Town",
+        "duration": "3 days",
+        "employer": "Shop Owner",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "111",
+        "title": {
+            "en": "Agriculture Labor",
+            "ta": "விவசாய தொழிலாளர்"
+        },
+        "description": {
+            "en": "Workers needed for sugarcane harvesting in Trichy district.",
+            "ta": "திருச்சி மாவட்டத்தில் கரும்பு அறுவடைக்கு தொழிலாளர்கள் தேவை."
+        },
+        "category": "farming",
+        "wage": 550,
+        "location": "Tiruchirappalli, Trichy",
+        "duration": "1 week",
+        "employer": "Sugar Mill Farm",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "112",
+        "title": {
+            "en": "Security Guard - Factory",
+            "ta": "தொழிற்சாலை பாதுகாப்பு"
+        },
+        "description": {
+            "en": "Security guard needed for cement factory in Ariyalur.",
+            "ta": "அரியலூரில் சிமென்ட் தொழிற்சாலைக்கு பாதுகாப்பு காவலர் தேவை."
+        },
+        "category": "security",
+        "wage": 650,
+        "location": "Ariyalur Industrial Area",
+        "duration": "Monthly",
+        "employer": "Cement Factory",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "113",
+        "title": {
+            "en": "Plumber for Water Connection",
+            "ta": "தண்ணீர் இணைப்புக்கு குழாய் பணியாளர்"
+        },
+        "description": {
+            "en": "Plumber needed for new water connection work in Jayankondam.",
+            "ta": "ஜெயங்கொண்டத்தில் புதிய தண்ணீர் இணைப்பு வேலைக்கு குழாய் பணியாளர் தேவை."
+        },
+        "category": "plumbing",
+        "wage": 700,
+        "location": "Jayankondam, Ariyalur",
+        "duration": "2 days",
+        "employer": "House Owner",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "114",
+        "title": {
+            "en": "Delivery Boy for Shop",
+            "ta": "கடைக்கு டெலிவரி பாய்"
+        },
+        "description": {
+            "en": "Delivery person needed for grocery shop in Ariyalur. Must have bike.",
+            "ta": "அரியலூரில் மளிகை கடைக்கு டெலிவரி நபர் தேவை. பைக் இருக்க வேண்டும்."
+        },
+        "category": "delivery",
+        "wage": 500,
+        "location": "Ariyalur",
+        "duration": "Monthly",
+        "employer": "Grocery Store",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "115",
+        "title": {
+            "en": "Cook for Marriage Function",
+            "ta": "திருமணத்திற்கு சமையல்காரர்"
+        },
+        "description": {
+            "en": "Experienced cook needed for wedding in Jayankondam. South Indian menu.",
+            "ta": "ஜெயங்கொண்டத்தில் திருமணத்திற்கு அனுபவமுள்ள சமையல்காரர் தேவை. தென்னிந்திய மெனு."
+        },
+        "category": "cooking",
+        "wage": 1500,
+        "location": "Jayankondam, Ariyalur",
+        "duration": "2 days",
+        "employer": "Wedding Family",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "116",
+        "title": {
+            "en": "Carpenter for Furniture",
+            "ta": "தளபாடங்களுக்கு தச்சர்"
+        },
+        "description": {
+            "en": "Carpenter needed for making wooden furniture in Ariyalur.",
+            "ta": "அரியலூரில் மர தளபாடங்கள் செய்ய தச்சர் தேவை."
+        },
+        "category": "carpentry",
+        "wage": 850,
+        "location": "Ariyalur",
+        "duration": "1 week",
+        "employer": "Furniture Shop",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "117",
+        "title": {
+            "en": "House Cleaning",
+            "ta": "வீடு சுத்தம் செய்தல்"
+        },
+        "description": {
+            "en": "Cleaner needed for daily house cleaning in Jayankondam.",
+            "ta": "ஜெயங்கொண்டத்தில் தினசரி வீடு சுத்தம் செய்ய ஆள் தேவை."
+        },
+        "category": "cleaning",
+        "wage": 400,
+        "location": "Jayankondam, Ariyalur",
+        "duration": "Monthly",
+        "employer": "Doctor Family",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "118",
+        "title": {
+            "en": "Lorry Driver",
+            "ta": "லாரி டிரைவர்"
+        },
+        "description": {
+            "en": "Experienced lorry driver needed for cement transport in Ariyalur.",
+            "ta": "அரியலூரில் சிமென்ட் போக்குவரத்துக்கு அனுபவமுள்ள லாரி டிரைவர் தேவை."
+        },
+        "category": "driving",
+        "wage": 1000,
+        "location": "Ariyalur",
+        "duration": "Monthly",
+        "employer": "Transport Company",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "119",
+        "title": {
+            "en": "Gardener for Temple",
+            "ta": "கோயிலுக்கு தோட்டக்காரர்"
+        },
+        "description": {
+            "en": "Gardener needed for temple garden maintenance in Jayankondam.",
+            "ta": "ஜெயங்கொண்டம் கோயில் தோட்ட பராமரிப்புக்கு தோட்டக்காரர் தேவை."
+        },
+        "category": "gardening",
+        "wage": 450,
+        "location": "Jayankondam, Ariyalur",
+        "duration": "Monthly",
+        "employer": "Temple Trust",
+        "status": "open",
+        "urgent": false,
+        "postedAt": "2026-01-07"
+    },
+    {
+        "id": "120",
+        "title": {
+            "en": "Factory Worker",
+            "ta": "தொழிற்சாலை தொழிலாளர்"
+        },
+        "description": {
+            "en": "Workers needed for cement factory work in Ariyalur district.",
+            "ta": "அரியலூர் மாவட்டத்தில் சிமென்ட் தொழிற்சாலை வேலைக்கு தொழிலாளர்கள் தேவை."
+        },
+        "category": "factory-worker",
+        "wage": 600,
+        "location": "Ariyalur",
+        "duration": "Monthly",
+        "employer": "India Cements",
+        "status": "open",
+        "urgent": true,
+        "postedAt": "2026-01-07"
+    }
+]

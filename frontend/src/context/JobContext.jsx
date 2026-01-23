@@ -1,0 +1,256 @@
+import { createContext, useContext, useState, useEffect } from 'react'
+
+const JobContext = createContext()
+const API_URL = 'http://localhost:5000/api'
+
+export function JobProvider({ children }) {
+    const [jobs, setJobs] = useState([])
+    const [categories, setCategories] = useState([])
+    const [filteredJobs, setFilteredJobs] = useState([])
+    // Location-first matching state
+    const [priorityJobs, setPriorityJobs] = useState([])
+    const [otherJobs, setOtherJobs] = useState([])
+    const [useLocationMatching, setUseLocationMatching] = useState(false)
+
+    const [selectedCategory, setSelectedCategory] = useState(null)
+    const [selectedLocation, setSelectedLocation] = useState(null)
+    const [searchQuery, setSearchQuery] = useState('')
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+
+    useEffect(() => {
+        fetchCategories()
+        fetchJobs()
+    }, [])
+
+    // Fetch location-matched jobs when location changes
+    useEffect(() => {
+        if (selectedLocation && selectedLocation.displayText) {
+            fetchLocationMatchedJobs()
+        } else {
+            // Reset to normal mode when no location selected
+            setUseLocationMatching(false)
+            setPriorityJobs([])
+            setOtherJobs([])
+        }
+    }, [selectedLocation, selectedCategory])
+
+    useEffect(() => {
+        if (!useLocationMatching) {
+            applyFilters()
+        }
+    }, [jobs, selectedCategory, selectedLocation, searchQuery, useLocationMatching])
+
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch(`${API_URL}/categories`)
+            const data = await response.json()
+            if (data.success) {
+                setCategories(data.categories)
+            } else {
+                setCategories(getStaticCategories())
+            }
+        } catch (err) {
+            console.error('Failed to fetch categories, using static data:', err)
+            setCategories(getStaticCategories())
+        }
+    }
+
+    const getStaticCategories = () => [
+        { id: 'construction', icon: '🏗️', name: { en: 'Construction', ta: 'கட்டுமானம்' }, jobCount: 50 },
+        { id: 'painting', icon: '🎨', name: { en: 'Painting', ta: 'வண்ணம் பூசுதல்' }, jobCount: 30 },
+        { id: 'plumbing', icon: '🚿', name: { en: 'Plumbing', ta: 'குழாய் பணி' }, jobCount: 25 },
+        { id: 'electrical', icon: '⚡', name: { en: 'Electrical', ta: 'மின் பணி' }, jobCount: 40 },
+        { id: 'carpentry', icon: '🪚', name: { en: 'Carpentry', ta: 'தச்சு வேலை' }, jobCount: 20 },
+        { id: 'cleaning', icon: '🧹', name: { en: 'Cleaning', ta: 'சுத்தம் செய்தல்' }, jobCount: 35 },
+        { id: 'gardening', icon: '🌿', name: { en: 'Gardening', ta: 'தோட்டக்கலை' }, jobCount: 15 },
+        { id: 'driving', icon: '🚗', name: { en: 'Driving', ta: 'ஓட்டுநர்' }, jobCount: 28 },
+        { id: 'cooking', icon: '🍳', name: { en: 'Cooking', ta: 'சமையல்' }, jobCount: 22 },
+        { id: 'security', icon: '🛡️', name: { en: 'Security', ta: 'பாதுகாப்பு' }, jobCount: 18 }
+    ]
+
+    const fetchJobs = async () => {
+        setLoading(true)
+        try {
+            const response = await fetch(`${API_URL}/jobs?limit=100`)
+            const data = await response.json()
+            if (data.success && data.jobs && data.jobs.length > 0) {
+                setJobs(data.jobs)
+            } else {
+                const demoResponse = await import('../data/demoJobs.json')
+                const demoJobs = demoResponse.default || demoResponse
+                setJobs(demoJobs.slice(0, 100))
+            }
+        } catch (err) {
+            console.error('Failed to fetch jobs, using demo data:', err)
+            try {
+                const demoResponse = await import('../data/demoJobs.json')
+                const demoJobs = demoResponse.default || demoResponse
+                setJobs(demoJobs.slice(0, 100))
+            } catch (demoErr) {
+                setError('Failed to fetch jobs')
+            }
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    // Location-first matching: Fetch jobs prioritized by user's location
+    const fetchLocationMatchedJobs = async () => {
+        if (!selectedLocation) return
+
+        setLoading(true)
+        setError(null)
+        try {
+            // Extract district name from the location object
+            // GPS location might not have district.name.en if not matched to our database
+            const district = selectedLocation.district?.name?.en ||
+                selectedLocation.city?.name?.en ||
+                selectedLocation.displayText?.split(',')[0]?.trim() || ''
+
+            // GPS uses 'coords', manual selection might use 'coordinates'
+            const lat = selectedLocation.coords?.lat || selectedLocation.coordinates?.lat || ''
+            const lng = selectedLocation.coords?.lng || selectedLocation.coordinates?.lng || ''
+            const category = selectedCategory || ''
+
+            const params = new URLSearchParams()
+            if (district) params.append('district', district)
+            if (lat) params.append('lat', lat)
+            if (lng) params.append('lng', lng)
+            if (category) params.append('category', category)
+
+            const response = await fetch(`${API_URL}/jobs/location-matched?${params}`)
+            const data = await response.json()
+
+            if (data.success) {
+                setPriorityJobs(data.priorityJobs || [])
+                setOtherJobs(data.otherJobs || [])
+                setUseLocationMatching(true)
+                // Also update filteredJobs for components that use it
+                setFilteredJobs([...(data.priorityJobs || []), ...(data.otherJobs || [])])
+            } else {
+                // Fallback to regular filtering
+                setUseLocationMatching(false)
+                applyFilters()
+            }
+        } catch (err) {
+            console.error('Location matching failed, falling back to filters:', err)
+            setUseLocationMatching(false)
+            applyFilters()
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const applyFilters = () => {
+        let result = jobs
+
+        // Filter by category
+        if (selectedCategory) {
+            result = result.filter(job => job.category === selectedCategory)
+        }
+
+        // Filter by location (city or district)
+        if (selectedLocation) {
+            const locationQuery = selectedLocation.displayText?.toLowerCase() || ''
+            const cityName = selectedLocation.city?.name?.en?.toLowerCase() || ''
+            const districtName = selectedLocation.district?.name?.en?.toLowerCase() || ''
+
+            result = result.filter(job => {
+                const jobLocation = job.location?.toLowerCase() || ''
+                return jobLocation.includes(cityName) ||
+                    jobLocation.includes(districtName) ||
+                    cityName.includes(jobLocation.split(',')[0]?.trim()) ||
+                    districtName.includes(jobLocation.split(',')[0]?.trim())
+            })
+        }
+
+        // Filter by search query
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase()
+            result = result.filter(job => {
+                const titleEn = job.title?.en?.toLowerCase() || ''
+                const titleTa = job.title?.ta?.toLowerCase() || ''
+                const descEn = job.description?.en?.toLowerCase() || ''
+                const descTa = job.description?.ta?.toLowerCase() || ''
+                const location = job.location?.toLowerCase() || ''
+
+                return titleEn.includes(query) ||
+                    titleTa.includes(query) ||
+                    descEn.includes(query) ||
+                    descTa.includes(query) ||
+                    location.includes(query)
+            })
+        }
+
+        setFilteredJobs(result)
+    }
+
+    const clearFilters = () => {
+        setSelectedCategory(null)
+        setSelectedLocation(null)
+        setSearchQuery('')
+        setUseLocationMatching(false)
+        setPriorityJobs([])
+        setOtherJobs([])
+    }
+
+    const reloadJobs = () => fetchJobs()
+
+    const fetchNearbyJobs = async (lat, lng, radius = 10000) => {
+        setLoading(true)
+        setError(null)
+        try {
+            const response = await fetch(`${API_URL}/jobs/nearby?lat=${lat}&lng=${lng}&radius=${radius}${selectedCategory ? `&category=${selectedCategory}` : ''}`)
+            const data = await response.json()
+            if (data.success) {
+                setJobs(data.jobs)
+                return { success: true, count: data.count }
+            } else {
+                setError(data.message)
+                return { success: false, message: data.message }
+            }
+        } catch (err) {
+            const message = 'Failed to fetch nearby jobs'
+            setError(message)
+            console.error(message, err)
+            return { success: false, message }
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    return (
+        <JobContext.Provider value={{
+            jobs,
+            filteredJobs,
+            categories,
+            selectedCategory,
+            selectedLocation,
+            searchQuery,
+            loading,
+            error,
+            // Location-first matching
+            priorityJobs,
+            otherJobs,
+            useLocationMatching,
+            setSelectedCategory,
+            setSelectedLocation,
+            setSearchQuery,
+            clearFilters,
+            reloadJobs,
+            fetchNearbyJobs,
+            fetchLocationMatchedJobs
+        }}>
+            {children}
+        </JobContext.Provider>
+    )
+}
+
+export function useJobs() {
+    const context = useContext(JobContext)
+    if (!context) {
+        throw new Error('useJobs must be used within a JobProvider')
+    }
+    return context
+}

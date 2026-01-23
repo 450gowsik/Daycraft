@@ -1,0 +1,176 @@
+/* Verification Banner Styles */
+.verification-banners {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 16px;
+    pointer-events: none;
+}
+
+.verification-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    animation: slideDown 0.3s ease-out;
+    pointer-events: auto;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Banner Types */
+.verification-banner.warning {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.95) 0%, rgba(245, 158, 11, 0.95) 100%);
+    color: #78350f;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.verification-banner.info {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.95) 0%, rgba(37, 99, 235, 0.95) 100%);
+    color: white;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.verification-banner.success {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.95) 0%, rgba(22, 163, 74, 0.95) 100%);
+    color: white;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+/* Banner Content */
+.banner-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.banner-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.banner-message {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Banner Actions */
+.banner-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.banner-cta {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.verification-banner.warning .banner-cta {
+    background: rgba(120, 53, 15, 0.9);
+    color: white;
+}
+
+.verification-banner.warning .banner-cta:hover {
+    background: rgba(120, 53, 15, 1);
+    transform: scale(1.02);
+}
+
+.verification-banner.info .banner-cta {
+    background: rgba(255, 255, 255, 0.95);
+    color: #1e40af;
+}
+
+.verification-banner.info .banner-cta:hover {
+    background: white;
+    transform: scale(1.02);
+}
+
+.banner-dismiss {
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 8px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    border-radius: 4px;
+}
+
+.banner-dismiss:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .verification-banners {
+        top: 60px;
+        padding: 0 12px;
+    }
+
+    .verification-banner {
+        padding: 10px 12px;
+        border-radius: 10px;
+    }
+
+    .banner-icon {
+        font-size: 18px;
+    }
+
+    .banner-message {
+        font-size: 13px;
+    }
+
+    .banner-cta {
+        padding: 5px 12px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .verification-banner {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .banner-content {
+        justify-content: center;
+    }
+
+    .banner-actions {
+        width: 100%;
+        justify-content: center;
+    }
+}
