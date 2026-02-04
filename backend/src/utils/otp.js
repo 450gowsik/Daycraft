@@ -2,13 +2,15 @@
  * OTP Utilities
  * Centralized OTP generation and validation
  */
+const crypto = require('crypto')
 
 /**
- * Generate a random 6-digit OTP
+ * Generate a random 6-digit OTP using cryptographically secure random
  * @returns {string} 6-digit OTP string
  */
 const generateOTP = () => {
-    return Math.floor(100000 + Math.random() * 900000).toString()
+    // crypto.randomInt is cryptographically secure (available in Node.js 14.10+)
+    return crypto.randomInt(100000, 999999).toString()
 }
 
 /**

@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { JOB_CATEGORIES, ROLES_BY_CATEGORY } from '../constants/categories.js'
+import LocationPicker from '../components/common/LocationPicker.jsx'
 import './PostJob.css'
 
 const API_URL = 'http://localhost:5000/api'
 
 function PostJob() {
     const { language } = useLanguage()
-    const { token, user } = useAuth()
+    const { token, user, loading: authLoading } = useAuth()
     const navigate = useNavigate()
 
     const [formData, setFormData] = useState({
@@ -20,6 +21,8 @@ function PostJob() {
         category: '',
         role: '',
         location: '',
+        locationObj: null, // For LocationPicker
+        geoLocation: null, // For GPS coordinates
         wage: '',
         wageType: 'daily',
         duration: '1 day',
@@ -32,23 +35,36 @@ function PostJob() {
     // Available roles based on selected category
     const [availableRoles, setAvailableRoles] = useState([])
 
-    // Secure Page: Only Employers can access
+    // Check Profile Completion (role check handled by ProtectedRoute)
     useEffect(() => {
-        if (!user) return
+        if (authLoading || !user) return
 
-        // 1. Check Role
-        if (user.role !== 'employer') {
-            // Not an employer? Redirect to Find Jobs
-            navigate('/jobs')
-            return
-        }
-
-        // 2. Check Profile Completion
+        // Check Profile Completion - redirect to complete profile if not done
         if (!user.profileCompleted) {
             navigate('/complete-profile')
             return
         }
-    }, [user, navigate])
+    }, [user, authLoading, navigate])
+
+    // Show loading while auth is being checked
+    if (authLoading) {
+        return (
+            <div className="post-job-page">
+                <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+                    <div className="loading-spinner"></div>
+                </div>
+            </div>
+        )
+    }
+
+    // Update available roles when category changes
+    useEffect(() => {
+        if (formData.category && ROLES_BY_CATEGORY[formData.category]) {
+            setAvailableRoles(ROLES_BY_CATEGORY[formData.category])
+        } else {
+            setAvailableRoles([])
+        }
+    }, [formData.category])
 
     // Available roles based on selected category
 
@@ -66,6 +82,25 @@ function PostJob() {
             setFormData(prev => ({
                 ...prev,
                 [name]: type === 'checkbox' ? checked : value
+            }))
+        }
+    }
+
+    // Handle location selection from LocationPicker
+    const handleLocationSelect = (locationObj) => {
+        if (locationObj) {
+            setFormData(prev => ({
+                ...prev,
+                location: locationObj.displayText || '',
+                locationObj: locationObj,
+                geoLocation: locationObj.coords || null
+            }))
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                location: '',
+                locationObj: null,
+                geoLocation: null
             }))
         }
     }
@@ -217,13 +252,10 @@ function PostJob() {
 
                             <div className="form-group">
                                 <label>{language === 'en' ? 'Location' : 'இடம்'} *</label>
-                                <input
-                                    type="text"
-                                    name="location"
-                                    value={formData.location}
-                                    onChange={handleChange}
-                                    placeholder={language === 'en' ? 'City, Area' : 'நகரம், பகுதி'}
-                                    required
+                                <LocationPicker
+                                    value={formData.locationObj}
+                                    onChange={handleLocationSelect}
+                                    placeholder={language === 'en' ? 'Select Location' : 'இடம் தேர்வு செய்க'}
                                 />
                             </div>
                         </div>
@@ -273,7 +305,7 @@ function PostJob() {
                         <h3>{language === 'en' ? 'Additional Options' : 'கூடுதல் விருப்பங்கள்'}</h3>
                         <div className="form-grid">
                             <div className="form-group">
-                                <label>{language === 'en' ? 'Workers Needed' : 'தேவையான தொழிலாளர்கள்'}</label>
+                                <label>{language === 'en' ? 'Employees Needed' : 'தேவையான தொழிலாளர்கள்'}</label>
                                 <input
                                     type="number"
                                     name="requiredWorkers"

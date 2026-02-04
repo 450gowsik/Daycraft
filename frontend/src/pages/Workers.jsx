@@ -64,7 +64,7 @@ function Workers() {
                 {/* Trust Messaging - Story format */}
                 <div className="workers-trust-banner">
                     <span className="trust-text">
-                        👷 <strong>{displayedWorkers.length}</strong> {language === 'ta' ? 'சரிபார்க்கப்பட்ட தொழிலாளர்கள் இன்று' : 'verified workers available'}
+                        👷 <strong>{displayedWorkers.length}</strong> {language === 'ta' ? 'சரிபார்க்கப்பட்ட தொழிலாளர்கள் இன்று' : 'verified employees available'}
                         {selectedDistrict === 'All Districts'
                             ? (language === 'ta' ? ' 20 மாவட்டங்களில்' : ' across 20 districts today')
                             : ` ${language === 'ta' ? 'இல்' : 'in'} ${selectedDistrict}`}
@@ -75,7 +75,7 @@ function Workers() {
                 <div className="trust-badges-row">
                     <span className="trust-badge">✅ {language === 'ta' ? 'ஐடி சரிபார்க்கப்பட்டது' : 'ID Verified'}</span>
                     <span className="trust-badge">🔒 {language === 'ta' ? 'பாதுகாப்பான தொடர்பு' : 'Safe Contact'}</span>
-                    <span className="trust-badge">⭐ {language === 'ta' ? 'மதிப்பீடு செய்யப்பட்டது' : 'Rated Workers'}</span>
+                    <span className="trust-badge">⭐ {language === 'ta' ? 'மதிப்பீடு செய்யப்பட்டது' : 'Rated Employees'}</span>
                 </div>
 
 
@@ -118,7 +118,7 @@ function Workers() {
                 {loading ? (
                     <div className="text-center py-16">
                         <div className="loader"></div>
-                        <p className="mt-4 text-secondary">{language === 'ta' ? 'ஏற்றப்படுகிறது...' : 'Loading professionals...'}</p>
+                        <p className="mt-4 text-secondary">{language === 'ta' ? 'ஏற்றப்படுகிறது...' : 'Loading employees...'}</p>
                     </div>
                 ) : displayedWorkers.length > 0 ? (
                     <div className="workers-grid">

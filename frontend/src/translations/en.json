@@ -2,7 +2,7 @@
     "nav": {
         "home": "Home",
         "jobs": "Jobs",
-        "workers": "Workers",
+        "workers": "Employees",
         "dashboard": "Dashboard",
         "login": "Login",
         "register": "Register",
@@ -10,21 +10,21 @@
     },
     "hero": {
         "tagline": "Connect. Work. Thrive.",
-        "title": "Find Daily-Wage Workers Instantly",
-        "subtitle": "DayCraft connects skilled workers with employers seamlessly. Post jobs or find work in your area with just a few clicks.",
-        "findWorkers": "Find Workers",
+        "title": "Find Daily-Wage Employees Instantly",
+        "subtitle": "DayCraft connects skilled employees with job providers seamlessly. Post jobs or find work in your area with just a few clicks.",
+        "findWorkers": "Find Employees",
         "postJob": "Post a Job"
     },
     "features": {
         "title": "Why Choose DayCraft?",
         "subtitle": "Simple, fast, and reliable platform for daily-wage employment",
         "verified": {
-            "title": "Verified Workers",
-            "description": "All workers are verified for quality and reliability"
+            "title": "Verified Employees",
+            "description": "All employees are verified for quality and reliability"
         },
         "instant": {
             "title": "Instant Matching",
-            "description": "Find the right worker or job within minutes"
+            "description": "Find the right employee or job within minutes"
         },
         "secure": {
             "title": "Secure Payments",
@@ -53,15 +53,15 @@
         "clearFilters": "Clear Filters"
     },
     "workers": {
-        "title": "Skilled Workers",
+        "title": "Skilled Employees",
         "subtitle": "Find trusted professionals in your area",
-        "search": "Search workers by skill, location...",
+        "search": "Search employees by skill, location...",
         "experience": "years experience",
         "rating": "Rating",
         "hire": "Hire Now",
         "perDay": "per day",
         "verified": "Verified",
-        "noWorkers": "No workers found"
+        "noWorkers": "No employees found"
     },
     "dashboard": {
         "title": "Dashboard",
@@ -90,15 +90,15 @@
         },
         "register": {
             "title": "Create Account",
-            "subtitle": "Join thousands of daily wage workers and employers",
+            "subtitle": "Join thousands of daily wage employees and job providers",
             "name": "Full Name",
             "email": "Email Address",
             "phone": "Phone Number",
             "password": "Password",
             "confirmPassword": "Confirm Password",
             "role": "I am a",
-            "employer": "Employer",
-            "worker": "Job Seeker",
+            "employer": "Job Provider",
+            "worker": "Employee",
             "terms": "I agree to the Terms of Service",
             "submit": "Create Account",
             "hasAccount": "Already have an account?",
@@ -106,7 +106,7 @@
         }
     },
     "footer": {
-        "description": "Connecting daily-wage workers with employers across Tamil Nadu.",
+        "description": "Connecting daily-wage employees with job providers across Tamil Nadu.",
         "quickLinks": "Quick Links",
         "contact": "Contact Us",
         "email": "info@daycraft.com",

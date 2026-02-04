@@ -1,44 +1,63 @@
-const axios = require('axios');
+const twilio = require('twilio');
 const env = require('../config/env');
 
+// Initialize Twilio client
+let client = null;
+if (env.TWILIO_ACCOUNT_SID && env.TWILIO_AUTH_TOKEN) {
+    client = twilio(env.TWILIO_ACCOUNT_SID, env.TWILIO_AUTH_TOKEN);
+}
+
 /**
- * SMS Service using Fast2SMS
+ * SMS Service using Twilio
  */
 const smsService = {
     /**
-     * Send a quick SMS via Fast2SMS
-     * @param {string} numbers - Comma separated phone numbers
+     * Send a quick SMS via Twilio
+     * @param {string} number - E.164 formatted phone number
      * @param {string} message - Message text
      */
-    sendSMS: async (numbers, message) => {
-        if (!env.FAST2SMS_API_KEY || !env.SMS_ENABLED) {
-            console.log(`[SMS MOCK] To: ${numbers} | Message: ${message}`);
+    sendSMS: async (number, message) => {
+        if (!client || !env.SMS_ENABLED) {
+            console.log(`[SMS MOCK] To: ${number} | Message: ${message}`);
             return { success: true, message: 'SMS logged to console (mock mode)' };
         }
 
         try {
-            const response = await axios.post('https://www.fast2sms.com/dev/bulkV2', {
-                route: 'q',
-                message: message,
-                language: 'english',
-                flash: 0,
-                numbers: numbers
-            }, {
-                headers: {
-                    'authorization': env.FAST2SMS_API_KEY,
-                    'Content-Type': 'application/json'
-                }
+            console.log(`[TWILIO] Attempting to send message to: ${number}`);
+
+            const response = await client.messages.create({
+                body: message,
+                from: env.TWILIO_PHONE_NUMBER,
+                to: number
             });
 
-            if (response.data.return) {
-                return { success: true, data: response.data };
-            } else {
-                console.error('Fast2SMS Error:', response.data.message);
-                return { success: false, message: response.data.message };
-            }
+            console.log(`[TWILIO SUCCESS] SID: ${response.sid} | Status: ${response.status}`);
+
+            return {
+                success: true,
+                sid: response.sid,
+                status: response.status,
+                data: response
+            };
         } catch (error) {
-            console.error('SMS Service Error:', error.response?.data || error.message);
-            return { success: false, message: 'Failed to send SMS' };
+            console.error('[TWILIO ERROR] code:', error.code);
+            console.error('[TWILIO ERROR] message:', error.message);
+
+            // Fallback to mock mode on error so development isn't blocked
+            if (env.isDevelopment()) {
+                console.log(`[SMS FALLBACK] To: ${number} | Message: ${message}`);
+                return {
+                    success: true,
+                    message: 'SMS failed (fallback to console)',
+                    mock: true
+                };
+            }
+
+            return {
+                success: false,
+                message: error.message,
+                code: error.code
+            };
         }
     },
 

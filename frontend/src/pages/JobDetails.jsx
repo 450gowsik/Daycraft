@@ -298,7 +298,7 @@ function JobDetails() {
         contact: language === 'ta' ? 'தொடர்பு' : 'Contact',
         postedAt: language === 'ta' ? 'பதிவிடப்பட்டது' : 'Posted',
         views: language === 'ta' ? 'பார்வைகள்' : 'views',
-        workersNeeded: language === 'ta' ? 'தொழிலாளர்கள் தேவை' : 'Workers Needed',
+        workersNeeded: language === 'ta' ? 'தொழிலாளர்கள் தேவை' : 'Employees Needed',
         apply: language === 'ta' ? 'விண்ணப்பி' : 'Apply for this Job',
         applying: language === 'ta' ? 'சமர்ப்பிக்கிறது...' : 'Applying...',
         applied: language === 'ta' ? 'விண்ணப்பிக்கப்பட்டது ✓' : 'Applied ✓',
@@ -545,7 +545,7 @@ function JobDetails() {
                 {/* Suggested Workers (For Employers) */}
                 {isOwner && topWorkers.length > 0 && (
                     <section className="detail-section suggested-workers">
-                        <h2 className="section-title">✨ {language === 'ta' ? 'சிறந்த தொழிலாளர்கள்' : 'Top Matching Workers'}</h2>
+                        <h2 className="section-title">✨ {language === 'ta' ? 'சிறந்த தொழிலாளர்கள்' : 'Top Matching Employees'}</h2>
                         <div className="workers-scroll custom-scrollbar">
                             {topWorkers.map(worker => (
                                 <div key={worker._id} className="worker-rec-card">

@@ -47,15 +47,47 @@ function App() {
                     <Route path="/workers" element={<Workers />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    {/* TEMPORARILY DISABLED AUTH */}
-                    <Route path="/complete-profile" element={<CompleteProfile />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/chat" element={<Chat />} />
-                    <Route path="/wallet" element={<Wallet />} />
-                    <Route path="/post-job" element={<PostJob />} />
-                    <Route path="/notifications" element={<Notifications />} />
-                    <Route path="/admin" element={<AdminDashboard />} />
+                    {/* Protected routes - require authentication */}
+                    <Route path="/complete-profile" element={
+                        <ProtectedRoute>
+                            <CompleteProfile />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/dashboard" element={
+                        <ProtectedRoute>
+                            <Dashboard />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/profile" element={
+                        <ProtectedRoute>
+                            <Profile />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/chat" element={
+                        <ProtectedRoute>
+                            <Chat />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/wallet" element={
+                        <ProtectedRoute>
+                            <Wallet />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/post-job" element={
+                        <ProtectedRoute roles={['employer', 'admin']}>
+                            <PostJob />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/notifications" element={
+                        <ProtectedRoute>
+                            <Notifications />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/admin" element={
+                        <ProtectedRoute roles={['admin']}>
+                            <AdminDashboard />
+                        </ProtectedRoute>
+                    } />
                 </Routes>
             </main>
             <Footer />

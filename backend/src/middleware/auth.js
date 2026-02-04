@@ -3,7 +3,12 @@ const User = require('../models/User')
 const Worker = require('../models/Worker')
 const Employer = require('../models/Employer')
 
-// Protect routes - verify JWT token
+/**
+ * Protect routes - verify JWT token
+ * 
+ * Now uses single User collection for auth lookup.
+ * Attaches user with profile data to request.
+ */
 exports.protect = async (req, res, next) => {
     let token
 
@@ -23,21 +28,14 @@ exports.protect = async (req, res, next) => {
         // Verify token
         const decoded = verifyToken(token)
 
-        // Search all collections for the user
-        let user = await User.findById(decoded.id)
+        // Single collection lookup
+        const user = await User.findById(decoded.id)
 
         if (!user) {
-            user = await Worker.findById(decoded.id)
-        }
-
-        if (!user) {
-            user = await Employer.findById(decoded.id)
-        }
-
-        if (!user) {
+            console.log('Auth Debug - Token user ID not found:', decoded.id)
             return res.status(401).json({
                 success: false,
-                message: 'User not found'
+                message: 'User not found - please log out and log in again'
             })
         }
 
@@ -61,16 +59,41 @@ exports.protect = async (req, res, next) => {
     }
 }
 
-// Authorize specific roles
+/**
+ * Authorize specific roles
+ * 
+ * Checks against the single role field.
+ */
 exports.authorize = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {
             return res.status(403).json({
                 success: false,
-                message: `User role '${req.user.role}' is not authorized to access this route`
+                message: `Your current role (${req.user.role}) is not authorized to access this route`
             })
         }
         next()
     }
 }
 
+/**
+ * Attach profile to request based on role
+ * 
+ * Use after protect middleware when you need profile data.
+ */
+exports.attachProfile = async (req, res, next) => {
+    try {
+        const user = req.user
+
+        if (user.role === 'worker') {
+            req.profile = await Worker.findOne({ userId: user._id })
+        } else if (user.role === 'employer') {
+            req.profile = await Employer.findOne({ userId: user._id })
+        }
+
+        next()
+    } catch (error) {
+        console.error('Attach profile error:', error)
+        next() // Continue even if profile fetch fails
+    }
+}

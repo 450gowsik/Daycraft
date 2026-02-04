@@ -1,89 +1,34 @@
 const mongoose = require('mongoose')
-const bcrypt = require('bcryptjs')
-const { generateToken } = require('../utils/jwt')
+
+/**
+ * Worker Profile Model
+ * 
+ * Stores worker-specific profile data. Authentication is handled
+ * by the User model - this links via userId reference.
+ * 
+ * One User can have one Worker profile (if they have 'worker' role)
+ */
 
 const workerSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, 'Name is required'],
-        trim: true
-    },
-    email: {
-        type: String,
-        sparse: true,
+    // ==========================================
+    // Link to User (Authentication)
+    // ==========================================
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
         unique: true,
-        lowercase: true,
-        trim: true
+        index: true
     },
-    phone: {
-        type: String,
-        sparse: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        minlength: 6,
-        select: false
-    },
-    googleId: {
-        type: String,
-        sparse: true,
-        unique: true
-    },
-    authProvider: {
-        type: String,
-        enum: ['email', 'google', 'phone'],
-        default: 'email'
-    },
-    role: {
-        type: String,
-        default: 'worker',
-        immutable: true  // Role cannot be changed
-    },
-    avatar: {
-        type: String,
-        default: ''
-    },
-    isActive: {
-        type: Boolean,
-        default: true
-    },
-    // Verification status
-    phoneVerified: {
-        type: Boolean,
-        default: false
-    },
-    emailVerified: {
-        type: Boolean,
-        default: false
-    },
-    // Financials
-    walletBalance: {
-        type: Number,
-        default: 0
-    },
-    // Geo-location for nearby job matching
-    geoLocation: {
-        type: {
-            type: String,
-            enum: ['Point'],
-            default: 'Point'
-        },
-        coordinates: {
-            type: [Number], // [longitude, latitude]
-            default: [0, 0]
-        }
-    },
-    // Worker-specific fields
+
+    // ==========================================
+    // Worker-Specific Profile
+    // ==========================================
     skills: [{
         en: String,
         ta: String
     }],
     experience: {
-        type: String,
-        default: ''
-    },
-    location: {
         type: String,
         default: ''
     },
@@ -100,6 +45,10 @@ const workerSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+
+    // ==========================================
+    // Performance Metrics
+    // ==========================================
     rating: {
         type: Number,
         default: 0,
@@ -110,65 +59,81 @@ const workerSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    preferredLanguage: {
-        type: String,
-        enum: ['en', 'ta'],
-        default: 'en'
+    totalEarnings: {
+        type: Number,
+        default: 0
     },
-    // Progressive verification status
+
+    // ==========================================
+    // Work Location (can differ from home location)
+    // ==========================================
+    workLocation: {
+        type: String,
+        default: ''
+    },
+    workRadius: {
+        type: Number, // km radius willing to travel
+        default: 10
+    },
+    geoLocation: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            default: 'Point'
+        },
+        coordinates: {
+            type: [Number], // [longitude, latitude]
+            default: [0, 0]
+        }
+    },
+
+    // ==========================================
+    // Work Verification
+    // ==========================================
     profileCompleted: {
         type: Boolean,
         default: false
     },
-    locationVerified: {
+    skillsVerified: {
         type: Boolean,
         default: false
     },
-    photoVerified: {
+    backgroundChecked: {
         type: Boolean,
         default: false
     },
-    idVerified: {
-        type: Boolean,
-        default: false
+
+    // ==========================================
+    // Work Preferences
+    // ==========================================
+    preferredJobTypes: [{
+        type: String
+    }],
+    minDailyRate: {
+        type: Number,
+        default: 0
     },
-    governmentId: {
-        idType: {
-            type: String,
-            enum: ['aadhaar', 'pan', 'voterId', 'drivingLicense', ''],
-            default: ''
-        },
-        lastFourDigits: String,
-        verified: {
-            type: Boolean,
-            default: false
-        }
-    }
+    availableDays: [{
+        type: String,
+        enum: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    }]
 }, {
     timestamps: true
 })
 
-// Geo-spatial index for nearby queries
+// Geo-spatial index for nearby worker searches
 workerSchema.index({ geoLocation: '2dsphere' })
 
-// Hash password before saving
-workerSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) {
-        return next()
-    }
-    const salt = await bcrypt.genSalt(10)
-    this.password = await bcrypt.hash(this.password, salt)
-    next()
+// Virtual to populate user details
+workerSchema.virtual('user', {
+    ref: 'User',
+    localField: 'userId',
+    foreignField: '_id',
+    justOne: true
 })
 
-// Compare password method
-workerSchema.methods.comparePassword = async function (candidatePassword) {
-    return await bcrypt.compare(candidatePassword, this.password)
-}
-
-// Generate JWT token
-workerSchema.methods.generateToken = function () {
-    return generateToken({ id: this._id, role: this.role })
-}
+// Enable virtuals in JSON
+workerSchema.set('toJSON', { virtuals: true })
+workerSchema.set('toObject', { virtuals: true })
 
 module.exports = mongoose.model('Worker', workerSchema)

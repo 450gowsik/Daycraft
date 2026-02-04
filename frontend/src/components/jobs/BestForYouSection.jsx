@@ -40,43 +40,7 @@ function BestForYouSection() {
             setLoading(false)
         }
     }, [isAuthenticated, user])
-
-    const fetchRecommendations = async () => {
-        try {
-            setLoading(true)
-            const data = await jobService.getBestForYouJobs(6)
-            setRecommendations(data.recommendations || [])
-            setMessage(data.message || '')
-        } catch (err) {
-            console.error('Failed to fetch recommendations:', err)
-            setError(err.message)
-        } finally {
-            setLoading(false)
-        }
-    }
-
-    const handleCardClick = (jobId) => {
-        navigate(`/jobs/${jobId}`)
-    }
-
-    const handleQuickApply = async (e, jobId) => {
-        e.stopPropagation()
-        try {
-            await jobService.quickApply(jobId)
-            // Update local state to show applied
-            setRecommendations(prev =>
-                prev.map(job =>
-                    (job._id || job.id) === jobId
-                        ? { ...job, hasApplied: true }
-                        : job
-                )
-            )
-        } catch (err) {
-            console.error('Quick apply failed:', err)
-            alert(language === 'ta' ? 'விண்ணப்பம் தோல்வி' : 'Apply failed. Please try again.')
-        }
-    }
-
+    //...
     // Don't render for non-authenticated or non-workers
     if (!isAuthenticated || user?.role !== 'worker') {
         return null

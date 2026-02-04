@@ -59,11 +59,10 @@ const PaymentButton = ({ jobId, workerId, amount, onPaymentSuccess }) => {
         <button
             onClick={handlePayment}
             disabled={loading}
-            className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all 
-                ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary hover:bg-primary-dark shadow-md'}`}
+            className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary hover:bg-primary-dark shadow-md'}`}
         >
-            {loading ? 'Initiating...' : `Pay ₹${amount} to Escrow`}
-            <p className="text-[10px] mt-1 opacity-80">Money held securely by DayCraft until completion</p>
+            <span>{loading ? 'Initiating...' : `Pay ₹${amount} to Escrow`}</span>
+            <span className="block text-[10px] mt-1 opacity-80">Money held securely by DayCraft until completion</span>
         </button>
     );
 };

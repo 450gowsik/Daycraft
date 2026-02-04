@@ -2,17 +2,20 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import LocationPicker from '../components/common/LocationPicker.jsx'
 import './Profile.css'
 
 function Profile() {
     const { t, language } = useLanguage()
-    const { user, updateProfile, isWorker, isEmployer } = useAuth()
+    const { user, profile, role, isWorker, isEmployer, updateProfile } = useAuth()
     const navigate = useNavigate()
 
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
         location: '',
+        locationObj: null,
+        geoLocation: null,
         bio: '',
         // Worker fields
         skills: [],
@@ -27,24 +30,30 @@ function Profile() {
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState({ type: '', text: '' })
     const [newSkill, setNewSkill] = useState({ en: '', ta: '' })
+    // Role based flags are now coming from useAuth() directly
 
     useEffect(() => {
         if (user) {
+            // Merge user data with profile data
             setFormData({
                 name: user.name || '',
                 phone: user.phone || '',
                 location: user.location || '',
-                bio: user.bio || '',
-                skills: user.skills || [],
-                experience: user.experience || '',
-                availability: user.availability || 'available',
-                dailyRate: user.dailyRate || 0,
-                companyName: user.companyName || '',
-                companyDescription: user.companyDescription || '',
-                industry: user.industry || ''
+                locationObj: user.location ? { displayText: user.location } : null,
+                geoLocation: user.geoLocation || null,
+                bio: profile?.bio || '',
+                // Worker profile data
+                skills: profile?.skills || [],
+                experience: profile?.experience || '',
+                availability: profile?.availability || 'available',
+                dailyRate: profile?.dailyRate || 0,
+                // Employer profile data
+                companyName: profile?.companyName || '',
+                companyDescription: profile?.companyDescription || '',
+                industry: profile?.industry || ''
             })
         }
-    }, [user])
+    }, [user, profile])
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -52,6 +61,24 @@ function Profile() {
             ...prev,
             [name]: name === 'dailyRate' ? parseInt(value) || 0 : value
         }))
+    }
+
+    const handleLocationSelect = (locationObj) => {
+        if (locationObj) {
+            setFormData(prev => ({
+                ...prev,
+                location: locationObj.displayText || '',
+                locationObj: locationObj,
+                geoLocation: locationObj.coords || null
+            }))
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                location: '',
+                locationObj: null,
+                geoLocation: null
+            }))
+        }
     }
 
     const addSkill = () => {
@@ -87,6 +114,16 @@ function Profile() {
         setLoading(false)
     }
 
+    // Role switching and adding removed at user request to revert to old structure
+
+    // Helper to get role display name
+    const getRoleDisplay = (role) => {
+        if (role === 'worker') return language === 'en' ? '👷 Employee' : '👷 பணியாளர்'
+        if (role === 'employer') return language === 'en' ? '👔 Job Provider' : '👔 வேலை வழங்குநர்'
+        if (role === 'admin') return language === 'en' ? '⚙️ Admin' : '⚙️ நிர்வாகி'
+        return role
+    }
+
     if (!user) {
         return (
             <div className="profile-page">
@@ -116,22 +153,39 @@ function Profile() {
                                 )}
                             </div>
                             <h3>{user.name}</h3>
-                            <span className={`role-badge ${user.role}`}>
-                                {user.role === 'worker' ? '👷 Worker' : user.role === 'employer' ? '👔 Employer' : '⚙️ Admin'}
-                            </span>
-                            <p className="profile-email">{user.email}</p>
+
+                            {/* Display single role */}
+                            <div className="roles-container">
+                                <span className={`role-badge ${role} active`}>
+                                    {getRoleDisplay(role)}
+                                </span>
+                            </div>
+
+                            <p className="profile-email">{user.email || user.phone}</p>
                         </div>
 
                         <div className="profile-stats">
-                            {isWorker && (
+                            {isWorker && profile && (
                                 <>
                                     <div className="stat-item">
-                                        <span className="stat-value">{user.completedJobs || 0}</span>
+                                        <span className="stat-value">{profile.completedJobs || 0}</span>
                                         <span className="stat-label">{language === 'en' ? 'Jobs Done' : 'முடிந்த வேலைகள்'}</span>
                                     </div>
                                     <div className="stat-item">
-                                        <span className="stat-value">⭐ {user.rating || 0}</span>
+                                        <span className="stat-value">⭐ {profile.rating || 0}</span>
                                         <span className="stat-label">{language === 'en' ? 'Rating' : 'மதிப்பீடு'}</span>
+                                    </div>
+                                </>
+                            )}
+                            {isEmployer && profile && (
+                                <>
+                                    <div className="stat-item">
+                                        <span className="stat-value">{profile.totalJobsPosted || 0}</span>
+                                        <span className="stat-label">{language === 'en' ? 'Jobs Posted' : 'வெளியிட்ட வேலைகள்'}</span>
+                                    </div>
+                                    <div className="stat-item">
+                                        <span className="stat-value">{profile.totalHires || 0}</span>
+                                        <span className="stat-label">{language === 'en' ? 'Total Hires' : 'மொத்த பணியமர்த்தல்'}</span>
                                     </div>
                                 </>
                             )}
@@ -173,12 +227,10 @@ function Profile() {
 
                                 <div className="form-group full-width">
                                     <label>{language === 'en' ? 'Location' : 'இடம்'}</label>
-                                    <input
-                                        type="text"
-                                        name="location"
-                                        value={formData.location}
-                                        onChange={handleChange}
-                                        placeholder={language === 'en' ? 'City, District' : 'நகரம், மாவட்டம்'}
+                                    <LocationPicker
+                                        value={formData.locationObj}
+                                        onChange={handleLocationSelect}
+                                        placeholder={language === 'en' ? 'Select Location' : 'இடம் தேர்வு செய்க'}
                                     />
                                 </div>
 
@@ -195,6 +247,7 @@ function Profile() {
                             </div>
                         </div>
 
+                        {/* Show worker fields only when role is worker */}
                         {isWorker && (
                             <div className="form-section">
                                 <h3>{language === 'en' ? 'Work Details' : 'வேலை விவரங்கள்'}</h3>
@@ -267,6 +320,7 @@ function Profile() {
                             </div>
                         )}
 
+                        {/* Show employer fields only when role is employer */}
                         {isEmployer && (
                             <div className="form-section">
                                 <h3>{language === 'en' ? 'Company Details' : 'நிறுவன விவரங்கள்'}</h3>

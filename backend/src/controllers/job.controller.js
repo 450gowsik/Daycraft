@@ -76,6 +76,12 @@ exports.createJob = async (req, res) => {
 
         // 2. Profile Completion Check
         const user = await User.findById(req.user.id)
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            })
+        }
         if (!user.profileCompleted) {
             return res.status(400).json({
                 success: false,
@@ -165,10 +171,20 @@ exports.createJob = async (req, res) => {
         }
 
     } catch (error) {
-        console.error(error)
+        console.error('Create job error:', error)
+
+        // Handle mongoose validation errors
+        if (error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(err => err.message)
+            return res.status(400).json({
+                success: false,
+                message: messages.join(', ')
+            })
+        }
+
         res.status(500).json({
             success: false,
-            message: 'Server Error'
+            message: 'Server Error: ' + error.message
         })
     }
 }

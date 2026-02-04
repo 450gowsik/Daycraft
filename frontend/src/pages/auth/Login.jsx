@@ -1,258 +1,454 @@
-import { useState, useEffect } from 'react'
+/**
+ * Login Page - Google-Style Step-Based Flow
+ * 
+ * Steps:
+ * 1. Enter email or phone
+ * 2. Enter password or OTP
+ */
+
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useGoogleLogin } from '@react-oauth/google'
+import { useAuth, AUTH_STATES } from '../../context/AuthContext.jsx'
 import { useLanguage } from '../../context/LanguageContext.jsx'
-import { useAuth } from '../../context/AuthContext.jsx'
-import analytics from '../../utils/analytics'
-import SuccessModal from '../../components/common/SuccessModal.jsx'
+import logo from '../../assets/images/logo.png'
 import './Auth.css'
 
+const STEPS = {
+    IDENTIFIER: 'identifier',
+    CREDENTIALS: 'credentials'
+}
+
 function Login() {
-    const { t, language } = useLanguage()
-    const { login, sendOtp, verifyOtp, error, clearError } = useAuth()
+    const { language } = useLanguage()
     const navigate = useNavigate()
     const location = useLocation()
+    const {
+        isAuthenticated,
+        authState,
+        stepData,
+        error,
+        login,
+        emailStart,
+        sendOtp,
+        verifyOtp,
+        resendOtp,
+        googleAuth,
+        updateStepData,
+        clearError
+    } = useAuth()
 
-    const [loginMethod, setLoginMethod] = useState('email') // 'email' or 'phone'
-    const [otp, setOtp] = useState('')
-    const [otpSent, setOtpSent] = useState(false)
+    // Get redirect destination
+    const from = location.state?.from?.pathname || '/dashboard'
 
+    // Local state
+    const [step, setStep] = useState(STEPS.IDENTIFIER)
+    const [authMethod, setAuthMethod] = useState('email')
     const [formData, setFormData] = useState({
         email: '',
         phone: '',
-        password: '',
-        remember: false
+        password: ''
     })
+    const [otp, setOtp] = useState(['', '', '', '', '', ''])
+    const [localError, setLocalError] = useState('')
     const [loading, setLoading] = useState(false)
-    const [formError, setFormError] = useState('')
-    const [showSuccess, setShowSuccess] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
 
+    const otpRefs = useRef([])
+
+    // Redirect if already authenticated
     useEffect(() => {
-        analytics.trackAction('login_started');
-        return () => clearError();
-    }, [])
-
-    const handleSendOtp = async (e) => {
-        e.preventDefault()
-        if (!formData.phone) {
-            setFormError(language === 'ta' ? 'தொலைபேசி எண்ணை உள்ளிடவும்' : 'Please enter phone number')
-            return
+        if (isAuthenticated) {
+            navigate(from, { replace: true })
         }
+    }, [isAuthenticated, navigate, from])
 
-        setLoading(true)
-        setFormError('')
-
-        const result = await sendOtp(formData.phone)
-
-        if (result.success) {
-            setOtpSent(true)
-        } else {
-            setFormError(result.message || 'Failed to send OTP')
+    // Sync with auth state
+    useEffect(() => {
+        if (authState === AUTH_STATES.OTP_SENT) {
+            setStep(STEPS.CREDENTIALS)
+        } else if (authState === AUTH_STATES.AUTHENTICATED) {
+            navigate(from, { replace: true })
         }
-        setLoading(false)
-    }
+    }, [authState, navigate, from])
 
-    const handleVerifyOtp = async (e) => {
-        e.preventDefault()
-        if (!otp || otp.length !== 6) {
-            setFormError(language === 'ta' ? 'சரியான OTP ஐ உள்ளிடவும்' : 'Please enter valid OTP')
-            return
-        }
-
-        setLoading(true)
-        setFormError('')
-
-        const result = await verifyOtp({
-            phone: formData.phone,
-            otp
-        })
-
-        if (result.success) {
-            setShowSuccess(true)
-            setTimeout(() => navigate(from, { replace: true }), 2500)
-        } else {
-            if (result.isNewUser || result.message?.includes('Name is required')) {
-                setFormError(language === 'ta' ? 'கணக்கு காணப்படவில்லை. பதிவு செய்யவும்.' : 'Account not found. Please register.')
-            } else {
-                setFormError(result.message || 'Verification failed')
-            }
-        }
-        setLoading(false)
-    }
-
-    const from = location.state?.from?.pathname || '/dashboard'
-
+    // Handle input changes
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target
-        setFormData(prev => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }))
-        setFormError('')
+        const { name, value } = e.target
+        setFormData(prev => ({ ...prev, [name]: value }))
+        setLocalError('')
         clearError()
     }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
+    // Handle OTP input
+    const handleOtpChange = (index, value) => {
+        if (!/^\d*$/.test(value)) return
+
+        const newOtp = [...otp]
+        newOtp[index] = value.slice(-1)
+        setOtp(newOtp)
+
+        if (value && index < 5) {
+            otpRefs.current[index + 1]?.focus()
+        }
+
+        if (newOtp.every(d => d) && newOtp.join('').length === 6) {
+            handleVerifyOtp(newOtp.join(''))
+        }
+    }
+
+    const handleOtpKeyDown = (index, e) => {
+        if (e.key === 'Backspace' && !otp[index] && index > 0) {
+            otpRefs.current[index - 1]?.focus()
+        }
+    }
+
+    // Step 1: Enter identifier and continue
+    const handleIdentifierContinue = async () => {
+        if (authMethod === 'email' && !formData.email) {
+            setLocalError('Please enter your email')
+            return
+        }
+
+        if (authMethod === 'phone' && !formData.phone) {
+            setLocalError('Please enter your phone number')
+            return
+        }
+
         setLoading(true)
-        setFormError('')
 
-        const result = await login(formData.email, formData.password)
-
-        if (result.success) {
-            analytics.trackAction('login_success');
-            setShowSuccess(true)
-            setTimeout(() => navigate(from, { replace: true }), 2500)
+        if (authMethod === 'email') {
+            // Check if email exists
+            const result = await emailStart(formData.email)
+            if (result.success) {
+                if (!result.exists) {
+                    setLocalError('No account found with this email. Please register.')
+                    setLoading(false)
+                    return
+                }
+                updateStepData({ email: formData.email })
+                setStep(STEPS.CREDENTIALS)
+            } else {
+                setLocalError(result.message || 'Something went wrong')
+            }
         } else {
-            setFormError(result.message || 'Login failed')
+            // Send OTP
+            const result = await sendOtp(formData.phone)
+            if (result.success) {
+                updateStepData({ phone: formData.phone })
+                setStep(STEPS.CREDENTIALS)
+                if (result.devOtp) {
+                    console.log('DEV OTP:', result.devOtp)
+                }
+            } else {
+                setLocalError(result.message || 'Failed to send OTP')
+            }
         }
 
         setLoading(false)
     }
 
+    // Email login
+    const handleEmailLogin = async (e) => {
+        e.preventDefault()
+
+        if (!formData.password) {
+            setLocalError('Please enter your password')
+            return
+        }
+
+        setLoading(true)
+
+        const result = await login(formData.email, formData.password)
+
+        if (!result.success) {
+            setLocalError(result.message || 'Login failed')
+        }
+
+        setLoading(false)
+    }
+
+    // Verify OTP
+    const handleVerifyOtp = async (otpCode) => {
+        setLoading(true)
+
+        const result = await verifyOtp(otpCode)
+
+        if (!result.success) {
+            setLocalError(result.message || 'Invalid OTP')
+            setOtp(['', '', '', '', '', ''])
+            otpRefs.current[0]?.focus()
+        }
+
+        setLoading(false)
+    }
+
+    // Resend OTP
+    const handleResendOtp = async () => {
+        setLoading(true)
+        const result = await resendOtp()
+        if (result.devOtp) {
+            console.log('DEV OTP:', result.devOtp)
+        }
+        setLoading(false)
+    }
+
+    // Google login
+    const handleGoogleLogin = useGoogleLogin({
+        onSuccess: async (response) => {
+            setLoading(true)
+            const result = await googleAuth(response.access_token)
+
+            if (!result.success) {
+                setLocalError(result.message || 'Google login failed')
+            }
+            setLoading(false)
+        },
+        onError: () => {
+            setLocalError('Google login failed. Please try again.')
+        }
+    })
+
+    // Go back
+    const handleBack = () => {
+        setStep(STEPS.IDENTIFIER)
+        setOtp(['', '', '', '', '', ''])
+        clearError()
+        setLocalError('')
+    }
+
+    const displayError = localError || error
+
     return (
         <div className="auth-page">
+            {/* Animated Background */}
+            <div className="auth-background">
+                <div className="auth-orb auth-orb-1"></div>
+                <div className="auth-orb auth-orb-2"></div>
+                <div className="auth-orb auth-orb-3"></div>
+            </div>
+
             <div className="auth-container">
-                <div className="auth-card">
-                    <div className="auth-header">
-                        <span className="auth-logo">🛠️</span>
-                        <h1 className="auth-title">{t('auth.login.title')}</h1>
-                        <p className="auth-subtitle">{t('auth.login.subtitle')}</p>
+                {/* Logo */}
+                <div className="auth-logo">
+                    <img src={logo} alt="DayCraft" className="logo-img" />
+                </div>
+
+                {/* Error Message */}
+                {displayError && (
+                    <div className="auth-error">
+                        <span className="error-icon">⚠️</span>
+                        <span>{displayError}</span>
                     </div>
+                )}
 
-                    {(formError || error) && (
-                        <div className="auth-error">
-                            {formError || error}
-                        </div>
-                    )}
+                {/* ============================================ */}
+                {/* STEP 1: IDENTIFIER */}
+                {/* ============================================ */}
+                {step === STEPS.IDENTIFIER && (
+                    <div className="auth-step">
+                        <h1 className="auth-title">Welcome back</h1>
+                        <p className="auth-subtitle">Sign in to continue to DayCraft</p>
 
-                    <div className="login-method-tabs" style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-                        <button
-                            className={`btn btn-block ${loginMethod === 'email' ? 'btn-primary' : 'btn-ghost'}`}
-                            onClick={() => setLoginMethod('email')}
-                            style={{ flex: 1 }}
-                        >
-                            Email
-                        </button>
-                        <button
-                            className={`btn btn-block ${loginMethod === 'phone' ? 'btn-primary' : 'btn-ghost'}`}
-                            onClick={() => setLoginMethod('phone')}
-                            style={{ flex: 1 }}
-                        >
-                            Phone
-                        </button>
-                    </div>
-
-                    {loginMethod === 'email' ? (
-                        <form onSubmit={handleSubmit} className="auth-form">
-                            <div className="form-group">
-                                <label className="label">{t('auth.login.email')}</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    className="input w-full"
-                                    placeholder="you@example.com"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    required
-                                    disabled={loading}
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label className="label">{t('auth.login.password')}</label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    className="input w-full"
-                                    placeholder="••••••••"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    required
-                                    disabled={loading}
-                                />
-                            </div>
-
-                            <div className="flex justify-between items-center text-sm">
-                                <div className="flex items-center gap-xs cursor-pointer" onClick={() => !loading && setFormData(p => ({ ...p, remember: !p.remember }))}>
-                                    <input
-                                        type="checkbox"
-                                        className="checkbox"
-                                        checked={formData.remember}
-                                        readOnly
-                                    />
-                                    <span className="text-secondary">{t('auth.login.remember')}</span>
-                                </div>
-                                <Link to="/forgot-password" style={{ color: 'var(--primary-600)', fontWeight: 600 }}>
-                                    {t('auth.login.forgot')}
-                                </Link>
-                            </div>
-
-                            <button type="submit" className="btn btn-primary btn-block btn-lg mt-4" disabled={loading}>
-                                {loading ? (language === 'ta' ? 'உள்நுழைகிறது...' : 'Logging in...') : t('auth.login.submit')}
+                        {/* Auth Method Tabs */}
+                        <div className="auth-method-tabs">
+                            <button
+                                type="button"
+                                className={`method-tab ${authMethod === 'email' ? 'active' : ''}`}
+                                onClick={() => setAuthMethod('email')}
+                            >
+                                ✉️ Email
                             </button>
-                        </form>
-                    ) : (
-                        <form onSubmit={otpSent ? handleVerifyOtp : handleSendOtp} className="auth-form">
-                            {!otpSent ? (
-                                <>
-                                    <div className="form-group">
-                                        <label className="label">{t('auth.login.phone')}</label>
+                            <button
+                                type="button"
+                                className={`method-tab ${authMethod === 'phone' ? 'active' : ''}`}
+                                onClick={() => setAuthMethod('phone')}
+                            >
+                                📱 Phone
+                            </button>
+                        </div>
+
+                        <div className="auth-form">
+                            {authMethod === 'email' ? (
+                                <div className="form-group">
+                                    <label>Email Address</label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        placeholder="Enter your email"
+                                        autoComplete="email"
+                                        onKeyDown={(e) => e.key === 'Enter' && handleIdentifierContinue()}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="form-group">
+                                    <label>Phone Number</label>
+                                    <div className="phone-input-group">
+                                        <span className="phone-prefix">+91</span>
                                         <input
                                             type="tel"
                                             name="phone"
-                                            className="input w-full"
-                                            placeholder="+91 98765 43210"
-                                            value={formData.phone || ''}
+                                            value={formData.phone}
                                             onChange={handleChange}
-                                            required
-                                            disabled={loading}
+                                            placeholder="Enter 10-digit number"
+                                            maxLength="10"
+                                            autoComplete="tel"
+                                            onKeyDown={(e) => e.key === 'Enter' && handleIdentifierContinue()}
                                         />
                                     </div>
-                                    <button type="submit" className="btn btn-primary btn-block btn-lg mt-4" disabled={loading}>
-                                        {loading ? (language === 'ta' ? 'அனுப்பப்படுகிறது...' : 'Sending OTP...') : (language === 'ta' ? 'OTP அனுப்பவும்' : 'Send One-Time Password')}
-                                    </button>
-                                </>
-                            ) : (
-                                <>
-                                    <div className="otp-wrapper">
-                                        <label className="label text-center">
-                                            {language === 'ta' ? `${formData.phone} எண்ணிற்கு அனுப்பப்பட்ட OTP ஐ உள்ளிடவும்` : `Enter OTP sent to ${formData.phone}`}
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="otp-input-field"
-                                            placeholder="000000"
-                                            value={otp}
-                                            onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').substring(0, 6))}
-                                            required
-                                            autoFocus
-                                            disabled={loading}
-                                            style={{ textAlign: 'center', letterSpacing: '4px', fontSize: '24px' }}
-                                        />
-                                    </div>
-                                    <button type="submit" className="btn btn-primary btn-block btn-lg mt-4" disabled={loading}>
-                                        {loading ? (language === 'ta' ? 'சரிபார்க்கப்படுகிறது...' : 'Verifying...') : (language === 'ta' ? 'உள்நுழை' : 'Login')}
-                                    </button>
-                                    <button type="button" className="btn btn-ghost btn-block mt-2" onClick={() => setOtpSent(false)} disabled={loading}>
-                                        {language === 'ta' ? 'எண்ணை மாற்றவும்' : 'Change Phone Number'}
-                                    </button>
-                                </>
+                                </div>
                             )}
-                        </form>
-                    )}
 
-                    <div className="auth-footer">
-                        {t('auth.login.noAccount')}{' '}
-                        <Link to="/register">{t('auth.login.register')}</Link>
+                            <button
+                                type="button"
+                                className="btn btn-primary btn-full"
+                                onClick={handleIdentifierContinue}
+                                disabled={loading}
+                            >
+                                {loading ? <span className="btn-loader"></span> : 'Continue'}
+                            </button>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="auth-divider">
+                            <span>or</span>
+                        </div>
+
+                        {/* Google Login */}
+                        <button
+                            type="button"
+                            className="btn btn-google btn-full"
+                            onClick={() => handleGoogleLogin()}
+                            disabled={loading}
+                        >
+                            <svg viewBox="0 0 24 24" width="20" height="20">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                            </svg>
+                            Continue with Google
+                        </button>
+
+                        {/* Register Link */}
+                        <p className="auth-link">
+                            Don't have an account? <Link to="/register">Create one</Link>
+                        </p>
                     </div>
-                </div>
-            </div>
+                )}
 
-            <SuccessModal
-                isOpen={showSuccess}
-                title={language === 'ta' ? 'வரவேற்கிறோம்!' : 'Welcome Back!'}
-                subtitle={language === 'ta' ? 'உங்களை உள்நுழைய வைக்கிறோம்...' : 'Signing you in to your account...'}
-            />
+                {/* ============================================ */}
+                {/* STEP 2: CREDENTIALS */}
+                {/* ============================================ */}
+                {step === STEPS.CREDENTIALS && (
+                    <div className="auth-step">
+                        <button className="back-button" onClick={handleBack}>
+                            ← Back
+                        </button>
+
+                        {authMethod === 'email' ? (
+                            // EMAIL: Password
+                            <>
+                                <h1 className="auth-title">Enter password</h1>
+                                <p className="auth-subtitle">
+                                    for {formData.email}
+                                </p>
+
+                                <form className="auth-form" onSubmit={handleEmailLogin}>
+                                    <div className="form-group">
+                                        <label>Password</label>
+                                        <div className="password-input-group">
+                                            <input
+                                                type={showPassword ? 'text' : 'password'}
+                                                name="password"
+                                                value={formData.password}
+                                                onChange={handleChange}
+                                                placeholder="Enter your password"
+                                                autoComplete="current-password"
+                                                autoFocus
+                                            />
+                                            <button
+                                                type="button"
+                                                className="password-toggle"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                            >
+                                                {showPassword ? '🙈' : '👁️'}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="forgot-password">
+                                        <Link to="/forgot-password">Forgot password?</Link>
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        className="btn btn-primary btn-full"
+                                        disabled={loading}
+                                    >
+                                        {loading ? <span className="btn-loader"></span> : 'Sign In'}
+                                    </button>
+                                </form>
+                            </>
+                        ) : (
+                            // PHONE: OTP
+                            <>
+                                <h1 className="auth-title">Verify your phone</h1>
+                                <p className="auth-subtitle">
+                                    Enter the 6-digit code sent to {stepData.phone || formData.phone}
+                                </p>
+
+                                <div className="auth-form">
+                                    <div className="otp-input-group">
+                                        {otp.map((digit, index) => (
+                                            <input
+                                                key={index}
+                                                ref={el => otpRefs.current[index] = el}
+                                                type="text"
+                                                inputMode="numeric"
+                                                maxLength="1"
+                                                value={digit}
+                                                onChange={(e) => handleOtpChange(index, e.target.value)}
+                                                onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                                                className="otp-input"
+                                                autoFocus={index === 0}
+                                            />
+                                        ))}
+                                    </div>
+
+                                    <div className="otp-resend">
+                                        {stepData.cooldownRemaining > 0 ? (
+                                            <span className="resend-countdown">
+                                                Resend in {stepData.cooldownRemaining}s
+                                            </span>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                className="resend-button"
+                                                onClick={handleResendOtp}
+                                                disabled={loading}
+                                            >
+                                                Didn't receive code? Resend
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary btn-full"
+                                        onClick={() => handleVerifyOtp(otp.join(''))}
+                                        disabled={loading || otp.some(d => !d)}
+                                    >
+                                        {loading ? <span className="btn-loader"></span> : 'Verify & Sign In'}
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
     )
 }

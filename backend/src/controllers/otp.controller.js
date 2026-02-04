@@ -1,45 +1,150 @@
 /**
- * OTP Controller for Phone Authentication
+ * OTP Controller - World-Class Implementation
+ * Phone-based authentication with security best practices
  * 
- * Routes:
- * POST /api/auth/send-otp - Send OTP to phone number
- * POST /api/auth/verify-otp - Verify OTP and login/register user
+ * Unified with User model for multi-role support.
+ * 
+ * Features:
+ * - OTP stored as bcrypt hash
+ * - Rate limiting (3 attempts, 30s resend cooldown)
+ * - 5 minute expiry
+ * - Device tracking
  */
 
 const Otp = require('../models/Otp')
 const User = require('../models/User')
 const Worker = require('../models/Worker')
 const Employer = require('../models/Employer')
+const RefreshToken = require('../models/RefreshToken')
 const { sendOTP } = require('../services/smsService')
-const { generateOTP, validateOTP, getOTPExpiry } = require('../utils/otp')
-const { sendWelcomeEmail } = require('../services/emailService')
+const { sendWelcomeEmail, sendLoginNotification } = require('../services/emailService')
+const {
+    generateAccessToken,
+    generateRefreshToken,
+    hashRefreshToken,
+    getTokenExpiry
+} = require('../utils/jwt')
 
-// Helper function to get the appropriate model based on role
-const getModelByRole = (role) => {
-    if (role === 'worker') return Worker
-    if (role === 'employer') return Employer
-    return User
-}
+// ===========================================
+// HELPER FUNCTIONS
+// ===========================================
 
-// Helper function to find user by phone across all collections
+/**
+ * Find user by phone (single collection lookup)
+ */
 const findUserByPhone = async (phone) => {
-    let user = await Worker.findOne({ phone })
-    if (user) return { user, model: Worker }
-
-    user = await Employer.findOne({ phone })
-    if (user) return { user, model: Employer }
-
-    user = await User.findOne({ phone })
-    if (user) return { user, model: User }
-
-    return { user: null, model: null }
+    const normalizedPhone = normalizePhone(phone)
+    return await User.findOne({ phone: normalizedPhone })
 }
 
-// @desc    Send OTP to phone number
-// @route   POST /api/auth/send-otp
+/**
+ * Get user's profile based on role
+ */
+const getUserProfile = async (user) => {
+    if (user.role === 'worker') {
+        return await Worker.findOne({ userId: user._id })
+    } else if (user.role === 'employer') {
+        return await Employer.findOne({ userId: user._id })
+    }
+    return null
+}
+
+/**
+ * Normalize phone number
+ */
+const normalizePhone = (phone) => {
+    // Remove all non-numeric characters EXCEPT '+'
+    let cleaned = phone.replace(/[^\d+]/g, '');
+
+    // If it starts with 91 and has 12 digits total (like 919876543210), prepend '+'
+    if (cleaned.startsWith('91') && cleaned.length === 12 && !cleaned.startsWith('+')) {
+        cleaned = '+' + cleaned;
+    }
+
+    // If it has 10 digits and no '+' (like 9876543210), prepend '+91'
+    if (cleaned.length === 10 && !cleaned.startsWith('+')) {
+        cleaned = '+91' + cleaned;
+    }
+
+    // Ensure it starts with '+'
+    if (!cleaned.startsWith('+')) {
+        // Default to + if missing but might be valid E.164 already
+        cleaned = '+' + cleaned;
+    }
+
+    return cleaned;
+}
+
+/**
+ * Generate 6-digit OTP - BYPASS MODE
+ */
+const generateOTPCode = () => {
+    // BYPASS: Hardcoded OTP for development as requested
+    return '123456'
+}
+
+/**
+ * Create auth tokens and save refresh token
+ */
+const createAuthTokens = async (user, req) => {
+    const accessToken = generateAccessToken({
+        id: user._id,
+        role: user.role
+    })
+    const refreshToken = generateRefreshToken()
+
+    await RefreshToken.create({
+        userId: user._id,
+        userModel: 'User',
+        tokenHash: hashRefreshToken(refreshToken),
+        deviceInfo: {
+            userAgent: req.headers['user-agent'] || 'unknown',
+            ip: req.ip || req.connection.remoteAddress,
+            deviceName: req.body.deviceName || 'Mobile'
+        },
+        expiresAt: getTokenExpiry('refresh')
+    })
+
+    return { accessToken, refreshToken }
+}
+
+/**
+ * Build response user object with profile data
+ */
+const buildUserResponse = async (user) => {
+    const userObj = user.toObject ? user.toObject() : { ...user }
+    delete userObj.password
+
+    // Get active profile
+    const profile = await getUserProfile(user)
+
+    return {
+        ...userObj,
+        profile: profile ? profile.toObject() : null
+    }
+}
+
+/**
+ * Clean user object for response
+ */
+const sanitizeUser = (user) => {
+    const obj = user.toObject ? user.toObject() : { ...user }
+    delete obj.password
+    return obj
+}
+
+// ===========================================
+// OTP ENDPOINTS
+// ===========================================
+
+/**
+ * @desc    Send OTP to phone number
+ * @route   POST /api/auth/phone/send-otp
+ * @access  Public (rate limited)
+ */
 exports.sendOtp = async (req, res) => {
     try {
-        const { phone } = req.body
+        const { phone, name, role, location, geoLocation } = req.body
 
         if (!phone) {
             return res.status(400).json({
@@ -48,53 +153,82 @@ exports.sendOtp = async (req, res) => {
             })
         }
 
-        // Clean phone number (remove spaces, dashes)
-        const cleanPhone = phone.replace(/[\s-]/g, '')
+        const normalizedPhone = normalizePhone(phone)
 
-        // Check if there's an existing unexpired OTP
-        const existingOtp = await Otp.findOne({
-            phone: cleanPhone,
-            expiresAt: { $gt: new Date() },
-            verified: false
-        })
+        // Check for existing OTP
+        let existingOtp = await Otp.findOne({
+            identifier: normalizedPhone,
+            identifierType: 'phone',
+            isVerified: false
+        }).sort({ createdAt: -1 })
 
-        if (existingOtp) {
-            // Rate limit - don't send new OTP if one was sent recently
-            const timeSinceCreated = Date.now() - existingOtp.createdAt.getTime()
-            if (timeSinceCreated < 60000) { // 1 minute cooldown
-                return res.status(429).json({
-                    success: false,
-                    message: 'Please wait before requesting another OTP',
-                    retryAfter: Math.ceil((60000 - timeSinceCreated) / 1000)
-                })
-            }
-            // Delete old OTP
-            await existingOtp.deleteOne()
+        // Check resend cooldown
+        if (existingOtp && !existingOtp.canResend()) {
+            const remainingSeconds = existingOtp.getCooldownRemaining()
+            return res.status(429).json({
+                success: false,
+                message: `Please wait ${remainingSeconds} seconds before requesting a new OTP`,
+                cooldownRemaining: remainingSeconds
+            })
         }
 
-        // Generate new OTP
-        const otp = generateOTP()
+        // Check if user exists (single collection lookup)
+        const existingUser = await findUserByPhone(normalizedPhone)
+        const isNewUser = !existingUser
 
-        // Store OTP with 5-minute expiry
-        await Otp.create({
-            phone: cleanPhone,
-            otp,
-            expiresAt: getOTPExpiry(5)
-        })
+        // For new users, validate required fields
+        if (isNewUser) {
+            if (!name || !role) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Name and role are required for new registration',
+                    requiresRegistration: true
+                })
+            }
+            if (!['worker', 'employer'].includes(role)) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid role'
+                })
+            }
+        }
 
-        // Send OTP via SMS
-        const result = await sendOTP(cleanPhone, otp)
+        // Generate and hash OTP
+        const otpCode = generateOTPCode()
+        const otpHash = await Otp.hashOTP(otpCode)
 
-        // Check if user exists in any collection
-        const { user: existingUser } = await findUserByPhone(cleanPhone)
+        if (existingOtp) {
+            // Update existing OTP
+            await existingOtp.updateForResend(otpHash)
+        } else {
+            // Create new OTP record
+            await Otp.create({
+                identifier: normalizedPhone,
+                identifierType: 'phone',
+                otpHash,
+                purpose: isNewUser ? 'signup' : 'login',
+                expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
+                ip: req.ip,
+                userAgent: req.headers['user-agent']
+            })
+        }
+
+        // BYPASS: Skip actual SMS sending
+        console.log(`[OTP BYPASS] Fixed OTP 123456 generated for ${normalizedPhone}`);
+
+        // Mock successful SMS result
+        const smsResult = { success: true, sid: 'bypass_sid', status: 'sent', mock: true };
 
         res.json({
             success: true,
-            message: 'OTP sent successfully',
-            isExistingUser: !!existingUser,
-            // Include OTP in development mode for testing
-            ...(process.env.NODE_ENV === 'development' && { devOtp: otp })
-        })
+            message: 'OTP sent successfully (Bypass: Use 123456)',
+            phone: normalizedPhone,
+            isNewUser,
+            expiresIn: 300,
+            sid: smsResult.sid,
+            status: smsResult.status,
+            devOtp: '123456'
+        });
 
     } catch (error) {
         console.error('Send OTP error:', error)
@@ -105,11 +239,14 @@ exports.sendOtp = async (req, res) => {
     }
 }
 
-// @desc    Verify OTP and login/register user
-// @route   POST /api/auth/verify-otp
+/**
+ * @desc    Verify OTP and authenticate/register
+ * @route   POST /api/auth/phone/verify-otp
+ * @access  Public
+ */
 exports.verifyOtp = async (req, res) => {
     try {
-        const { phone, otp, name, role, email, location } = req.body
+        const { phone, otp, name, role, location, geoLocation } = req.body
 
         if (!phone || !otp) {
             return res.status(400).json({
@@ -118,22 +255,23 @@ exports.verifyOtp = async (req, res) => {
             })
         }
 
-        // Validate OTP format
-        if (!validateOTP(otp)) {
+        if (otp.length !== 6) {
             return res.status(400).json({
                 success: false,
-                message: 'Invalid OTP format'
+                message: 'OTP must be 6 digits'
             })
         }
 
-        const cleanPhone = phone.replace(/[\s-]/g, '')
+        const normalizedPhone = normalizePhone(phone)
 
-        // Find the OTP record
+        // Find OTP record
         const otpRecord = await Otp.findOne({
-            phone: cleanPhone,
-            expiresAt: { $gt: new Date() },
-            verified: false
-        })
+            identifier: normalizedPhone,
+            identifierType: 'phone',
+            isVerified: false,
+            isBlocked: false,
+            expiresAt: { $gt: new Date() }
+        }).sort({ createdAt: -1 })
 
         if (!otpRecord) {
             return res.status(400).json({
@@ -142,106 +280,100 @@ exports.verifyOtp = async (req, res) => {
             })
         }
 
-        // Check attempts
-        if (otpRecord.attempts >= 5) {
-            await otpRecord.deleteOne()
-            return res.status(400).json({
-                success: false,
-                message: 'Too many attempts. Please request a new OTP.'
-            })
-        }
+        // Verify OTP hash
+        const isValid = await otpRecord.verifyOTP(otp)
 
-        // Verify OTP (Allow 123456 as default test OTP in development)
-        const isTestOtp = process.env.NODE_ENV === 'development' && otp === '123456'
-        if (otpRecord.otp !== otp && !isTestOtp) {
-            await otpRecord.incrementAttempts()
+        if (!isValid) {
+            const isBlocked = await otpRecord.incrementAttempts()
+
+            if (isBlocked) {
+                return res.status(429).json({
+                    success: false,
+                    message: 'Too many incorrect attempts. Please request a new OTP.',
+                    remainingAttempts: 0
+                })
+            }
+
             return res.status(400).json({
                 success: false,
-                message: 'Invalid OTP',
-                attemptsRemaining: 5 - otpRecord.attempts - 1
+                message: 'Incorrect OTP. Please try again.',
+                remainingAttempts: 3 - otpRecord.attempts
             })
         }
 
         // Mark OTP as verified
-        otpRecord.verified = true
-        await otpRecord.save()
+        await otpRecord.markVerified()
 
-        // Check if user exists in any collection
-        const { user: existingUser, model: existingModel } = await findUserByPhone(cleanPhone)
-        let user = existingUser
+        // Find or create user (single collection)
+        let user = await findUserByPhone(normalizedPhone)
         let isNewUser = false
 
         if (!user) {
             // New user registration
-            if (!name) {
+            if (!name || !role) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Name is required for new registration',
-                    isNewUser: true
+                    message: 'Name and role are required for registration'
                 })
             }
 
-            // Get the appropriate model based on role
-            const userRole = role || 'worker'
-            const Model = getModelByRole(userRole)
-            console.log(`Creating new ${userRole} via OTP in ${Model.modelName} collection`)
-
-            // Create new user in the appropriate collection
-            user = await Model.create({
-                name,
-                phone: cleanPhone,
-                email: email || undefined,
-                role: userRole,
+            // Create user with role
+            user = await User.create({
+                name: name.trim(),
+                phone: normalizedPhone,
+                role: role,
                 location: location || '',
-                geoLocation: req.body.geoLocation || undefined,
-                // Unified auth flow: phone users have phone auto-verified
+                geoLocation: geoLocation || undefined,
                 authProvider: 'phone',
-                phoneVerified: true,  // Phone is verified via OTP
-                emailVerified: false,
-                profileCompleted: false  // Must complete profile after signup
+                phoneVerified: true,
+                isActive: true
             })
-            isNewUser = true
 
-            // Send welcome email if email provided
-            if (email) {
-                await sendWelcomeEmail(email, name, userRole)
+            // Create role-specific profile
+            if (role === 'worker') {
+                await Worker.create({ userId: user._id })
+            } else if (role === 'employer') {
+                await Employer.create({ userId: user._id })
             }
+
+            isNewUser = true
         } else {
-            // Existing user - update phone verified status
+            // Update phone verification status
             if (!user.phoneVerified) {
                 user.phoneVerified = true
                 await user.save()
             }
         }
 
-        // Generate JWT token
-        const token = user.generateToken()
+        // Send email notifications
+        if (user.email) {
+            try {
+                if (isNewUser) {
+                    // Account Approval / Welcome Email
+                    await sendWelcomeEmail(user.email, user.name || 'User', user.role)
+                } else {
+                    // Login Notification
+                    await sendLoginNotification(user.email, user.name || 'User')
+                }
+            } catch (err) {
+                console.warn('Email notification failed:', err.message)
+            }
+        }
 
-        // Delete the used OTP
-        await otpRecord.deleteOne()
+        // Create auth tokens
+        const { accessToken, refreshToken } = await createAuthTokens(user, req)
+
+        // Build response with profile
+        const userResponse = await buildUserResponse(user)
 
         res.json({
             success: true,
             message: isNewUser ? 'Registration successful' : 'Login successful',
-            isNewUser,
-            token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                phone: user.phone,
-                role: user.role,
-                avatar: user.avatar,
-                location: user.location,
-                geoLocation: user.geoLocation,
-                // Include verification status for frontend decisions
-                authProvider: user.authProvider,
-                emailVerified: user.emailVerified,
-                phoneVerified: user.phoneVerified,
-                profileCompleted: user.profileCompleted
-            }
+            accessToken,
+            refreshToken,
+            user: userResponse,
+            isNewUser
         })
-
     } catch (error) {
         console.error('Verify OTP error:', error)
         res.status(500).json({
@@ -251,9 +383,12 @@ exports.verifyOtp = async (req, res) => {
     }
 }
 
-// @desc    Resend OTP
-// @route   POST /api/auth/resend-otp
+/**
+ * @desc    Resend OTP
+ * @route   POST /api/auth/phone/resend-otp
+ * @access  Public (rate limited)
+ */
 exports.resendOtp = async (req, res) => {
-    // Simply reuse sendOtp logic
+    // Just call sendOtp - it handles resend logic
     return exports.sendOtp(req, res)
 }

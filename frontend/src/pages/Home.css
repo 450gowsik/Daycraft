@@ -737,9 +737,10 @@
     margin-bottom: var(--space-12);
 }
 
-.footer-brand h3 {
-    color: white;
-    font-size: var(--fs-2xl);
+.footer-brand .footer-logo {
+    height: 54px;
+    width: auto;
+    object-fit: contain;
     margin-bottom: var(--space-4);
 }
 

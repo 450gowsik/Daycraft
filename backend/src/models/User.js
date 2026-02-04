@@ -1,57 +1,93 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
 const { generateToken } = require('../utils/jwt')
 
+/**
+ * User Model - Authentication & Identity Only
+ * 
+ * ⭐ PRODUCTION-GRADE ARCHITECTURE
+ * 
+ * This is the SINGLE source of truth for authentication.
+ * Business data is stored in separate profile collections:
+ *   - workers (for worker-specific data)
+ *   - employers (for employer-specific data)
+ * 
+ * Features:
+ *   - Multi-role support (one user can be both worker AND employer)
+ *   - Soft delete pattern
+ *   - Proper indexing for scale
+ */
+
 const userSchema = new mongoose.Schema({
+    // ==========================================
+    // Identity (Minimal)
+    // ==========================================
     name: {
         type: String,
         required: [true, 'Name is required'],
         trim: true
     },
+    avatar: {
+        type: String,
+        default: ''
+    },
+
+    // ==========================================
+    // Authentication Credentials
+    // ==========================================
     email: {
         type: String,
-        sparse: true, // Allow null for phone-only users
         unique: true,
+        sparse: true,
         lowercase: true,
         trim: true
     },
     phone: {
         type: String,
-        sparse: true,
-        unique: true
+        unique: true,
+        sparse: true
     },
-    password: {
+    passwordHash: {
         type: String,
-        minlength: 6,
-        select: false
+        select: false  // Never returned by default
     },
     googleId: {
         type: String,
         sparse: true,
         unique: true
     },
-    // Track which auth method was used for signup
     authProvider: {
         type: String,
-        enum: ['email', 'google', 'phone'],
-        default: 'email'
+        enum: ['local', 'google', 'phone'],
+        default: 'local'
     },
 
+    // ==========================================
+    // Multi-Role Support
+    // ==========================================
+    roles: [{
+        type: String,
+        enum: ['worker', 'employer', 'admin']
+    }],
+    activeRole: {
+        type: String,
+        enum: ['worker', 'employer', 'admin'],
+        default: 'worker'
+    },
+    // Legacy single role field (for backward compatibility)
     role: {
         type: String,
         enum: ['worker', 'employer', 'admin'],
         default: 'worker'
     },
-    avatar: {
-        type: String,
-        default: ''
-    },
-    isActive: {
+    profileCompleted: {
         type: Boolean,
-        default: true
+        default: false
     },
-    // Verification status
+
+    // ==========================================
+    // Verification Status
+    // ==========================================
     phoneVerified: {
         type: Boolean,
         default: false
@@ -60,12 +96,32 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    // Financials
-    walletBalance: {
-        type: Number,
-        default: 0
+
+    // ==========================================
+    // Account Status & Soft Delete
+    // ==========================================
+    isActive: {
+        type: Boolean,
+        default: true
+        // Indexed via compound: { isDeleted: 1, isActive: 1 }
     },
-    // Geo-location for nearby job matching
+    isDeleted: {
+        type: Boolean,
+        default: false
+        // Indexed via compound: { isDeleted: 1, isActive: 1 }
+    },
+    deletedAt: {
+        type: Date
+    },
+
+    // ==========================================
+    // Location (Basic - for quick access)
+    // Detailed location in Worker/Employer profiles
+    // ==========================================
+    location: {
+        type: String,
+        default: ''
+    },
     geoLocation: {
         type: {
             type: String,
@@ -77,66 +133,19 @@ const userSchema = new mongoose.Schema({
             default: [0, 0]
         }
     },
-    // Worker-specific fields
-    skills: [{
-        en: String,
-        ta: String
-    }],
-    experience: {
-        type: String,
-        default: ''
-    },
-    location: {
-        type: String,
-        default: ''
-    },
-    availability: {
-        type: String,
-        enum: ['available', 'busy', 'unavailable'],
-        default: 'available'
-    },
-    dailyRate: {
+
+    // ==========================================
+    // Wallet (Can be moved to separate Payment service later)
+    // ==========================================
+    walletBalance: {
         type: Number,
         default: 0
     },
-    bio: {
-        type: String,
-        default: ''
-    },
-    rating: {
-        type: Number,
-        default: 0,
-        min: 0,
-        max: 5
-    },
-    completedJobs: {
-        type: Number,
-        default: 0
-    },
-    preferredLanguage: {
-        type: String,
-        enum: ['en', 'ta'],
-        default: 'en'
-    },
-    // Employer-specific fields
-    companyName: {
-        type: String,
-        default: ''
-    },
-    companyDescription: {
-        type: String,
-        default: ''
-    },
-    industry: {
-        type: String,
-        default: ''
-    },
-    // Progressive verification status
-    profileCompleted: {
-        type: Boolean,
-        default: false
-    },
-    locationVerified: {
+
+    // ==========================================
+    // Verification Badges
+    // ==========================================
+    idVerified: {
         type: Boolean,
         default: false
     },
@@ -144,47 +153,144 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    idVerified: {
-        type: Boolean,
-        default: false
-    },
-    governmentId: {
-        idType: {
-            type: String,
-            enum: ['aadhaar', 'pan', 'voterId', 'drivingLicense', ''],
-            default: ''
-        },
-        lastFourDigits: String,
-        verified: {
-            type: Boolean,
-            default: false
-        }
+    preferredLanguage: {
+        type: String,
+        enum: ['en', 'ta'],
+        default: 'en'
     }
 }, {
     timestamps: true
 })
 
-// Geo-spatial index for nearby queries
+// ==========================================
+// INDEXES
+// ==========================================
+// Note: email and phone already indexed via unique:true in schema
+userSchema.index({ roles: 1 })
+userSchema.index({ activeRole: 1 })
 userSchema.index({ geoLocation: '2dsphere' })
+userSchema.index({ isDeleted: 1, isActive: 1 })
 
-// Hash password before saving
-userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) {
+// ==========================================
+// SOFT DELETE MIDDLEWARE
+// ==========================================
+// Auto-exclude deleted documents from all find queries
+userSchema.pre(/^find/, function (next) {
+    // Skip if explicitly including deleted
+    if (this.getOptions().includeDeleted) {
         return next()
     }
-    const salt = await bcrypt.genSalt(10)
-    this.password = await bcrypt.hash(this.password, salt)
+    this.where({ isDeleted: { $ne: true } })
     next()
 })
 
-// Compare password method
+// ==========================================
+// PRE-SAVE HOOKS
+// ==========================================
+// Ensure role/roles consistency
+userSchema.pre('save', function (next) {
+    // Sync legacy role field with roles array
+    if (this.roles && this.roles.length > 0) {
+        this.role = this.activeRole || this.roles[0]
+    } else if (this.role) {
+        this.roles = [this.role]
+        this.activeRole = this.role
+    } else {
+        this.role = 'worker'
+        this.roles = ['worker']
+        this.activeRole = 'worker'
+    }
+    next()
+})
+
+// Hash password before saving (use passwordHash field)
+userSchema.pre('save', async function (next) {
+    // Check both password and passwordHash for compatibility
+    if (this.isModified('passwordHash') && this.passwordHash && !this.passwordHash.startsWith('$2')) {
+        const salt = await bcrypt.genSalt(10)
+        this.passwordHash = await bcrypt.hash(this.passwordHash, salt)
+    }
+    // Legacy password field support
+    if (this.password && this.isModified('password')) {
+        const salt = await bcrypt.genSalt(10)
+        this.passwordHash = await bcrypt.hash(this.password, salt)
+        this.password = undefined  // Don't store plain password
+    }
+    next()
+})
+
+// ==========================================
+// INSTANCE METHODS
+// ==========================================
+
+// Compare password
 userSchema.methods.comparePassword = async function (candidatePassword) {
-    return await bcrypt.compare(candidatePassword, this.password)
+    const user = await this.constructor.findById(this._id).select('+passwordHash')
+    if (!user.passwordHash) return false
+    return bcrypt.compare(candidatePassword, user.passwordHash)
 }
 
 // Generate JWT token
 userSchema.methods.generateToken = function () {
-    return generateToken({ id: this._id, role: this.role })
+    return generateToken({
+        id: this._id,
+        role: this.activeRole || this.role,
+        roles: this.roles
+    })
+}
+
+// Switch active role
+userSchema.methods.switchRole = async function (newRole) {
+    if (!this.roles.includes(newRole)) {
+        throw new Error(`User does not have role: ${newRole}`)
+    }
+    this.activeRole = newRole
+    this.role = newRole  // Keep legacy field in sync
+    await this.save()
+    return this
+}
+
+// Add a new role
+userSchema.methods.addRole = async function (newRole) {
+    if (!this.roles.includes(newRole)) {
+        this.roles.push(newRole)
+        await this.save()
+    }
+    return this
+}
+
+// Soft delete
+userSchema.methods.softDelete = async function () {
+    this.isDeleted = true
+    this.deletedAt = new Date()
+    this.isActive = false
+    await this.save()
+    return this
+}
+
+// Restore soft-deleted user
+userSchema.methods.restore = async function () {
+    this.isDeleted = false
+    this.deletedAt = undefined
+    this.isActive = true
+    await this.save()
+    return this
+}
+
+// ==========================================
+// STATIC METHODS
+// ==========================================
+
+// Find including deleted users (admin only)
+userSchema.statics.findWithDeleted = function (query) {
+    return this.find(query).setOptions({ includeDeleted: true })
+}
+
+// Find by email or phone
+userSchema.statics.findByCredential = function (credential) {
+    const isEmail = credential.includes('@')
+    const query = isEmail ? { email: credential } : { phone: credential }
+    return this.findOne(query)
 }
 
 module.exports = mongoose.model('User', userSchema)

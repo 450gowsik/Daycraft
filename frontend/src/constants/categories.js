@@ -12,7 +12,8 @@ export const JOB_CATEGORIES = [
     { id: 'factory', label: 'Factory & Manufacturing', ta: 'தொழிற்சாலை', icon: '🏭' },
     { id: 'housekeeping', label: 'Domestic Help', ta: 'வீட்டு உதவி', icon: '🧹' },
     { id: 'cooking', label: 'Cooking & Catering', ta: 'சமையல்', icon: '🍳' },
-    { id: 'security', label: 'Security & Watchman', ta: 'பாதுகாப்பு', icon: '👮' }
+    { id: 'security', label: 'Security & Watchman', ta: 'பாதுகாப்பு', icon: '👮' },
+    { id: 'development', label: 'Development & IT', ta: 'தகவல் தொழில்நுட்பம்', icon: '💻' }
 ];
 
 export const ROLES_BY_CATEGORY = {
@@ -101,6 +102,16 @@ export const ROLES_BY_CATEGORY = {
         { id: 'watchman', label: 'Watchman', ta: 'காவலாளி' },
         { id: 'night_guard', label: 'Night Guard', ta: 'இரவு காவலாளி' },
         { id: 'parking_attendant', label: 'Parking Attendant', ta: 'பார்க்கிங் உதவியாளர்' }
+    ],
+    development: [
+        { id: 'web_developer', label: 'Web Developer', ta: 'இணையதள மேம்பாட்டாளர்' },
+        { id: 'app_developer', label: 'App Developer', ta: 'ஆப் மேம்பாட்டாளர்' },
+        { id: 'software_engineer', label: 'Software Engineer', ta: 'மென்பொருள் பொறியாளர்' },
+        { id: 'it_support', label: 'IT Support', ta: 'தகவல் தொழில்நுட்ப ஆதரவு' },
+        { id: 'graphic_designer', label: 'Graphic Designer', ta: 'கிராபிக்ஸ் வடிவமைப்பாளர்' },
+        { id: 'ui_ux_designer', label: 'UI/UX Designer', ta: 'UI/UX வடிவமைப்பாளர்' },
+        { id: 'data_entry', label: 'Data Entry', ta: 'தரவு உள்ளீடு' },
+        { id: 'digital_marketing', label: 'Digital Marketing', ta: 'டிஜிட்டல் மார்க்கெட்டிங்' }
     ]
 };
 
@@ -142,6 +153,11 @@ const TITLE_ICON_MAP = [
     { keywords: ['roof', 'waterproof'], icon: '🏠' },
     { keywords: ['tile', 'flooring', 'marble'], icon: '🧱' },
     { keywords: ['weld', 'fabricat', 'grille'], icon: '🔩' },
+    { keywords: ['dev', 'software', 'code', 'web', 'app', 'program', 'developer'], icon: '💻' },
+    { keywords: ['design', 'ui', 'ux', 'graphic'], icon: '🎨' },
+    { keywords: ['it support', 'computer', 'laptop', 'desktop', 'hardware'], icon: '🖥️' },
+    { keywords: ['market', 'seo', 'social media', 'digital'], icon: '📈' },
+    { keywords: ['data', 'excel', 'typing', 'entry'], icon: '📊' },
 ];
 
 /**

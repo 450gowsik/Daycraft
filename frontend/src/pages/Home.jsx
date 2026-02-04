@@ -4,6 +4,7 @@ import { useJobs } from '../context/JobContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { getDetailedIcon } from '../constants/categories.js'
 import { useState, useEffect, useRef } from 'react'
+import logo from '../assets/images/logo.png'
 import './Home.css'
 
 // Animated Counter with Intersection Observer
@@ -217,7 +218,7 @@ function Home() {
                             <Link to="/jobs" className="btn btn-primary btn-xl">
                                 <span>🔍</span> {language === 'ta' ? 'வேலைகளைத் தேடு' : 'Find Jobs'}
                             </Link>
-                            <Link to="/register" className="btn btn-white btn-xl">
+                            <Link to={user ? "/post-job" : "/register"} className="btn btn-white btn-xl">
                                 <span>📝</span> {language === 'ta' ? 'வேலை வழங்கு' : 'Post a Job'}
                             </Link>
                         </div>
@@ -491,7 +492,7 @@ function Home() {
                 <div className="container">
                     <div className="footer-grid">
                         <div className="footer-brand">
-                            <h3>DayCraft</h3>
+                            <img src={logo} alt="DayCraft" className="footer-logo" />
                             <p>{language === 'ta' ? 'இந்தியாவின் #1 தினசரி கூலி வேலை தளம்' : 'India\'s #1 daily-wage job platform'}</p>
                             <div className="social-links">
                                 <a href="#">📘</a><a href="#">🐦</a><a href="#">📷</a><a href="#">💼</a>

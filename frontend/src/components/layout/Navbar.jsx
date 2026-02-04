@@ -4,11 +4,12 @@ import { useLanguage } from '../../context/LanguageContext.jsx'
 import { useAuth } from '../../context/AuthContext.jsx'
 import { useNotifications } from '../../context/NotificationContext.jsx'
 import NotificationPanel from '../common/NotificationPanel'
+import logo from '../../assets/images/logo.png'
 import './Navbar.css'
 
 function Navbar() {
     const { t, language, toggleLanguage } = useLanguage()
-    const { user, isAuthenticated, logout } = useAuth()
+    const { user, isAuthenticated, logout, isEmployer, isAdmin } = useAuth()
     const navigate = useNavigate()
     const { unreadCount, fetchNotifications } = useNotifications()
     const [menuOpen, setMenuOpen] = useState(false)
@@ -48,7 +49,7 @@ function Navbar() {
         <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}>
             <div className="container navbar-container">
                 <Link to="/" className="navbar-brand" onClick={closeMenu}>
-                    <span className="brand-text">DayCraft</span>
+                    <img src={logo} alt="DayCraft" className="brand-logo" />
                 </Link>
 
                 <div className={`navbar-menu ${menuOpen ? 'active' : ''}`}>
@@ -121,12 +122,12 @@ function Navbar() {
                                     <Link to="/wallet" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
                                         💰 {language === 'en' ? 'My Wallet' : 'எனது பணப்பை'}
                                     </Link>
-                                    {user?.role === 'employer' && (
+                                    {isEmployer && (
                                         <Link to="/post-job" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
                                             ➕ {language === 'en' ? 'Post Job' : 'வேலை இடுக'}
                                         </Link>
                                     )}
-                                    {user?.role === 'admin' && (
+                                    {isAdmin && (
                                         <Link to="/admin" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
                                             ⚙️ Admin Panel
                                         </Link>

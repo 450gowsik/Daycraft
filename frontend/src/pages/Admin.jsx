@@ -192,7 +192,10 @@ function AdminDashboard() {
                                                 <td>{user.name}</td>
                                                 <td>{user.email}</td>
                                                 <td>
-                                                    <span className={`role-tag ${user.role}`}>{user.role}</span>
+                                                    {/* Handle both roles array and legacy role */}
+                                                    {(user.roles || [user.role]).map(role => (
+                                                        <span key={role} className={`role-tag ${role}`}>{role}</span>
+                                                    ))}
                                                 </td>
                                                 <td>
                                                     <span className={`status-tag ${user.isActive ? 'active' : 'suspended'}`}>

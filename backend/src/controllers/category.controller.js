@@ -12,6 +12,7 @@ const categories = [
     { id: 'driving', icon: '🚗', name: { en: 'Driving', ta: 'ஓட்டுநர்' } },
     { id: 'cooking', icon: '🍳', name: { en: 'Cooking', ta: 'சமையல்' } },
     { id: 'security', icon: '🛡️', name: { en: 'Security', ta: 'பாதுகாப்பு' } },
+    { id: 'development', icon: '💻', name: { en: 'Development & IT', ta: 'தகவல் தொழில்நுட்பம்' } },
     { id: 'other', icon: '🛠️', name: { en: 'Other', ta: 'மற்றவை' } }
 ]
 

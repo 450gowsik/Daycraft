@@ -89,26 +89,208 @@ exports.sendJobNotification = async (email, job, workerName) => {
     return await sendEmail(email, subject, html)
 }
 
-// Send welcome email after registration
+// Helper for highlighted text style
+const highlight = (text) => `<span style="background-color: #fff2cc; padding: 2px 5px; border-radius: 2px;">${text}</span>`
+
+// Send account approval email (Welcome) - Startup Style with Features
 exports.sendWelcomeEmail = async (email, name, role) => {
-    const subject = `🎉 Welcome to DayCraft, ${name}!`
+    const subject = `Welcome aboard, ${name}! 🎉`
+
+    // Format role for display
+    const displayRole = role === 'worker' ? 'Employee' : 'Job Provider'
+
     const html = `
-        <div style="font-family: Arial, sans-serif; padding: 20px;">
-            <h2 style="color: #14a800;">Welcome to DayCraft!</h2>
-            <p>Hi ${name},</p>
-            <p>Your account has been created successfully as a <strong>${role}</strong>.</p>
-            ${role === 'worker'
-            ? '<p>You can now browse available jobs and apply to opportunities that match your skills.</p>'
-            : '<p>You can now post jobs and find skilled workers in your area.</p>'
-        }
-            <a href="https://daycraft.com/${role === 'worker' ? 'jobs' : 'dashboard'}" 
-               style="background: #14a800; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-                Get Started
-            </a>
-            <p style="color: #666; margin-top: 20px;">
-                Thank you for joining DayCraft - Connecting daily-wage workers with employers!
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Welcome to DayCraft</title>
+</head>
+<body style="margin:0; padding:0; background:linear-gradient(135deg,#eef2ff,#f0fdf4); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" align="center">
+<tr>
+<td align="center" style="padding:60px 20px;">
+
+<table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:20px; box-shadow:0 20px 40px rgba(0,0,0,0.08); overflow:hidden;">
+
+    <!-- Header -->
+    <tr>
+        <td style="background:linear-gradient(90deg,#0f172a,#1e293b); padding:30px; text-align:center;">
+            <h1 style="margin:0; color:#ffffff; font-size:22px; font-weight:600;">
+                DayCraft Platform
+            </h1>
+        </td>
+    </tr>
+
+    <!-- Body -->
+    <tr>
+        <td style="padding:50px 45px;">
+
+            <h2 style="margin:0 0 20px 0; font-size:26px; color:#111827; font-weight:700;">
+                Welcome aboard, ${name}! 🎉
+            </h2>
+
+            <p style="font-size:16px; color:#4b5563; line-height:1.7;">
+                Your DayCraft account has been successfully approved and is now fully active as a <strong>${displayRole}</strong>.
             </p>
-        </div>
+
+            <p style="font-size:16px; color:#4b5563; line-height:1.7;">
+                <strong>DayCraft</strong> is a smart workforce platform designed to connect skilled workers and employers seamlessly.
+                We help users discover local job opportunities, manage work efficiently, and grow their professional network.
+            </p>
+
+            <!-- Features Section -->
+            <div style="margin:30px 0; padding:20px; background:#f9fafb; border-radius:12px;">
+                <p style="margin:8px 0; font-size:15px; color:#374151;">✔ Discover verified job opportunities</p>
+                <p style="margin:8px 0; font-size:15px; color:#374151;">✔ Connect directly with employers</p>
+                <p style="margin:8px 0; font-size:15px; color:#374151;">✔ Track applications & manage your profile</p>
+                <p style="margin:8px 0; font-size:15px; color:#374151;">✔ Secure and transparent hiring process</p>
+            </div>
+
+            <!-- CTA -->
+            <div style="text-align:center; margin:40px 0;">
+                <a href="https://daycraft.com/login"
+                   style="background:linear-gradient(90deg,#16a34a,#22c55e);
+                          color:#ffffff;
+                          padding:16px 36px;
+                          border-radius:12px;
+                          font-size:16px;
+                          font-weight:600;
+                          text-decoration:none;
+                          display:inline-block;
+                          box-shadow:0 10px 20px rgba(34,197,94,0.3);">
+                   Access Your Dashboard
+                </a>
+            </div>
+
+            <p style="font-size:14px; color:#9ca3af;">
+                If you did not create this account, please contact our support team immediately.
+            </p>
+
+        </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+        <td style="background:#f9fafb; padding:25px; text-align:center;">
+            <p style="margin:0; font-size:13px; color:#9ca3af;">
+                © 2026 DayCraft Inc. All rights reserved.
+            </p>
+        </td>
+    </tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
+    `
+    return await sendEmail(email, subject, html)
+}
+
+// Send login notification - Startup Style
+exports.sendLoginNotification = async (email, name) => {
+    const time = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+    const subject = `New Login Detected 🛡️`
+
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Login Alert</title>
+</head>
+<body style="margin:0; padding:0; background:linear-gradient(135deg,#eef2ff,#f0fdf4); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" align="center">
+<tr>
+<td align="center" style="padding:60px 20px;">
+
+<table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:20px; box-shadow:0 20px 40px rgba(0,0,0,0.08); overflow:hidden;">
+
+    <!-- Gradient Header -->
+    <tr>
+        <td style="background:linear-gradient(90deg,#0f172a,#1e293b); padding:30px; text-align:center;">
+            <h1 style="margin:0; color:#ffffff; font-size:22px; font-weight:600; letter-spacing:0.5px;">
+                DayCraft
+            </h1>
+        </td>
+    </tr>
+
+    <!-- Body -->
+    <tr>
+        <td style="padding:50px 45px;">
+
+            <h2 style="margin:0 0 20px 0; font-size:26px; color:#111827; font-weight:700;">
+                New Login Detected 🛡️
+            </h2>
+
+            <p style="font-size:16px; color:#4b5563; line-height:1.7; margin-bottom:20px;">
+                Hi ${name},
+            </p>
+
+            <p style="font-size:16px; color:#4b5563; line-height:1.7;">
+                We noticed a new login to your DayCraft account.
+            </p>
+
+            <!-- Info Box -->
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px; margin:25px 0;">
+                <p style="margin:5px 0; font-size:15px; color:#334155;"><strong>Time:</strong> ${time}</p>
+                <p style="margin:5px 0; font-size:15px; color:#334155;"><strong>Status:</strong> Successful</p>
+                <p style="margin:5px 0; font-size:15px; color:#334155;"><strong>Device:</strong> New Session</p>
+            </div>
+
+            <p style="font-size:16px; color:#4b5563; line-height:1.7;">
+                If this was you, you can safely ignore this email.
+            </p>
+
+            <!-- CTA -->
+             <div style="text-align:center; margin:40px 0;">
+                <a href="https://daycraft.com/account"
+                   style="background:linear-gradient(90deg,#3b82f6,#2563eb);
+                          color:#ffffff;
+                          padding:16px 36px;
+                          border-radius:12px;
+                          font-size:16px;
+                          font-weight:600;
+                          text-decoration:none;
+                          display:inline-block;
+                          box-shadow:0 10px 20px rgba(37,99,235,0.3);">
+                   View Account Activity
+                </a>
+            </div>
+
+            <!-- Divider -->
+            <hr style="border:none; border-top:1px solid #e5e7eb; margin:30px 0;">
+
+            <p style="font-size:14px; color:#9ca3af; line-height:1.6;">
+                If you did not authorize this login, please change your password immediately.
+            </p>
+
+        </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+        <td style="background:#f9fafb; padding:25px; text-align:center;">
+            <p style="margin:0; font-size:13px; color:#9ca3af;">
+                © 2026 DayCraft Inc. All rights reserved.
+            </p>
+        </td>
+    </tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
     `
     return await sendEmail(email, subject, html)
 }
@@ -125,9 +307,6 @@ exports.sendOTPEmail = async (email, otp, name) => {
                 <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #14a800;">${otp}</span>
             </div>
             <p>This code will expire in 5 minutes.</p>
-            <p style="color: #666; font-size: 12px;">
-                If you didn't request this code, please ignore this email.
-            </p>
         </div>
     `
     return await sendEmail(email, subject, html)

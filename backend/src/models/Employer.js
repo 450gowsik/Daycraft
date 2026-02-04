@@ -1,84 +1,29 @@
 const mongoose = require('mongoose')
-const bcrypt = require('bcryptjs')
-const { generateToken } = require('../utils/jwt')
+
+/**
+ * Employer Profile Model
+ * 
+ * Stores employer-specific profile data. Authentication is handled
+ * by the User model - this links via userId reference.
+ * 
+ * One User can have one Employer profile (if they have 'employer' role)
+ */
 
 const employerSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, 'Name is required'],
-        trim: true
-    },
-    email: {
-        type: String,
-        sparse: true,
+    // ==========================================
+    // Link to User (Authentication)
+    // ==========================================
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
         unique: true,
-        lowercase: true,
-        trim: true
+        index: true
     },
-    phone: {
-        type: String,
-        sparse: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        minlength: 6,
-        select: false
-    },
-    googleId: {
-        type: String,
-        sparse: true,
-        unique: true
-    },
-    authProvider: {
-        type: String,
-        enum: ['email', 'google', 'phone'],
-        default: 'email'
-    },
-    role: {
-        type: String,
-        default: 'employer',
-        immutable: true  // Role cannot be changed
-    },
-    avatar: {
-        type: String,
-        default: ''
-    },
-    isActive: {
-        type: Boolean,
-        default: true
-    },
-    // Verification status
-    phoneVerified: {
-        type: Boolean,
-        default: false
-    },
-    emailVerified: {
-        type: Boolean,
-        default: false
-    },
-    // Financials
-    walletBalance: {
-        type: Number,
-        default: 0
-    },
-    // Geo-location
-    geoLocation: {
-        type: {
-            type: String,
-            enum: ['Point'],
-            default: 'Point'
-        },
-        coordinates: {
-            type: [Number], // [longitude, latitude]
-            default: [0, 0]
-        }
-    },
-    location: {
-        type: String,
-        default: ''
-    },
-    // Employer-specific fields
+
+    // ==========================================
+    // Company/Business Info
+    // ==========================================
     companyName: {
         type: String,
         default: ''
@@ -91,56 +36,87 @@ const employerSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    // Number of jobs posted
+    companySize: {
+        type: String,
+        enum: ['1-10', '11-50', '51-200', '201-500', '500+', ''],
+        default: ''
+    },
+    website: {
+        type: String,
+        default: ''
+    },
+
+    // ==========================================
+    // Business Location
+    // ==========================================
+    businessAddress: {
+        type: String,
+        default: ''
+    },
+    geoLocation: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            default: 'Point'
+        },
+        coordinates: {
+            type: [Number], // [longitude, latitude]
+            default: [0, 0]
+        }
+    },
+
+    // ==========================================
+    // Hiring Metrics
+    // ==========================================
     totalJobsPosted: {
         type: Number,
         default: 0
     },
-    // Number of workers hired
+    activeJobs: {
+        type: Number,
+        default: 0
+    },
     totalHires: {
         type: Number,
         default: 0
     },
-    // Rating given by workers
+    totalSpent: {
+        type: Number,
+        default: 0
+    },
+
+    // ==========================================
+    // Reputation
+    // ==========================================
     rating: {
         type: Number,
         default: 0,
         min: 0,
         max: 5
     },
-    preferredLanguage: {
-        type: String,
-        enum: ['en', 'ta'],
-        default: 'en'
+    reviewCount: {
+        type: Number,
+        default: 0
     },
-    // Progressive verification status
+
+    // ==========================================
+    // Verification
+    // ==========================================
     profileCompleted: {
         type: Boolean,
         default: false
     },
-    locationVerified: {
+    businessVerified: {
         type: Boolean,
         default: false
     },
-    photoVerified: {
+    gstNumber: {
+        type: String,
+        default: ''
+    },
+    gstVerified: {
         type: Boolean,
         default: false
-    },
-    idVerified: {
-        type: Boolean,
-        default: false
-    },
-    governmentId: {
-        idType: {
-            type: String,
-            enum: ['aadhaar', 'pan', 'voterId', 'drivingLicense', 'gst', ''],
-            default: ''
-        },
-        lastFourDigits: String,
-        verified: {
-            type: Boolean,
-            default: false
-        }
     }
 }, {
     timestamps: true
@@ -149,24 +125,16 @@ const employerSchema = new mongoose.Schema({
 // Geo-spatial index
 employerSchema.index({ geoLocation: '2dsphere' })
 
-// Hash password before saving
-employerSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) {
-        return next()
-    }
-    const salt = await bcrypt.genSalt(10)
-    this.password = await bcrypt.hash(this.password, salt)
-    next()
+// Virtual to populate user details
+employerSchema.virtual('user', {
+    ref: 'User',
+    localField: 'userId',
+    foreignField: '_id',
+    justOne: true
 })
 
-// Compare password method
-employerSchema.methods.comparePassword = async function (candidatePassword) {
-    return await bcrypt.compare(candidatePassword, this.password)
-}
-
-// Generate JWT token
-employerSchema.methods.generateToken = function () {
-    return generateToken({ id: this._id, role: this.role })
-}
+// Enable virtuals in JSON
+employerSchema.set('toJSON', { virtuals: true })
+employerSchema.set('toObject', { virtuals: true })
 
 module.exports = mongoose.model('Employer', employerSchema)

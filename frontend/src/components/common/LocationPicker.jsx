@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useLanguage } from '../context/LanguageContext.jsx'
+import { useLanguage } from '../../context/LanguageContext.jsx'
 import LocationModal from './LocationModal.jsx'
 import './LocationPicker.css'
 
@@ -28,7 +28,7 @@ function LocationPicker({ value, onChange, placeholder, className = '' }) {
                     {value ? value.displayText : (placeholder || (language === 'ta' ? 'இருப்பிடம் தேர்வு செய்க' : 'Select Location'))}
                 </span>
                 {value ? (
-                    <button className="picker-clear" onClick={handleClear}>✕</button>
+                    <span className="picker-clear" role="button" tabIndex={0} onClick={handleClear} onKeyDown={(e) => e.key === 'Enter' && handleClear(e)}>✕</span>
                 ) : (
                     <span className="picker-arrow">▼</span>
                 )}

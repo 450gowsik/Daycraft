@@ -28,15 +28,16 @@ router.get('/location-matched', getLocationMatchedJobs)
 // AI-powered recommendations (requires auth to personalize)
 router.get('/best-for-you', protect, authorize('worker'), getBestForYouJobs)
 
-// Must come after specific routes to avoid conflicts
-router.get('/:id', getJob)
-router.get('/:id/matches', protect, authorize('employer', 'admin'), getJobMatches)
-
-// Protected routes
+// Protected user-specific routes (MUST come before /:id to avoid route conflicts)
 router.get('/user/my-jobs', protect, authorize('employer', 'admin'), getMyJobs)
 router.get('/user/my-applications', protect, authorize('worker'), getMyApplications)
 router.get('/user/recommended', protect, authorize('worker'), getRecommendedJobs)
 
+// Dynamic ID routes (must come AFTER specific string routes)
+router.get('/:id', getJob)
+router.get('/:id/matches', protect, authorize('employer', 'admin'), getJobMatches)
+
+// Other protected routes
 router.post('/', protect, authorize('employer', 'admin'), createJob)
 router.put('/:id', protect, updateJob)
 router.delete('/:id', protect, deleteJob)
