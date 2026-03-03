@@ -24,6 +24,11 @@ app.use(cors({
 }))
 app.use(express.json())
 
+// Root route
+app.get("/", (req, res) => {
+    res.send("DayCraft Backend is Running 🚀");
+});
+
 // Routes
 app.use('/api/auth', authRoutes)
 app.use('/api/jobs', jobRoutes)
