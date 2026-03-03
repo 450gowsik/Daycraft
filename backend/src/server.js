@@ -26,7 +26,12 @@ app.use(express.json())
 
 // Root route
 app.get("/", (req, res) => {
-    res.send("DayCraft Backend is Running 🚀");
+    res.status(200).send("DayCraft Backend Running");
+});
+
+// Health check route
+app.get("/health", (req, res) => {
+    res.status(200).json({ status: "OK" });
 });
 
 // Routes
