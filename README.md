@@ -2,21 +2,12 @@
 
 DayCraft is a MERN-style platform for connecting daily-wage workers and employers with bilingual support, role-based access, location-aware job discovery, chat, notifications, and wallet/payment flows.
 
-## Main Documentation
-
-The main project documentation is here:
-
-- [Overall Documentation](docs/DAYCRAFT_OVERVIEW.md)
-- [EC2 Deployment Guide](DEPLOY_EC2.md)
-
 ## Project Structure
 
 ```text
 daycraft/
 |-- frontend/   React + Vite frontend
-|-- backend/    Node.js + Express API
-|-- deploy/     Deployment scripts
-`-- docs/       Project documentation
+`-- backend/    Node.js + Express API
 ```
 
 ## Quick Start
