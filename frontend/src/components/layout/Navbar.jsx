@@ -36,36 +36,108 @@ function Navbar() {
     }, [])
 
     const toggleMenu = () => setMenuOpen(!menuOpen)
-    const closeMenu = () => setMenuOpen(false)
-
-    const handleLogout = () => {
-        logout()
-        navigate('/')
-        closeMenu()
+    const closeAllMenus = () => {
+        setMenuOpen(false)
         setDropdownOpen(false)
+        setNotifOpen(false)
+    }
+
+    const accountLinks = [
+        {
+            to: '/dashboard',
+            label: t('nav.dashboard'),
+            icon: '📊'
+        },
+        {
+            to: '/profile',
+            label: language === 'en' ? 'Profile' : 'சுயவிவரம்',
+            icon: '👤'
+        },
+        {
+            to: '/wallet',
+            label: language === 'en' ? 'My Wallet' : 'எனது பணப்பை',
+            icon: '💰'
+        }
+    ]
+
+    if (isEmployer) {
+        accountLinks.push({
+            to: '/post-job',
+            label: language === 'en' ? 'Post Job' : 'வேலை இடுக',
+            icon: '➕'
+        })
+    }
+
+    if (isAdmin) {
+        accountLinks.push({
+            to: '/admin',
+            label: 'Admin Panel',
+            icon: '⚙️'
+        })
+    }
+
+    const handleLogout = async () => {
+        closeAllMenus()
+        await logout()
+    }
+
+    const handleAccountNavigate = (path) => {
+        closeAllMenus()
+        navigate(path)
     }
 
     return (
         <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}>
             <div className="container navbar-container">
-                <Link to="/" className="navbar-brand" onClick={closeMenu}>
+                <Link to="/" className="navbar-brand" onClick={closeAllMenus}>
                     <img src={logo} alt="DayCraft" className="brand-logo" />
                 </Link>
 
                 <div className={`navbar-menu ${menuOpen ? 'active' : ''}`}>
-                    <NavLink to="/" className="nav-link" onClick={closeMenu}>
+                    <NavLink to="/" className="nav-link" onClick={closeAllMenus}>
                         {t('nav.home')}
                     </NavLink>
-                    <NavLink to="/jobs" className="nav-link" onClick={closeMenu}>
+                    <NavLink to="/jobs" className="nav-link" onClick={closeAllMenus}>
                         {t('nav.jobs')}
                     </NavLink>
-                    <NavLink to="/workers" className="nav-link" onClick={closeMenu}>
+                    <NavLink to="/workers" className="nav-link" onClick={closeAllMenus}>
                         {t('nav.workers')}
                     </NavLink>
                     {isAuthenticated && (
-                        <NavLink to="/dashboard" className="nav-link" onClick={closeMenu}>
+                        <NavLink to="/dashboard" className="nav-link" onClick={closeAllMenus}>
                             {t('nav.dashboard')}
                         </NavLink>
+                    )}
+
+                    {isAuthenticated && (
+                        <div className="mobile-account-card hide-desktop">
+                            {accountLinks.slice(0, 3).map((item) => (
+                                <button
+                                    key={item.to}
+                                    type="button"
+                                    className="mobile-account-link"
+                                    onClick={() => handleAccountNavigate(item.to)}
+                                >
+                                    <span className="mobile-account-icon">{item.icon}</span>
+                                    <span>{item.label}</span>
+                                </button>
+                            ))}
+                            <button className="mobile-account-link mobile-logout-btn" onClick={handleLogout}>
+                                <span className="mobile-account-icon">🚪</span>
+                                <span>{language === 'en' ? 'Logout' : 'வெளியேறு'}</span>
+                            </button>
+                        </div>
+                    )}
+
+                    {!isAuthenticated && (
+                        <div className="mobile-auth-actions hide-desktop">
+                            <Link to="/login" className="btn btn-secondary btn-sm" onClick={closeAllMenus}>
+                                {t('nav.login')}
+                            </Link>
+                            <Link to="/register" className="btn btn-primary btn-sm" onClick={closeAllMenus}>
+                                {t('nav.register')}
+                            </Link>
+                        </div>
                     )}
                 </div>
 
@@ -99,7 +171,10 @@ function Navbar() {
                         <div className="user-menu">
                             <button
                                 className="user-menu-btn"
-                                onClick={() => setDropdownOpen(!dropdownOpen)}
+                                onClick={() => {
+                                    setDropdownOpen(!dropdownOpen)
+                                    setNotifOpen(false)
+                                }}
                             >
                                 <span className="user-avatar">
                                     {user?.avatar ? (
@@ -113,25 +188,16 @@ function Navbar() {
                             </button>
                             {dropdownOpen && (
                                 <div className="user-dropdown">
-                                    <Link to="/dashboard" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
-                                        📊 {t('nav.dashboard')}
-                                    </Link>
-                                    <Link to="/profile" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
-                                        👤 {language === 'en' ? 'Profile' : 'சுயவிவரம்'}
-                                    </Link>
-                                    <Link to="/wallet" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
-                                        💰 {language === 'en' ? 'My Wallet' : 'எனது பணப்பை'}
-                                    </Link>
-                                    {isEmployer && (
-                                        <Link to="/post-job" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
-                                            ➕ {language === 'en' ? 'Post Job' : 'வேலை இடுக'}
-                                        </Link>
-                                    )}
-                                    {isAdmin && (
-                                        <Link to="/admin" className="dropdown-item" onClick={() => setDropdownOpen(false)}>
-                                            ⚙️ Admin Panel
-                                        </Link>
-                                    )}
+                                    {accountLinks.map((item) => (
+                                        <button
+                                            key={item.to}
+                                            type="button"
+                                            className="dropdown-item"
+                                            onClick={() => handleAccountNavigate(item.to)}
+                                        >
+                                            {item.icon} {item.label}
+                                        </button>
+                                    ))}
                                     <hr className="dropdown-divider" />
                                     <button className="dropdown-item logout-btn" onClick={handleLogout}>
                                         🚪 {language === 'en' ? 'Logout' : 'வெளியேறு'}

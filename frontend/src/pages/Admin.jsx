@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import { buildApiUrl } from '../services/apiConfig'
 import adminService from '../services/adminService'
 import './Admin.css'
-
-const API_URL = 'http://localhost:5000/api'
 
 function AdminDashboard() {
     const { language } = useLanguage()
@@ -57,7 +56,7 @@ function AdminDashboard() {
         if (!confirm('Are you sure you want to delete this job?')) return
         try {
             // Reusing existing logic if needed or implementing in adminService
-            const res = await fetch(`${API_URL}/admin/jobs/${jobId}`, {
+            const res = await fetch(buildApiUrl(`/admin/jobs/${jobId}`), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             })

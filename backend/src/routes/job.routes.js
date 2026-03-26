@@ -37,7 +37,7 @@ router.get('/user/recommended', protect, authorize('worker'), getRecommendedJobs
 router.get('/:id', getJob)
 router.get('/:id/matches', protect, authorize('employer', 'admin'), getJobMatches)
 
-// Other protected routes
+// Protected routes
 router.post('/', protect, authorize('employer', 'admin'), createJob)
 router.put('/:id', protect, updateJob)
 router.delete('/:id', protect, deleteJob)

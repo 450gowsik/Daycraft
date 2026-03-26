@@ -1,56 +1,53 @@
 # DayCraft - Daily-Wage Labour Platform
 
-A professional MERN stack application connecting daily-wage workers with employers, featuring bilingual support (Tamil/English) and a modern, accessible UI.
+DayCraft is a MERN-style platform for connecting daily-wage workers and employers with bilingual support, role-based access, location-aware job discovery, chat, notifications, and wallet/payment flows.
+
+## Main Documentation
+
+The main project documentation is here:
+
+- [Overall Documentation](docs/DAYCRAFT_OVERVIEW.md)
+- [EC2 Deployment Guide](DEPLOY_EC2.md)
 
 ## Project Structure
 
-```
+```text
 daycraft/
-├── frontend/          ← React (Vite) frontend
-└── backend/           ← Node.js + Express API
+|-- frontend/   React + Vite frontend
+|-- backend/    Node.js + Express API
+|-- deploy/     Deployment scripts
+`-- docs/       Project documentation
 ```
 
 ## Quick Start
 
 ### Frontend
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Frontend runs at: http://localhost:5173
+
+Frontend runs at `http://localhost:5173`
 
 ### Backend
+
 ```bash
 cd backend
 npm install
 npm run dev
 ```
-Backend runs at: http://localhost:5000
 
-## Features
-
-- 🌐 **Bilingual Support**: Tamil & English languages
-- 👷 **Worker Profiles**: Browse and connect with skilled workers
-- 📋 **Job Listings**: Post and find daily-wage jobs
-- 🔐 **Authentication**: Secure JWT-based auth
-- 📱 **Responsive Design**: Works on all devices
-- ✨ **Modern UI**: Glassmorphism, gradients, animations
+Backend runs at `http://localhost:5000`
 
 ## Tech Stack
 
-**Frontend**: React 18, Vite, React Router, Axios  
-**Backend**: Node.js, Express, MongoDB, Mongoose  
-**Auth**: JWT, bcrypt
-
-## Environment Variables
-
-### Backend (.env)
-```
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/daycraft
-JWT_SECRET=your_jwt_secret_key
-```
+- Frontend: React 18, Vite, React Router, Axios
+- Backend: Node.js, Express, MongoDB, Mongoose
+- Auth: JWT, bcrypt, OTP, Google sign-in
+- Payments: Razorpay
+- Messaging / Notifications: custom backend modules
 
 ## License
 

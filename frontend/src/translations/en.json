@@ -11,9 +11,9 @@
     "hero": {
         "tagline": "Connect. Work. Thrive.",
         "title": "Find Daily-Wage Employees Instantly",
-        "subtitle": "DayCraft connects skilled employees with job providers seamlessly. Post jobs or find work in your area with just a few clicks.",
+        "subtitle": "DayCraft connects skilled employees with job providers seamlessly. Find work or hire talent in your area with just a few clicks.",
         "findWorkers": "Find Employees",
-        "postJob": "Post a Job"
+        "hireWorkers": "Hire Workers"
     },
     "features": {
         "title": "Why Choose DayCraft?",

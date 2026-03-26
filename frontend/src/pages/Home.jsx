@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext.jsx'
 import { getDetailedIcon } from '../constants/categories.js'
 import { useState, useEffect, useRef } from 'react'
 import logo from '../assets/images/logo.png'
+import { buildApiUrl } from '../services/apiConfig'
 import './Home.css'
 
 // Animated Counter with Intersection Observer
@@ -70,7 +71,7 @@ function FloatingParticles() {
 function Home() {
     const { language } = useLanguage()
     const { categories } = useJobs()
-    const { user } = useAuth()
+    const { user, isAuthenticated } = useAuth()
     const [activeTestimonial, setActiveTestimonial] = useState(0)
     const [featuredJobs, setFeaturedJobs] = useState([])
     const [isLoadingJobs, setIsLoadingJobs] = useState(true)
@@ -96,7 +97,7 @@ function Home() {
             setIsLoadingJobs(true)
             try {
                 // Build URL with location filter if user has a saved location
-                let url = 'http://localhost:5000/api/jobs?limit=24&status=open'
+                let url = buildApiUrl('/jobs?limit=24&status=open')
 
                 if (userLocation) {
                     // Extract city/district from user's location string
@@ -112,7 +113,7 @@ function Home() {
                     setFeaturedJobs(data.jobs)
                 } else if (userLocation) {
                     // If no jobs found for user's location, fetch nearby district jobs
-                    const fallbackResponse = await fetch('http://localhost:5000/api/jobs?limit=24&status=open')
+                    const fallbackResponse = await fetch(buildApiUrl('/jobs?limit=24&status=open'))
                     const fallbackData = await fallbackResponse.json()
 
                     if (fallbackData.success && fallbackData.jobs) {
@@ -218,10 +219,28 @@ function Home() {
                             <Link to="/jobs" className="btn btn-primary btn-xl">
                                 <span>🔍</span> {language === 'ta' ? 'வேலைகளைத் தேடு' : 'Find Jobs'}
                             </Link>
-                            <Link to={user ? "/post-job" : "/register"} className="btn btn-white btn-xl">
-                                <span>📝</span> {language === 'ta' ? 'வேலை வழங்கு' : 'Post a Job'}
+                            <Link to="/workers" className="btn btn-white btn-xl">
+                                <span>👷</span> {language === 'ta' ? 'தொழிலாளர்களைக் கண்டுபிடி' : 'Find Employees'}
                             </Link>
                         </div>
+
+                        {!isAuthenticated && (
+                            <div className="hero-auth animate-fadeInUp delay-3">
+                                <p className="hero-auth-text">
+                                    {language === 'ta'
+                                        ? 'வேலைகளுக்கு விண்ணப்பிக்கவும் அல்லது தொழிலாளர்களை அமர்த்தவும் உள்நுழையவும் அல்லது பதிவு செய்யவும்.'
+                                        : 'Login or create an account to apply for jobs and hire workers.'}
+                                </p>
+                                <div className="hero-auth-actions">
+                                    <Link to="/login" className="btn btn-secondary btn-lg">
+                                        {language === 'ta' ? 'உள்நுழைய' : 'Login'}
+                                    </Link>
+                                    <Link to="/register" className="btn btn-primary btn-lg">
+                                        {language === 'ta' ? 'பதிவு செய்ய' : 'Register'}
+                                    </Link>
+                                </div>
+                            </div>
+                        )}
 
                         <div className="hero-stats animate-fadeInUp delay-3">
                             <div className="hero-stat glass-card">

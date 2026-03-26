@@ -67,10 +67,6 @@ const NAVIGATION_PATTERNS = [
         action: { type: 'navigate', payload: '/profile', requiresAuth: true }
     },
     {
-        keywords: ['post job', 'create job', 'add job', 'hire worker'],
-        action: { type: 'navigate', payload: '/post-job', requiresAuth: true, requiresRole: 'employer' }
-    },
-    {
         keywords: ['my applications', 'applied jobs', 'application status'],
         action: { type: 'navigate', payload: '/applications', requiresAuth: true }
     },

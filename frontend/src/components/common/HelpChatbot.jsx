@@ -149,6 +149,29 @@ function HelpChatbot() {
         }
     }
 
+    // Helper to safely parse response
+    const processResponse = (response) => {
+        // If response is already an object, return it
+        if (typeof response === 'object' && response !== null) {
+            return response
+        }
+
+        // If response is string, try to parse it
+        if (typeof response === 'string') {
+            const trimmed = response.trim()
+            if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+                try {
+                    return JSON.parse(trimmed)
+                } catch (e) {
+                    console.warn('Failed to parse JSON string:', e)
+                }
+            }
+            return { text: response, action: null }
+        }
+
+        return { text: t.error, action: null }
+    }
+
     // Handle quick question click
     const handleQuestionClick = async (question) => {
         const questionText = question[language] || question.en
@@ -158,11 +181,10 @@ function HelpChatbot() {
         setIsTyping(true)
 
         try {
-            const response = await sendToLLM(questionText)
+            const rawResponse = await sendToLLM(questionText)
+            const response = processResponse(rawResponse)
 
-            // Handle display text
-            const botText = typeof response === 'string' ? response : response.text
-            setMessages(prev => [...prev, { type: 'bot', text: botText }])
+            setMessages(prev => [...prev, { type: 'bot', text: response.text }])
 
             // Execute action with auth/role guards
             if (response.action) {
@@ -187,11 +209,10 @@ function HelpChatbot() {
         setIsTyping(true)
 
         try {
-            const response = await sendToLLM(userMessage)
+            const rawResponse = await sendToLLM(userMessage)
+            const response = processResponse(rawResponse)
 
-            // Handle display text
-            const botText = typeof response === 'string' ? response : response.text
-            setMessages(prev => [...prev, { type: 'bot', text: botText }])
+            setMessages(prev => [...prev, { type: 'bot', text: response.text }])
 
             // Execute action with auth/role guards
             if (response.action) {

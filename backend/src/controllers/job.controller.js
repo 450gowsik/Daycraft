@@ -67,10 +67,10 @@ exports.getJobs = async (req, res) => {
 exports.createJob = async (req, res) => {
     try {
         // 1. Role Check
-        if (req.user.role !== 'employer') {
+        if (req.user.role !== 'employer' && req.user.role !== 'admin') {
             return res.status(403).json({
                 success: false,
-                message: 'Only verified employers can post jobs'
+                message: 'Only employers can post jobs'
             })
         }
 
@@ -89,91 +89,89 @@ exports.createJob = async (req, res) => {
             })
         }
 
-        // 3. Create Job
+        // 3. Extract job data from request
         const {
             title,
-            description,
             category,
-            role,
+            type,
+            description,
             location,
-            wage,
-            wageType,
-            duration,
-            requiredWorkers,
-            urgent
+            geoLocation,
+            isRemote,
+            skills,
+            experienceLevel,
+            workersNeeded,
+            salary,
+            paymentType
         } = req.body
 
-        const job = await Job.create({
+        // 4. Create Job with new schema
+        const jobData = {
             employer: req.user.id,
             title,
-            description,
             category,
-            role,
+            type: type || 'daily',
+            description,
             location,
-            wage,
-            wageType,
-            duration,
-            requiredWorkers,
-            urgent,
+            isRemote: isRemote || false,
+            skills: skills || [],
+            experienceLevel: experienceLevel || 'any',
+            requiredWorkers: workersNeeded || 1,
+            wage: salary,
+            wageType: paymentType || 'daily',
             status: 'open'
-        })
+        }
+
+        // Add geo coordinates if provided
+        if (geoLocation && geoLocation.coordinates) {
+            jobData.locationCoordinates = {
+                type: 'Point',
+                coordinates: geoLocation.coordinates
+            }
+        }
+
+        const job = await Job.create(jobData)
 
         res.status(201).json({
             success: true,
             job
         })
 
-        // Notify matching workers (Intelligent Matching)
+        // Notify matching workers (background task)
         try {
-            // 1. Fetch potential candidates with hard filters
             const candidates = await User.find({
                 role: 'worker',
                 isActive: true,
                 phoneVerified: true
-            }).select('name phone skills location availability rating completedJobs geoLocation');
+            }).select('name phone skills location availability rating completedJobs geoLocation').limit(50)
 
-            // 2. Use matching service to rank and score
-            const matchingService = require('../services/matchingService');
-            const rankedWorkers = matchingService.getTopMatchingWorkers(candidates, job, 50); // Get top 50 to filter locally
+            const matchingService = require('../services/matchingService')
+            const rankedWorkers = matchingService.getTopMatchingWorkers(candidates, job, 20)
 
-            // 3. Filter by threshold (65+) and limit to Top 5
             const smsCandidates = rankedWorkers
                 .filter(m => m.match.total >= 65)
-                .slice(0, 5);
+                .slice(0, 5)
 
             for (const { worker, match } of smsCandidates) {
-                // Backend internal notification
                 await createNotification({
                     userId: worker._id,
                     type: 'job_match',
-                    title: 'Recommended Job for You',
-                    message: `Matched ${match.total}%: A new ${job.title} job is available in ${job.location}`,
+                    title: 'New Job Match',
+                    message: `${match.total}% match: ${job.title} in ${job.location}`,
                     data: {
                         jobId: job._id,
                         senderId: req.user.id,
                         matchScore: match.total
                     }
-                });
-
-                // External SMS alert
-                if (worker.phone) {
-                    try {
-                        // Use distance context from match breakdown if available
-                        const distanceText = match.breakdown.distance > 0 ? `${Math.round(30 - match.breakdown.distance)}km away` : 'near you';
-                        await smsService.sendMatchAlert(worker.phone, job.title, job.location, distanceText);
-                    } catch (smsError) {
-                        console.error('Match SMS Error:', smsError.message);
-                    }
-                }
+                })
             }
         } catch (notifyError) {
-            console.error('Intelligent matching notification error:', notifyError)
+            console.error('Worker notification error:', notifyError)
         }
 
     } catch (error) {
         console.error('Create job error:', error)
 
-        // Handle mongoose validation errors
         if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map(err => err.message)
             return res.status(400).json({

@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import { buildApiUrl } from '../services/apiConfig'
 import recommendationService from '../services/recommendationService'
 import './Dashboard.css'
-
-const API_URL = 'http://localhost:5000/api'
 
 function Dashboard() {
     const { t, language } = useLanguage()
@@ -23,11 +22,13 @@ function Dashboard() {
     const [loadingRecommended, setLoadingRecommended] = useState(false)
 
     useEffect(() => {
-        fetchDashboardData()
-        if (isWorker) {
-            fetchRecommendations()
+        if (user) {
+            fetchDashboardData()
+            if (isWorker) {
+                fetchRecommendations()
+            }
         }
-    }, [isWorker])
+    }, [user, isWorker])
 
     const fetchRecommendations = async () => {
         setLoadingRecommended(true)
@@ -47,7 +48,7 @@ function Dashboard() {
         try {
             if (isEmployer) {
                 // Fetch employer's posted jobs
-                const response = await fetch(`${API_URL}/jobs/user/my-jobs`, {
+                const response = await fetch(buildApiUrl('/jobs/user/my-jobs'), {
                     headers: { 'Authorization': `Bearer ${token}` }
                 })
 
@@ -71,7 +72,7 @@ function Dashboard() {
                 }
             } else if (isWorker) {
                 // Fetch worker's applications
-                const response = await fetch(`${API_URL}/jobs/user/my-applications`, {
+                const response = await fetch(buildApiUrl('/jobs/user/my-applications'), {
                     headers: { 'Authorization': `Bearer ${token}` }
                 })
 
@@ -123,11 +124,11 @@ function Dashboard() {
                 <div className="dashboard-header">
                     <div>
                         <h1>{language === 'en' ? 'Dashboard' : 'டாஷ்போர்டு'}</h1>
-                        <p>{language === 'en' ? 'Welcome back' : 'மீண்டும் வருக'}, <strong>{user?.name}</strong>!</p>
+                        <p>{language === 'en' ? 'Welcome back' : 'மீண்டும் வருக'}, <strong>{user?.name || 'User'}</strong>!</p>
                     </div>
                     {isEmployer && (
                         <Link to="/post-job" className="btn btn-primary">
-                            ➕ {language === 'en' ? 'Post New Job' : 'புதிய வேலையை இடு'}
+                            ➕ {language === 'en' ? 'Post a Job' : 'வேலையை இடு'}
                         </Link>
                     )}
                 </div>
@@ -137,7 +138,7 @@ function Dashboard() {
                         <div key={stat.key} className="stat-card">
                             <span className="stat-icon">{stat.icon}</span>
                             <div className="stat-content">
-                                <span className="stat-value">{stat.value}</span>
+                                <span className="stat-value">{stat.value || 0}</span>
                                 <span className="stat-label">{stat.label}</span>
                             </div>
                         </div>
@@ -157,10 +158,7 @@ function Dashboard() {
                             <div className="loading-state">Loading...</div>
                         ) : recentJobs.length === 0 ? (
                             <div className="empty-state">
-                                <p>{language === 'en' ? 'You haven\'t posted any jobs yet.' : 'நீங்கள் இதுவரை வேலைகள் இடவில்லை.'}</p>
-                                <Link to="/post-job" className="btn btn-primary">
-                                    {language === 'en' ? 'Post Your First Job' : 'உங்கள் முதல் வேலையை இடுங்கள்'}
-                                </Link>
+                                <p>{language === 'en' ? 'No jobs posted yet.' : 'இதுவரை வேலைகள் இடவில்லை.'}</p>
                             </div>
                         ) : (
                             <div className="jobs-table">
@@ -281,12 +279,6 @@ function Dashboard() {
                             <span className="action-icon">👤</span>
                             <span>{language === 'en' ? 'Edit Profile' : 'சுயவிவரத்தைத் திருத்து'}</span>
                         </Link>
-                        {isEmployer && (
-                            <Link to="/post-job" className="action-card">
-                                <span className="action-icon">📝</span>
-                                <span>{language === 'en' ? 'Post Job' : 'வேலை இடு'}</span>
-                            </Link>
-                        )}
                         <Link to="/jobs" className="action-card">
                             <span className="action-icon">🔍</span>
                             <span>{language === 'en' ? 'Browse Jobs' : 'வேலைகளை உலாவு'}</span>

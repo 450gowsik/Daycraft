@@ -16,10 +16,11 @@ const paymentRoutes = require('./routes/paymentRoutes')
 const chatbotRoutes = require('./routes/chatbot.routes')
 
 const app = express()
+const corsOrigin = env.CORS_ORIGINS.includes('*') ? true : env.CORS_ORIGINS
 
 // Middleware
 app.use(cors({
-    origin: env.CORS_ORIGINS,
+    origin: corsOrigin,
     credentials: true
 }))
 app.use(express.json())

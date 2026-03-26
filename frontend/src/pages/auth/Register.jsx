@@ -16,6 +16,8 @@ import { useLanguage } from '../../context/LanguageContext.jsx'
 import LocationPicker from '../../components/common/LocationPicker.jsx'
 import { toast } from 'react-hot-toast'
 import logo from '../../assets/images/logo.png'
+import roleEmployer from '../../assets/images/role-employer.png'
+import roleWorker from '../../assets/images/role-worker.png'
 import './Auth.css'
 
 // Step definitions
@@ -256,7 +258,7 @@ function Register() {
             name: formData.name,
             role: formData.role,
             location: formData.location,
-            geoLocation: formData.geoLocation
+            geoLocation: formData.geoLocation ? { type: 'Point', coordinates: formData.geoLocation } : undefined
         })
 
         if (result.success) {
@@ -412,32 +414,45 @@ function Register() {
                 {step === STEPS.METHOD && (
                     <div className="auth-step">
                         <h1 className="auth-title">Create Account</h1>
-                        <p className="auth-subtitle">Join DayCraft to post jobs or find employment</p>
+                        <p className="auth-subtitle">Join DayCraft to find work or hire talent</p>
 
-                        {/* Role Selection */}
-                        <div className="role-selector">
-                            <button
-                                type="button"
-                                className={`role-option ${formData.role === 'employer' ? 'selected' : ''}`}
+                        {/* Role Selection Cards */}
+                        <div className="role-cards-grid">
+                            <div
+                                className={`role-card employer-card ${formData.role === 'employer' ? 'selected' : ''}`}
                                 onClick={() => setFormData(prev => ({ ...prev, role: 'employer' }))}
                             >
-                                <span className="role-icon">👔</span>
-                                <span className="role-label">
-                                    {language === 'ta' ? 'வேலை அளிக்கிறேன்' : "I'm posting jobs"}
-                                </span>
-                                <span className="role-type">Job Provider</span>
-                            </button>
-                            <button
-                                type="button"
-                                className={`role-option ${formData.role === 'worker' ? 'selected' : ''}`}
+                                <div className="role-card-content">
+                                    <div className="role-image-wrapper">
+                                        <img src={roleEmployer} alt="Job Provider" className="role-image" />
+                                        <div className="role-check-overlay">
+                                            <span className="check-icon">✓</span>
+                                        </div>
+                                    </div>
+                                    <span className="role-subtitle">
+                                        {language === 'ta' ? 'வேலை அளிக்கிறேன்' : "I'm posting jobs"}
+                                    </span>
+                                    <h3 className="role-title">Job Provider</h3>
+                                </div>
+                            </div>
+
+                            <div
+                                className={`role-card worker-card ${formData.role === 'worker' ? 'selected' : ''}`}
                                 onClick={() => setFormData(prev => ({ ...prev, role: 'worker' }))}
                             >
-                                <span className="role-icon">👷</span>
-                                <span className="role-label">
-                                    {language === 'ta' ? 'வேலை செய்ய விரும்புகிறேன்' : "I'm looking for work"}
-                                </span>
-                                <span className="role-type">Employee</span>
-                            </button>
+                                <div className="role-card-content">
+                                    <div className="role-image-wrapper">
+                                        <img src={roleWorker} alt="Employee" className="role-image" />
+                                        <div className="role-check-overlay">
+                                            <span className="check-icon">✓</span>
+                                        </div>
+                                    </div>
+                                    <span className="role-subtitle">
+                                        {language === 'ta' ? 'வேலை செய்ய விரும்புகிறேன்' : "I'm looking for work"}
+                                    </span>
+                                    <h3 className="role-title">Employee</h3>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Auth Method Tabs */}

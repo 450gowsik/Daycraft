@@ -8,9 +8,10 @@
  */
 
 import axios from 'axios'
+import { API_BASE_URL, buildApiUrl } from './apiConfig'
 
 const api = axios.create({
-    baseURL: '/api',
+    baseURL: API_BASE_URL,
     timeout: 15000,
     headers: {
         'Content-Type': 'application/json'
@@ -86,7 +87,7 @@ api.interceptors.response.use(
 
             try {
                 // Attempt token refresh
-                const response = await axios.post('/api/auth/refresh-token', {
+                const response = await axios.post(buildApiUrl('/auth/refresh-token'), {
                     refreshToken
                 })
 

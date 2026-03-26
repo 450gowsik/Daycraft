@@ -2,7 +2,6 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import demoWorkers from '../data/demoWorkers.json'
 
 const WorkerContext = createContext()
-const API_URL = 'http://localhost:5000/api'
 
 export function WorkerProvider({ children }) {
     const [workers, setWorkers] = useState([])

@@ -11,7 +11,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import api from '../services/api'
+import api, { setAccessToken as setApiAccessToken } from '../services/api'
 
 const AuthContext = createContext()
 
@@ -59,6 +59,7 @@ export function AuthProvider({ children }) {
 
     const saveTokens = useCallback((access, refresh) => {
         setAccessToken(access)
+        setApiAccessToken(access) // Fix: Sync to API service
         if (refresh) {
             setRefreshToken(refresh)
             localStorage.setItem('refreshToken', refresh)
@@ -475,11 +476,11 @@ export function AuthProvider({ children }) {
 
         // Computed properties
         isAuthenticated: !!user && !!accessToken,
-        role: user?.role || 'worker',
+        role: user?.activeRole || user?.role || 'worker',
         profile: user?.profile || null,
-        isWorker: user?.role === 'worker',
-        isEmployer: user?.role === 'employer',
-        isAdmin: user?.role === 'admin',
+        isWorker: user?.roles?.includes('worker') || user?.role === 'worker',
+        isEmployer: user?.roles?.includes('employer') || user?.role === 'employer',
+        isAdmin: user?.roles?.includes('admin') || user?.role === 'admin',
 
         // Email auth
         emailStart,

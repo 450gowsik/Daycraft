@@ -21,7 +21,14 @@ function ProtectedRoute({ children, roles }) {
 
     // Profile completion guard - redirect incomplete profiles
     // Allow access to /complete-profile to prevent infinite redirect loop
-    if (!user?.profileCompleted && location.pathname !== '/complete-profile') {
+    const allowedBeforeProfileCompletion = new Set([
+        '/complete-profile',
+        '/dashboard',
+        '/profile',
+        '/wallet'
+    ])
+
+    if (!user?.profileCompleted && !allowedBeforeProfileCompletion.has(location.pathname)) {
         return <Navigate to="/complete-profile" replace />
     }
 
@@ -32,8 +39,14 @@ function ProtectedRoute({ children, roles }) {
     }
 
     // Check role authorization if roles are specified
-    if (roles && !roles.includes(user?.role)) {
-        return <Navigate to="/" replace />
+    // Supports both multi-role (user.roles) and backward compatibility (user.role)
+    if (roles && roles.length > 0) {
+        const userRoles = user?.roles || (user?.role ? [user.role] : [])
+        const hasPermission = userRoles.some(r => roles.includes(r))
+
+        if (!hasPermission) {
+            return <Navigate to="/" replace />
+        }
     }
 
     return children

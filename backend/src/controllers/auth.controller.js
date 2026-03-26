@@ -237,9 +237,11 @@ exports.emailRegister = async (req, res) => {
             phone: phone || undefined,
             password: hashedPassword,
             role: role,
+            roles: [role],
+            activeRole: role,
             location: location || '',
-            geoLocation: geoLocation || undefined,
-            authProvider: 'email',
+            geoLocation: geoLocation ? { type: 'Point', coordinates: geoLocation } : undefined,
+            authProvider: 'local',
             emailVerified: false,
             isActive: true
         })
@@ -274,16 +276,39 @@ exports.emailRegister = async (req, res) => {
     } catch (error) {
         console.error('Email register error:', error)
 
+        // Specific error handling for better UX
         if (error.code === 11000) {
+            const field = Object.keys(error.keyPattern || {})[0]
+            if (field === 'email') {
+                return res.status(400).json({
+                    success: false,
+                    code: 'EMAIL_EXISTS',
+                    message: 'An account with this email already exists. Try logging in instead.'
+                })
+            }
+            if (field === 'phone') {
+                return res.status(400).json({
+                    success: false,
+                    code: 'PHONE_EXISTS',
+                    message: 'This phone number is already registered'
+                })
+            }
+        }
+
+        // Validation errors
+        if (error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(e => e.message)
             return res.status(400).json({
                 success: false,
-                message: 'This email is already registered'
+                code: 'VALIDATION_ERROR',
+                message: messages[0] || 'Please check your details and try again'
             })
         }
 
         res.status(500).json({
             success: false,
-            message: 'Registration failed. Please try again.'
+            code: 'SERVER_ERROR',
+            message: 'Something went wrong. Please try again later.'
         })
     }
 }
@@ -312,7 +337,8 @@ exports.login = async (req, res) => {
         if (!user) {
             return res.status(401).json({
                 success: false,
-                message: 'Invalid email or password'
+                code: 'USER_NOT_FOUND',
+                message: 'No account found with this email address'
             })
         }
 
@@ -324,12 +350,12 @@ exports.login = async (req, res) => {
             })
         }
 
-        // Verify password
         const isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch) {
             return res.status(401).json({
                 success: false,
-                message: 'Invalid email or password'
+                code: 'WRONG_PASSWORD',
+                message: 'Incorrect password. Please try again.'
             })
         }
 
@@ -350,7 +376,8 @@ exports.login = async (req, res) => {
         console.error('Login error:', error)
         res.status(500).json({
             success: false,
-            message: 'Login failed. Please try again.'
+            code: 'SERVER_ERROR',
+            message: 'Login failed. Please try again later.'
         })
     }
 }
@@ -605,9 +632,11 @@ exports.googleAuth = async (req, res) => {
                 email: emailLower,
                 googleId,
                 avatar: picture,
-                role: role,             // Single role initially
+                role: role,             // Legacy compatibility
+                roles: [role],          // Multi-role support
+                activeRole: role,
                 location: location || '',
-                geoLocation: geoLocation || undefined,
+                geoLocation: geoLocation ? { type: 'Point', coordinates: geoLocation } : undefined,
                 authProvider: 'google',
                 emailVerified: true,    // Google email is pre-verified
                 isActive: true

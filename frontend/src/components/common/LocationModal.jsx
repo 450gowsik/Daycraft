@@ -9,6 +9,7 @@ function LocationModal({ isOpen, onClose, onSelect, selectedLocation }) {
     const [searchQuery, setSearchQuery] = useState('')
     const [expandedDistrict, setExpandedDistrict] = useState(null)
     const [selectedCity, setSelectedCity] = useState(selectedLocation || null)
+    const [networkSuggestion, setNetworkSuggestion] = useState(null)
     const [useCurrentLocation, setUseCurrentLocation] = useState(false)
     const [loadingLocation, setLoadingLocation] = useState(false)
 
@@ -33,6 +34,7 @@ function LocationModal({ isOpen, onClose, onSelect, selectedLocation }) {
 
     const handleCitySelect = (district, city) => {
         setUseCurrentLocation(false)
+        setNetworkSuggestion(null)
         const location = {
             district: district,
             city: city,
@@ -49,6 +51,7 @@ function LocationModal({ isOpen, onClose, onSelect, selectedLocation }) {
     }
 
     const [locationError, setLocationError] = useState(null)
+    const isSecureLocationContext = window.isSecureContext || window.location.hostname === 'localhost'
 
     // Helper function to match city from coordinates/name
     const matchCityFromData = (cityName, lat = null, lng = null) => {
@@ -73,15 +76,6 @@ function LocationModal({ isOpen, onClose, onSelect, selectedLocation }) {
     // Multiple FREE IP location services for fallback
     const ipLocationServices = [
         {
-            name: 'ipwho.is',
-            url: 'https://ipwho.is/',
-            parse: (data) => data.success ? {
-                city: data.city || data.region,
-                lat: data.latitude,
-                lng: data.longitude
-            } : null
-        },
-        {
             name: 'ipapi.co',
             url: 'https://ipapi.co/json/',
             parse: (data) => !data.error ? {
@@ -95,6 +89,15 @@ function LocationModal({ isOpen, onClose, onSelect, selectedLocation }) {
             url: 'https://freeipapi.com/api/json',
             parse: (data) => data.cityName ? {
                 city: data.cityName,
+                lat: data.latitude,
+                lng: data.longitude
+            } : null
+        },
+        {
+            name: 'ipwho.is',
+            url: 'https://ipwho.is/',
+            parse: (data) => data.success ? {
+                city: data.city || data.region,
                 lat: data.latitude,
                 lng: data.longitude
             } : null
@@ -121,24 +124,22 @@ function LocationModal({ isOpen, onClose, onSelect, selectedLocation }) {
                     const matchedLocation = matchCityFromData(parsed.city, parsed.lat, parsed.lng)
 
                     if (matchedLocation) {
-                        setSelectedCity(matchedLocation)
-                        setUseCurrentLocation(true)
-                        setLocationError(null)
-                        return true
+                        return {
+                            ...matchedLocation,
+                            locationType: 'network',
+                            isApproximate: true
+                        }
                     } else {
                         // Use coords even if city not found in our list
-                        const location = {
+                        return {
                             district: null,
                             city: null,
                             coords: { lat: parsed.lat, lng: parsed.lng },
                             displayText: parsed.city,
                             locationType: 'network',
-                            isCurrentLocation: true
+                            isCurrentLocation: true,
+                            isApproximate: true
                         }
-                        setSelectedCity(location)
-                        setUseCurrentLocation(true)
-                        setLocationError(null)
-                        return true
                     }
                 }
             } catch (error) {
@@ -147,7 +148,15 @@ function LocationModal({ isOpen, onClose, onSelect, selectedLocation }) {
             }
         }
         console.log('All IP location services failed')
-        return false
+        return null
+    }
+
+    const applyNetworkSuggestion = (location) => {
+        if (!location) return
+        setSelectedCity(location)
+        setUseCurrentLocation(true)
+        setNetworkSuggestion(null)
+        setLocationError(null)
     }
 
     // Reverse geocode coordinates to get city/area name
@@ -203,14 +212,40 @@ function LocationModal({ isOpen, onClose, onSelect, selectedLocation }) {
         setLoadingLocation(true)
         setLocationError(null)
 
+        if (!isSecureLocationContext) {
+            console.log('GPS unavailable on insecure origin, using network-based location...')
+            const approximateLocation = await getLocationFromIP()
+            if (!approximateLocation) {
+                setLocationError(language === 'ta'
+                    ? 'GPS பயன்படுத்த HTTPS தேவை. கீழே நகரத்தைத் தேர்ந்தெடுக்கவும்.'
+                    : 'GPS needs HTTPS on live sites. Please select a city below.')
+            } else {
+                setUseCurrentLocation(false)
+                setSelectedCity(null)
+                setNetworkSuggestion(approximateLocation)
+                setLocationError(language === 'ta'
+                    ? 'இந்த இணைப்பில் சரியான GPS கிடைக்கவில்லை. கீழே தோராயமான நெட்வொர்க் இடம் காட்டப்பட்டுள்ளது.'
+                    : 'Exact GPS is unavailable on this connection. An approximate network location is shown below.')
+            }
+            setLoadingLocation(false)
+            return
+        }
+
         // Check if geolocation is supported
         if (!navigator.geolocation) {
             console.log('Geolocation not supported, trying IP-based location...')
-            const ipSuccess = await getLocationFromIP()
-            if (!ipSuccess) {
+            const approximateLocation = await getLocationFromIP()
+            if (!approximateLocation) {
                 setLocationError(language === 'ta'
                     ? 'இருப்பிடம் கண்டறிய முடியவில்லை'
                     : 'Could not detect location automatically')
+            } else {
+                setUseCurrentLocation(false)
+                setSelectedCity(null)
+                setNetworkSuggestion(approximateLocation)
+                setLocationError(language === 'ta'
+                    ? 'தோராயமான நெட்வொர்க் இருப்பிடம் மட்டும் கிடைத்தது.'
+                    : 'Only an approximate network location was found.')
             }
             setLoadingLocation(false)
             return
@@ -283,11 +318,18 @@ function LocationModal({ isOpen, onClose, onSelect, selectedLocation }) {
             console.log(errorMessage)
 
             // Try IP-based fallback
-            const ipSuccess = await getLocationFromIP()
-            if (!ipSuccess) {
+            const approximateLocation = await getLocationFromIP()
+            if (!approximateLocation) {
                 setLocationError(language === 'ta'
                     ? 'இருப்பிடம் கண்டறிய முடியவில்லை. கீழே நகரத்தைத் தேர்ந்தெடுக்கவும்.'
                     : 'Could not detect location. Please select a city below.')
+            } else {
+                setUseCurrentLocation(false)
+                setSelectedCity(null)
+                setNetworkSuggestion(approximateLocation)
+                setLocationError(language === 'ta'
+                    ? 'GPS கிடைக்கவில்லை. தோராயமான நெட்வொர்க் இடம் மட்டும் கண்டறியப்பட்டது.'
+                    : 'GPS was unavailable, so only an approximate network location was found.')
             }
             setLoadingLocation(false)
         }
@@ -323,7 +365,9 @@ function LocationModal({ isOpen, onClose, onSelect, selectedLocation }) {
                                 {language === 'ta' ? 'தற்போதைய இருப்பிடம்' : 'Use Current Location'}
                             </span>
                             <span className="location-btn-subtitle">
-                                {language === 'ta' ? 'GPS பயன்படுத்தி கண்டறியவும்' : 'Detect using GPS'}
+                                {isSecureLocationContext
+                                    ? (language === 'ta' ? 'GPS பயன்படுத்தி கண்டறியவும்' : 'Detect using GPS')
+                                    : (language === 'ta' ? 'HTTP-ல் நெட்வொர்க் இருப்பிடம் பயன்படுத்தப்படும்' : 'Uses network location on HTTP')}
                             </span>
                         </span>
                         {useCurrentLocation && <span className="check-icon">✓</span>}
@@ -332,7 +376,25 @@ function LocationModal({ isOpen, onClose, onSelect, selectedLocation }) {
                     {/* Location Error Message */}
                     {locationError && (
                         <div className="location-error">
-                            ⚠️ {locationError}. {language === 'ta' ? 'கீழே நகரத்தைத் தேர்ந்தெடுக்கவும்.' : 'Please select a city below.'}
+                            ⚠️ {locationError} {language === 'ta' ? 'தேவைப்பட்டால் கீழே நகரத்தைத் தேர்ந்தெடுக்கவும்.' : 'Choose a city below if needed.'}
+                        </div>
+                    )}
+
+                    {networkSuggestion && !useCurrentLocation && (
+                        <div className="network-suggestion">
+                            <div className="network-suggestion-copy">
+                                <span className="network-suggestion-label">
+                                    {language === 'ta' ? 'தோராயமான நெட்வொர்க் இடம்' : 'Approximate Network Location'}
+                                </span>
+                                <span className="network-suggestion-text">{networkSuggestion.displayText}</span>
+                            </div>
+                            <button
+                                type="button"
+                                className="network-suggestion-btn"
+                                onClick={() => applyNetworkSuggestion(networkSuggestion)}
+                            >
+                                {language === 'ta' ? 'இதையே பயன்படுத்து' : 'Use This Anyway'}
+                            </button>
                         </div>
                     )}
                 </div>

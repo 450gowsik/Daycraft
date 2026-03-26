@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import { buildApiUrl } from '../services/apiConfig'
 import './Chat.css'
-
-const API_URL = 'http://localhost:5000/api'
 
 function Chat() {
     const { language } = useLanguage()
@@ -36,7 +35,7 @@ function Chat() {
 
     const fetchConversations = async () => {
         try {
-            const response = await fetch(`${API_URL}/chat/conversations`, {
+            const response = await fetch(buildApiUrl('/chat/conversations'), {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
             const data = await response.json()
@@ -52,7 +51,7 @@ function Chat() {
 
     const fetchMessages = async (conversationId) => {
         try {
-            const response = await fetch(`${API_URL}/chat/conversations/${conversationId}/messages`, {
+            const response = await fetch(buildApiUrl(`/chat/conversations/${conversationId}/messages`), {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
             const data = await response.json()
@@ -72,7 +71,7 @@ function Chat() {
 
         setSending(true)
         try {
-            const response = await fetch(`${API_URL}/chat/messages`, {
+            const response = await fetch(buildApiUrl('/chat/messages'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

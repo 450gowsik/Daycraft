@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext.jsx'
 import demoJobs from '../data/demoJobs.json'
 import recommendationService from '../services/recommendationService'
 import paymentService from '../services/paymentService'
+import { buildApiUrl } from '../services/apiConfig'
 import PaymentButton from '../components/payment/PaymentButton'
 import { toast } from 'react-hot-toast'
 import './JobDetails.css'
@@ -75,7 +76,7 @@ function JobDetails() {
             setIsLoading(true)
             try {
                 // First try to fetch from API
-                const response = await fetch(`http://localhost:5000/api/jobs/${jobId}`)
+                const response = await fetch(buildApiUrl(`/jobs/${jobId}`))
                 const data = await response.json()
 
                 if (data.success && data.job) {

@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { buildApiUrl } from '../services/apiConfig'
 
 const JobContext = createContext()
-const API_URL = 'http://localhost:5000/api'
 
 export function JobProvider({ children }) {
     const [jobs, setJobs] = useState([])
@@ -43,7 +43,7 @@ export function JobProvider({ children }) {
 
     const fetchCategories = async () => {
         try {
-            const response = await fetch(`${API_URL}/categories`)
+            const response = await fetch(buildApiUrl('/categories'))
             const data = await response.json()
             if (data.success) {
                 setCategories(data.categories)
@@ -72,7 +72,7 @@ export function JobProvider({ children }) {
     const fetchJobs = async () => {
         setLoading(true)
         try {
-            const response = await fetch(`${API_URL}/jobs?limit=100`)
+            const response = await fetch(buildApiUrl('/jobs?limit=100'))
             const data = await response.json()
             if (data.success && data.jobs && data.jobs.length > 0) {
                 setJobs(data.jobs)
@@ -119,7 +119,7 @@ export function JobProvider({ children }) {
             if (lng) params.append('lng', lng)
             if (category) params.append('category', category)
 
-            const response = await fetch(`${API_URL}/jobs/location-matched?${params}`)
+            const response = await fetch(buildApiUrl(`/jobs/location-matched?${params}`))
             const data = await response.json()
 
             if (data.success) {
@@ -201,7 +201,7 @@ export function JobProvider({ children }) {
         setLoading(true)
         setError(null)
         try {
-            const response = await fetch(`${API_URL}/jobs/nearby?lat=${lat}&lng=${lng}&radius=${radius}${selectedCategory ? `&category=${selectedCategory}` : ''}`)
+            const response = await fetch(buildApiUrl(`/jobs/nearby?lat=${lat}&lng=${lng}&radius=${radius}${selectedCategory ? `&category=${selectedCategory}` : ''}`))
             const data = await response.json()
             if (data.success) {
                 setJobs(data.jobs)
