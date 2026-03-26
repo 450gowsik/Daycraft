@@ -55,7 +55,7 @@ Although the backend is often best described as a modular monolith in its curren
 
 This keeps the current codebase easier to develop and debug, while still leaving a clean path for future microservice extraction if scale demands it.
 
-## 3. 🏗️ Architecture & Tech Stack
+## 3. Architecture & Tech Stack
 
 ### Frontend
 
