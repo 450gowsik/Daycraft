@@ -4,6 +4,7 @@ import { useJobs } from '../context/JobContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { getDetailedIcon } from '../constants/categories.js'
 import { useState, useEffect, useRef } from 'react'
+import { FiSearch, FiUsers } from 'react-icons/fi'
 import logo from '../assets/images/logo.png'
 import { buildApiUrl } from '../services/apiConfig'
 import './Home.css'
@@ -217,10 +218,12 @@ function Home() {
 
                         <div className="hero-cta animate-fadeInUp delay-2">
                             <Link to="/jobs" className="btn btn-primary btn-xl">
-                                <span>🔍</span> {language === 'ta' ? 'வேலைகளைத் தேடு' : 'Find Jobs'}
+                                <FiSearch className="hero-cta-icon" aria-hidden="true" />
+                                <span>{language === 'ta' ? 'வேலைகளைத் தேடு' : 'Find Jobs'}</span>
                             </Link>
                             <Link to="/workers" className="btn btn-white btn-xl">
-                                <span>👷</span> {language === 'ta' ? 'தொழிலாளர்களைக் கண்டுபிடி' : 'Find Employees'}
+                                <FiUsers className="hero-cta-icon" aria-hidden="true" />
+                                <span>{language === 'ta' ? 'தொழிலாளர்களைக் கண்டுபிடி' : 'Find Employees'}</span>
                             </Link>
                         </div>
 

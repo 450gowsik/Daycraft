@@ -105,10 +105,46 @@
 }
 
 .hero-cta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-4);
-    margin-bottom: var(--space-12);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+    width: min(100%, 540px);
+    margin: 0 0 var(--space-12);
+    padding: var(--space-2);
+    background: rgba(255, 255, 255, 0.76);
+    border: 1px solid rgba(20, 168, 0, 0.14);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 20px 45px -28px rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.hero-cta .btn {
+    width: 100%;
+    min-height: 62px;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-lg);
+    white-space: nowrap;
+}
+
+.hero-cta .btn-white {
+    background: transparent;
+    color: var(--slate-800);
+    border: 1px solid var(--slate-200);
+    box-shadow: none;
+}
+
+.hero-cta .btn-white:hover {
+    background: white;
+    border-color: rgba(20, 168, 0, 0.28);
+    color: var(--primary-700);
+    box-shadow: var(--shadow-lg);
+}
+
+.hero-cta-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: 0 0 auto;
 }
 
 .hero-auth {
@@ -878,6 +914,7 @@
 
     .hero-cta {
         justify-content: center;
+        margin: 0 auto var(--space-12);
     }
 
     .hero-auth {
@@ -980,7 +1017,8 @@
     }
 
     .hero-cta {
-        flex-direction: column;
+        grid-template-columns: 1fr;
+        max-width: 360px;
     }
 
     .hero-cta .btn {

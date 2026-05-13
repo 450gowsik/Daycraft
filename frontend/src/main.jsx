@@ -12,8 +12,25 @@ import './index.css'
 
 import { GoogleOAuthProvider } from '@react-oauth/google'
 
-// Placeholder Client ID - Replace with your actual Google Cloud Client ID
-const GOOGLE_CLIENT_ID = "426535930456-9sffes9qt8ppjbmh8cui19tu2plon8m5.apps.googleusercontent.com"
+// Google OAuth Client ID - Auto-detect based on environment
+const getGoogleClientId = () => {
+    // Use explicit env variable if set
+    if (import.meta.env.VITE_GOOGLE_CLIENT_ID && import.meta.env.VITE_GOOGLE_CLIENT_ID !== 'your_google_client_id') {
+        return import.meta.env.VITE_GOOGLE_CLIENT_ID
+    }
+
+    // Auto-detect based on hostname
+    const hostname = window.location.hostname
+    const clientIds = {
+        'localhost': '795300979279-gk79g7cuv6k5qkcraqml0evo50m5ek73.apps.googleusercontent.com',
+        '127.0.0.1': '795300979279-gk79g7cuv6k5qkcraqml0evo50m5ek73.apps.googleusercontent.com',
+        '3.94.69.229': '795300979279-gk79g7cuv6k5qkcraqml0evo50m5ek73.apps.googleusercontent.com',
+    }
+
+    return clientIds[hostname] || '795300979279-gk79g7cuv6k5qkcraqml0evo50m5ek73.apps.googleusercontent.com'
+}
+
+const GOOGLE_CLIENT_ID = getGoogleClientId()
 
 // Error boundary for catching render errors
 class ErrorBoundary extends React.Component {
