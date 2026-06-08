@@ -20,7 +20,7 @@ function BestForYouSection() {
 
     const t = {
         title: language === 'ta' ? 'உங்களுக்கான சிறந்தவை' : 'Best for You',
-        subtitle: language === 'ta' ? 'AI பரிந்துரைகள்' : 'AI Recommendations',
+        subtitle: language === 'ta' ? 'Recommended jobs' : 'Recommended jobs',
         loadFailed: language === 'ta' ? 'பரிந்துரைகளை இப்போது பெற முடியவில்லை' : 'Recommendations are temporarily unavailable',
         viewAll: language === 'ta' ? 'அனைத்தையும் பார்' : 'View All',
         perDay: language === 'ta' ? '/நாள்' : '/day',

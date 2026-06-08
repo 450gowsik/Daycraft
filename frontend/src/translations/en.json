@@ -8,6 +8,109 @@
         "register": "Register",
         "logout": "Logout"
     },
+    "home": {
+        "hero": {
+            "eyebrow": "Local jobs, local workers",
+            "title": "Find daily-wage work and hire trusted workers nearby.",
+            "description": "DayCraft helps workers and employers connect for construction, home service, repair, delivery, cleaning, and other local jobs.",
+            "findJobs": "Find Jobs",
+            "findWorkers": "Find Workers",
+            "loginNote": "Login or create an account to apply for jobs, post work, and contact users."
+        },
+        "panel": {
+            "kicker": "Today on DayCraft",
+            "title": "Work starts close to home",
+            "nearbyOpenings": "Nearby openings",
+            "jobsAcrossTN": "Jobs across Tamil Nadu",
+            "skilledWorkers": "Skilled workers",
+            "categoriesDesc": "Construction, repair, home service, delivery, and more",
+            "clearDetails": "Clear job details",
+            "detailsDesc": "Pay, location, duration, skills, and employer details"
+        },
+        "trust": {
+            "verified": "Verified profiles",
+            "nearby": "Nearby job search",
+            "direct": "Direct applications",
+            "clearPay": "Clear daily pay"
+        },
+        "howto": {
+            "badge": "Easy to Get Started",
+            "title": "How to Use",
+            "subtitle": "Whether you're looking for work or hiring — get started in just a few simple steps.",
+            "step1": {
+                "title": "Sign Up & Create Your Profile",
+                "description": "Register using your phone number, email, or Google account. Complete your profile with your role (worker or employer), location, skills, and contact details."
+            },
+            "step2": {
+                "title": "Browse or Post Jobs",
+                "description": "Workers can search for daily-wage jobs near their location filtered by trade, pay, and distance. Employers can post job openings with clear details like wages, skills needed, and duration."
+            },
+            "step3": {
+                "title": "Apply or Hire",
+                "description": "Workers apply to jobs with a single tap. Employers review verified profiles, compare applicants, and shortlist or hire directly from their dashboard."
+            },
+            "step4": {
+                "title": "Chat & Coordinate",
+                "description": "Use the built-in chat to discuss job details, timing, and location. Get real-time notifications so you never miss an update."
+            },
+            "step5": {
+                "title": "Get Paid Securely",
+                "description": "Complete the work and receive payment through the integrated Razorpay system. Transparent wages, no surprises — just honest work and fair pay."
+            }
+        },
+        "jobs": {
+            "jobsIn": "Jobs in",
+            "openJobs": "Open jobs",
+            "jobsNearYou": "Jobs near you",
+            "recentOpenings": "Recent job openings",
+            "viewAll": "View all jobs",
+            "empty": "No jobs available right now."
+        },
+        "categories": {
+            "title": "Categories",
+            "subtitle": "Browse work by trade",
+            "explore": "Explore categories",
+            "jobsSuffix": "jobs"
+        },
+        "testimonials": {
+            "badge": "★ Trusted by thousands",
+            "titlePre": "What Our",
+            "titleGrad": "Customers",
+            "titlePost": "Say",
+            "subtitle": "Real stories from workers and employers who found success through DayCraft."
+        },
+        "about": {
+            "badge": "About Our Product",
+            "titlePre": "The Smarter Way to",
+            "titleGrad": "Connect",
+            "titlePost": "Workers & Employers",
+            "desc1": "DayCraft is a bilingual daily-wage labour platform built for India's informal workforce. We bring together workers seeking reliable income and employers needing trusted local talent — through a fast, location-aware experience that works on any device.",
+            "desc2": "From construction to home services, repair work to deliveries — DayCraft makes hiring transparent, verified, and hassle-free.",
+            "cta": "Get Started Free",
+            "feat1": {
+                "title": "Verified Profiles",
+                "desc": "OTP and identity verification ensures every hire is safe and trustworthy."
+            },
+            "feat2": {
+                "title": "Location-Aware",
+                "desc": "Find jobs and workers near your exact area — instantly and accurately."
+            },
+            "feat3": {
+                "title": "Transparent Wages",
+                "desc": "Clear daily pay details on every listing. No surprises, no hidden costs."
+            },
+            "feat4": {
+                "title": "Instant Chat",
+                "desc": "Built-in messaging and notifications for quick, direct coordination."
+            }
+        },
+        "cta": {
+            "eyebrow": "Start now",
+            "title": "Find work or hire someone today.",
+            "createAccount": "Create Account",
+            "postJob": "Post a Job"
+        }
+    },
     "hero": {
         "tagline": "Connect. Work. Thrive.",
         "title": "Find Daily-Wage Employees Instantly",

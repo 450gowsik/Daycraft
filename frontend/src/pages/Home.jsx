@@ -1,108 +1,87 @@
 import { Link } from 'react-router-dom'
-import { useLanguage } from '../context/LanguageContext.jsx'
 import { useJobs } from '../context/JobContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
-import { getDetailedIcon } from '../constants/categories.js'
-import { useState, useEffect, useRef } from 'react'
-import { FiSearch, FiUsers } from 'react-icons/fi'
-import logo from '../assets/images/logo.png'
+import { useLanguage } from '../context/LanguageContext.jsx'
+import { useState, useEffect } from 'react'
+import {
+    FiArrowRight,
+    FiBriefcase,
+    FiCheckCircle,
+    FiDollarSign,
+    FiMapPin,
+    FiMessageCircle,
+    FiSearch,
+    FiShield,
+    FiStar,
+    FiUserPlus,
+    FiUsers
+} from 'react-icons/fi'
 import { buildApiUrl } from '../services/apiConfig'
 import './Home.css'
-
-// Animated Counter with Intersection Observer
-function AnimatedCounter({ target, suffix = '', duration = 2000 }) {
-    const [count, setCount] = useState(0)
-    const [hasAnimated, setHasAnimated] = useState(false)
-    const ref = useRef(null)
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting && !hasAnimated) {
-                    setHasAnimated(true)
-                }
-            },
-            { threshold: 0.3 }
-        )
-        if (ref.current) observer.observe(ref.current)
-        return () => observer.disconnect()
-    }, [hasAnimated])
-
-    useEffect(() => {
-        if (!hasAnimated) return
-        let start = 0
-        const increment = target / (duration / 16)
-        const timer = setInterval(() => {
-            start += increment
-            if (start >= target) {
-                setCount(target)
-                clearInterval(timer)
-            } else {
-                setCount(Math.floor(start))
-            }
-        }, 16)
-        return () => clearInterval(timer)
-    }, [hasAnimated, target, duration])
-
-    return (
-        <span ref={ref} className="counter-value">
-            {count.toLocaleString()}{suffix}
-        </span>
-    )
-}
-
-// Floating Particles Component
-function FloatingParticles() {
-    return (
-        <div className="particles-container">
-            {[...Array(20)].map((_, i) => (
-                <div key={i} className="particle"
-                    style={{
-                        left: `${Math.random() * 100}%`,
-                        top: `${Math.random() * 100}%`,
-                        animationDelay: `${Math.random() * 5}s`,
-                        animationDuration: `${15 + Math.random() * 10}s`,
-                    }}
-                />
-            ))}
-        </div>
-    )
-}
+const tnDistrictsData = [
+    { name: { en: 'Chennai', ta: 'சென்னை' }, role: { en: 'Electrician', ta: 'மின்சார வல்லுநர்' }, author: { en: 'Kumar', ta: 'குமார்' }, text: { en: 'DayCraft is my go-to app for finding daily-wage electricians. Placed an order and got a match in 5 minutes.', ta: 'தினசரி கூலி மின்சார வல்லுநர்களைக் கண்டறிய டேக்ராஃப்ட் எனது முதன்மையான செயலி. ஆர்டர் செய்த 5 நிமிடங்களில் பொருத்தமான நபர் கிடைத்தார்.' }, rating: 5 },
+    { name: { en: 'Coimbatore', ta: 'கோயம்புத்தூர்' }, role: { en: 'Plumber', ta: 'பிளம்பர்' }, author: { en: 'Selvam', ta: 'செல்வம்' }, text: { en: 'Finding plumbing work in Gandhipuram was never this easy. The transparent wage display is awesome.', ta: 'காந்திபுரத்தில் குழாய் வேலை தேடுவது இவ்வளவு எளிதாக இருந்ததில்லை. வெளிப்படையான ஊதியக் காட்சி அருமையாக உள்ளது.' }, rating: 5 },
+    { name: { en: 'Madurai', ta: 'மதுரை' }, role: { en: 'Painter', ta: 'பெயிண்டர்' }, author: { en: 'Murugan', ta: 'முருகன்' }, text: { en: 'Secured a painting contract for a new house near Mattuthavani. Highly reliable and direct.', ta: 'மாட்டுத்தாவணி அருகே ஒரு புதிய வீட்டிற்கு வண்ணம் பூசும் ஒப்பந்தத்தைப் பெற்றேன். மிகவும் நம்பகமானது மற்றும் நேரடியானது.' }, rating: 5 },
+    { name: { en: 'Tiruchirappalli', ta: 'திருச்சிராப்பள்ளி' }, role: { en: 'Contractor', ta: 'ஒப்பந்தக்காரர்' }, author: { en: 'Anbarasan', ta: 'அன்பரசன்' }, text: { en: 'Hired 5 skilled helpers for agricultural unloading. Very efficient process and clear communication.', ta: 'விவசாய இறக்குமதி வேலைக்காக 5 திறமையான உதவியாளர்களைப் பணியமர்த்தினேன். மிகச் சிறந்த செயல்முறை மற்றும் தெளிவான தொடர்பு.' }, rating: 5 },
+    { name: { en: 'Salem', ta: 'சேலம்' }, role: { en: 'Carpenter', ta: 'தச்சர்' }, author: { en: 'Karthik', ta: 'கார்த்திக்' }, text: { en: 'As a carpenter, I used to wait at junctions for daily jobs. Now I get booked from home.', ta: 'ஒரு தச்சராக, நான் தினசரி வேலைகளுக்காக சந்திப்புகளில் காத்திருப்பேன். இப்போது நான் வீட்டிலிருந்தே வேலை பெறுகிறேன்.' }, rating: 5 },
+    { name: { en: 'Tiruppur', ta: 'திருப்பூர்' }, role: { en: 'Textile Owner', ta: 'ஜவுளி கடை உரிமையாளர்' }, author: { en: 'Prakash', ta: 'பிரகாஷ்' }, text: { en: 'Superb app for booking tailoring assistants and loaders for my textile unit. Saved me so much time.', ta: 'எனது ஜவுளி பிரிவிற்கு தையல் உதவியாளர்கள் மற்றும் சுமை தூக்குபவர்களைப் பதிவு செய்ய சிறந்த செயலி. எனது நேரத்தை மிச்சப்படுத்தியது.' }, rating: 5 },
+    { name: { en: 'Erode', ta: 'ஈரோடு' }, role: { en: 'Loader', ta: 'சுமை தூக்குபவர்' }, author: { en: 'Arul', ta: 'அருள்' }, text: { en: 'Found steady loading work at the Erode market. Payment via secure escrow is safe and verified.', ta: 'ஈரோடு சந்தையில் நிலையான சுமை தூக்கும் வேலையைக் கண்டேன். பாதுகாப்பான எஸ்க்ரோ மூலம் பணம் செலுத்துவது பாதுகாப்பானது மற்றும் சரிபார்க்கப்பட்டது.' }, rating: 5 },
+    { name: { en: 'Vellore', ta: 'வேலூர்' }, role: { en: 'Homeowner', ta: 'வீட்டு உரிமையாளர்' }, author: { en: 'Deepa', ta: 'தீபா' }, text: { en: 'Used DayCraft to hire a home cleaner. The worker profile verification gave us peace of mind.', ta: 'வீட்டை சுத்தம் செய்ய ஒருவரை நியமிக்க டேக்ராஃப்ட்டைப் பயன்படுத்தினேன். தொழிலாளர் சுயவிவர சரிபார்ப்பு எங்களுக்கு நிம்மதியை அளித்தது.' }, rating: 5 },
+    { name: { en: 'Thoothukudi', ta: 'தூத்துக்குடி' }, role: { en: 'Loader', ta: 'சுமை தூக்குபவர்' }, author: { en: 'Muthu', ta: 'முத்து' }, text: { en: 'Secured cargo loading jobs at the port. Wages are paid directly to my wallet without middleman cuts.', ta: 'துறைமுகத்தில் சரக்கு ஏற்றுமதி வேலைகளைப் பெற்றேன். இடைத்தரகர் கமிஷன் இல்லாமல் ஊதியம் நேரடியாக எனது பணப்பைக்கு செலுத்தப்படுகிறது.' }, rating: 5 },
+    { name: { en: 'Tirunelveli', ta: 'திருநெல்வேலி' }, role: { en: 'Masonry Contractor', ta: 'கொத்தனார் ஒப்பந்தக்காரர்' }, author: { en: 'Balan', ta: 'பாலன்' }, text: { en: 'Hired helpers for stone masonry. Excellent, verified profiles and quick responses.', ta: 'கல் கொத்து வேலைக்கு உதவியாளர்களை நியமித்தேன். சிறந்த, சரிபார்க்கப்பட்ட சுயவிவரங்கள் மற்றும் விரைவான பதில்கள்.' }, rating: 5 },
+    { name: { en: 'Kanchipuram', ta: 'காஞ்சிபுரம்' }, role: { en: 'Weaving Unit', ta: 'நெசவுப் பிரிவு' }, author: { en: 'Srinivasan', ta: 'சீனிவாசன்' }, text: { en: 'Found silk weaving assistants easily. Very helpful for local cottage industry artisans.', ta: 'பட்டு நெசவு உதவியாளர்களை எளிதாகக் கண்டேன். உள்ளூர் குடிசைத் தொழில் கலைஞர்களுக்கு மிகவும் உதவியாக இருக்கிறது.' }, rating: 5 },
+    { name: { en: 'Tiruvallur', ta: 'திருவள்ளூர்' }, role: { en: 'Helper', ta: 'உதவியாளர்' }, author: { en: 'Rajan', ta: 'ராஜன்' }, text: { en: 'Got an industrial cleaning gig near Sriperumbudur. Reliable daily pay with no delays.', ta: 'ஸ்ரீபெரும்புதூர் அருகே ஒரு தொழில்துறை துப்புரவு வேலையைப் பெற்றேன். தாமதமில்லாத நம்பகமான தினசரி ஊதியம்.' }, rating: 5 },
+    { name: { en: 'Cuddalore', ta: 'கடலூர்' }, role: { en: 'Landowner', ta: 'நில உரிமையாளர்' }, author: { en: 'Ramalingam', ta: 'ராமலிங்கம்' }, text: { en: 'Found agricultural workers for harvest season in Chidambaram. Great local reach.', ta: 'சிதம்பரத்தில் அறுவடை காலத்திற்கான விவசாயத் தொழிலாளர்களைக் கண்டேன். சிறந்த உள்ளூர் அணுகல்.' }, rating: 5 },
+    { name: { en: 'Thanjavur', ta: 'தஞ்சாவூர்' }, role: { en: 'Temple Painter', ta: 'கோயில் பெயிண்டர்' }, author: { en: 'Subramani', ta: 'சுப்பிரமணி' }, text: { en: 'Great platform. Found painting jobs for temple festival preparations. Highly recommended.', ta: 'சிறந்த தளம். கோயில் திருவிழா தயாரிப்புகளுக்கான வண்ணம் பூசும் வேலைகளைக் கண்டேன். மிகவும் பரிந்துரிக்கப்படுகிறது.' }, rating: 5 },
+    { name: { en: 'Dindigul', ta: 'திண்டுக்கல்' }, role: { en: 'Manufacturer', ta: 'உற்பத்தியாளர்' }, author: { en: 'Abdul', ta: 'அப்துல்' }, text: { en: 'We hired lock assembly helpers. Excellent response rate and verified workers.', ta: 'பூட்டு அசெம்பிளி உதவியாளர்களை நாங்கள் நியமித்தோம். சிறந்த பதில் விகிதம் மற்றும் சரிபார்க்கப்பட்ட தொழிலாளர்கள்.' }, rating: 5 },
+    { name: { en: 'Dharmapuri', ta: 'தர்மபுரி' }, role: { en: 'Mason', ta: 'கொத்தனார்' }, author: { en: 'Siva', ta: 'சிவா' }, text: { en: 'Got masonry work near Hosur border. App is clear, easy to navigate, and bilingual.', ta: 'ஓசூர் எல்லை அருகே கொத்தனார் வேலையைப் பெற்றேன். செயலி தெளிவாகவும், எளிதாகவும் மற்றும் இருமொழிகளிலும் உள்ளது.' }, rating: 5 },
+    { name: { en: 'Kanyakumari', ta: 'கன்னியாகுமரி' }, role: { en: 'Farm Owner', ta: 'பண்ணை உரிமையாளர்' }, author: { en: 'George', ta: 'ஜார்ஜ்' }, text: { en: 'Finding coconut harvesting labor is simple now. Very satisfied with the matching speed.', ta: 'தென்னை அறுவடைத் தொழிலாளர்களைக் கண்டறிவது இப்போது எளிது. பொருத்தமான நபரைத் தேர்ந்தெடுக்கும் வேகத்தில் மிகவும் திருப்தி.' }, rating: 5 },
+    { name: { en: 'Krishnagiri', ta: 'கிருஷ்ணகிரி' }, role: { en: 'Orchard Worker', ta: 'பழத்தோட்ட தொழிலாளி' }, author: { en: 'Munusamy', ta: 'முனுசாமி' }, text: { en: 'I get regular bookings for mango orchard pruning jobs. Payment is instant.', ta: 'மாம்பழத் தோட்ட கத்தரித்தல் வேலைகளுக்கு எனக்கு வழக்கமான முன்பதிவுகள் கிடைக்கின்றன. பணம் செலுத்துதல் உடனடியானது.' }, rating: 5 },
+    { name: { en: 'Nagapattinam', ta: 'நாகப்பட்டினம்' }, role: { en: 'Boat Owner', ta: 'படகு உரிமையாளர்' }, author: { en: 'Sekar', ta: 'சேகர்' }, text: { en: 'Found boat maintenance helpers in Nagore. Very prompt chat response and easy coordination.', ta: 'நாகூரில் படகு பராமரிப்பு உதவியாளர்களைக் கண்டேன். உடனடி அரட்டை பதில் மற்றும் எளிதான ஒருங்கிணைப்பு.' }, rating: 5 },
+    { name: { en: 'Namakkal', ta: 'நாமக்கல்' }, role: { en: 'Transporter', ta: 'போக்குவரத்து தொழிலதிபர்' }, author: { en: 'Loganathan', ta: 'லோகநாதன்' }, text: { en: 'Hired truck cleaning crews for my transport depot. Quick service and fair pricing.', ta: 'எனது போக்குவரத்து பணிமனைக்காக லாரி சுத்தம் செய்யும் குழுவினரை நியமித்தேன். விரைவான சேவை மற்றும் நியாயமான விலை.' }, rating: 5 },
+    { name: { en: 'Nilgiris', ta: 'நீலகிரி' }, role: { en: 'Tea Estate Helper', ta: 'தேயிலைத் தோட்ட உதவியாளர்' }, author: { en: 'Mani', ta: 'மணி' }, text: { en: 'Got tea plantation weeding work in Coonoor. Safe and reliable daily wage.', ta: 'குன்னூரில் தேயிலைத் தோட்ட களை எடுக்கும் வேலையைப் பெற்றேன். பாதுகாப்பான மற்றும் நம்பகமான தினசரி கூலி.' }, rating: 5 },
+    { name: { en: 'Perambalur', ta: 'பெரம்பலூர்' }, role: { en: 'Kiln Owner', ta: 'செங்கல் சூளை உரிமையாளர்' }, author: { en: 'Karuppusamy', ta: 'கருப்புசாமி' }, text: { en: 'Hired brick kiln loaders. Verified phone numbers are really helpful to avoid fraud.', ta: 'செங்கல் சூளை சுமை தூக்குபவர்களை நியமித்தேன். ஏமாற்றுவதைத் தவிர்க்க சரிபார்க்கப்பட்ட தொலைபேசி எண்கள் மிகவும் உதவியாக உள்ளன.' }, rating: 5 },
+    { name: { en: 'Pudukkottai', ta: 'புதுக்கோட்டை' }, role: { en: 'Contractor', ta: 'ஒப்பந்தக்காரர்' }, author: { en: 'Muthiah', ta: 'முத்தையா' }, text: { en: 'Found borewell drilling helpers in Alangudi. Great matching system and user experience.', ta: 'ஆலங்குடியில் ஆழ்துளை கிணறு தோண்டும் உதவியாளர்களைக் கண்டேன். சிறந்த பொருத்தம் அமைப்பு மற்றும் பயனர் அனுபவம்.' }, rating: 5 },
+    { name: { en: 'Ramanathapuram', ta: 'இராமநாதபுரம்' }, role: { en: 'Fishery Helper', ta: 'மீன்வள உதவியாளர்' }, author: { en: 'Kalimuthu', ta: 'காளிமுத்து' }, text: { en: 'Got fish processing helper jobs. Wages are transparent and matches are near my area.', ta: 'மீன் பதப்படுத்தும் உதவியாளர் வேலைகளைப் பெற்றேன். ஊதியம் வெளிப்படையானது மற்றும் என் பகுதிக்கு அருகில் உள்ளது.' }, rating: 5 },
+    { name: { en: 'Sivaganga', ta: 'சிவகங்கை' }, role: { en: 'Art Dealer', ta: 'கலைப் பொருள் வியாபாரி' }, author: { en: 'Chidambaram', ta: 'சிதம்பரம்' }, text: { en: 'Hired woodcarving helpers in Karaikudi. DayCraft is an excellent product.', ta: 'காரைக்குடியில் மரச்செதுக்கு வேலை உதவியாளர்களை நியமித்தேன். டேக்ராஃப்ட் ஒரு சிறந்த தயாரிப்பு.' }, rating: 5 },
+    { name: { en: 'Theni', ta: 'தேனி' }, role: { en: 'Cardamom Estate Owner', ta: 'ஏலக்காய் தோட்ட உரிமையாளர்' }, author: { en: 'Ramasamy', ta: 'ராமசாமி' }, text: { en: 'Found cardamom estate workers. Direct coordination is smooth and very fast.', ta: 'ஏலக்காய் தோட்டத் தொழிலாளர்களைக் கண்டேன். நேரடி ஒருங்கிணைப்பு தடையற்றது மற்றும் மிக வேகமானது.' }, rating: 5 },
+    { name: { en: 'Tiruvannamalai', ta: 'திருவண்ணாமலை' }, role: { en: 'Painter', ta: 'பெயிண்டர்' }, author: { en: 'Palani', ta: 'பழனி' }, text: { en: 'Got painting work during Giri Valam festival. Direct call option is good.', ta: 'கிரிவல திருவிழாவின் போது பெயிண்டிங் வேலை கிடைத்தது. நேரடி அழைப்பு விருப்பம் நன்றாக உள்ளது.' }, rating: 5 },
+    { name: { en: 'Tiruvarur', ta: 'திருவாரூர்' }, role: { en: 'Farmer', ta: 'விவசாயி' }, author: { en: 'Swaminathan', ta: 'சுவாமிநாதன்' }, text: { en: 'Hired paddy harvester operators. Highly recommended for seasonal farming work.', ta: 'நெல் அறுவடை இயந்திர இயக்குநர்களை நியமித்தேன். பருவகால விவசாய வேலைகளுக்கு மிகவும் பரிந்துரைக்கப்படுகிறது.' }, rating: 5 },
+    { name: { en: 'Viluppuram', ta: 'விழுப்புரம்' }, role: { en: 'Loader', ta: 'சுமை தூக்குபவர்' }, author: { en: 'Veerappan', ta: 'வீரப்பன்' }, text: { en: 'Got highway construction loader jobs. Wages are transparent and paid on time.', ta: 'நெடுஞ்சாலை கட்டுமான சுமை தூக்கும் வேலைகளைப் பெற்றேன். ஊதியம் வெளிப்படையானது மற்றும் சரியான நேரத்தில் செலுத்தப்படுகிறது.' }, rating: 5 },
+    { name: { en: 'Virudhunagar', ta: 'விருதுநகர்' }, role: { en: 'Factory Owner', ta: 'தொழிற்சாலை உரிமையாளர்' }, author: { en: 'Shanmugam', ta: 'சண்முகம்' }, text: { en: 'Found firecracker packing operators in Sivakasi easily. Reliable daily-wage earners.', ta: 'சிவகாரியில் பட்டாசு பேக்கிங் செய்பவர்களை எளிதாகக் கண்டேன். நம்பகமான தினசரி கூலி பெறுபவர்கள்.' }, rating: 5 },
+    { name: { en: 'Tenkasi', ta: 'தென்காசி' }, role: { en: 'Caterer', ta: 'கேட்டரிங் நடத்துபவர்' }, author: { en: 'Pandian', ta: 'பாண்டியன்' }, text: { en: 'Finding catering kitchen helpers in Courtallam is quick and hassle-free now.', ta: 'குற்றாலத்தில் கேட்டரிங் சமையலறை உதவியாளர்களைக் கண்டறிவது இப்போது விரைவானது மற்றும் தொந்தரவில்லாதது.' }, rating: 5 },
+    { name: { en: 'Ariyalur', ta: 'அரியலூர்' }, role: { en: 'Factory Loader', ta: 'தொழிற்சாலை சுமை தூக்குபவர்' }, author: { en: 'Kathiravel', ta: 'கதிரவேல்' }, text: { en: 'Got cement factory loading work. Highly trusted daily pay structure.', ta: 'சிமெண்ட் தொழிற்சாலை சுமை தூக்கும் வேலை கிடைத்தது. மிகவும் நம்பகமான தினசரி ஊதிய அமைப்பு.' }, rating: 5 },
+    { name: { en: 'Chengalpattu', ta: 'செங்கல்பட்டு' }, role: { en: 'Logistics Manager', ta: 'தளவாட மேலாளர்' }, author: { en: 'Vignesh', ta: 'விக்னேஷ்' }, text: { en: 'Hired warehouse helpers near OMR. Excellent layout and direct communication.', ta: 'OMR அருகே கிடங்கு உதவியாளர்களை நியமித்தேன். சிறந்த வடிவமைப்பு மற்றும் நேரடித் தொடர்பு.' }, rating: 5 },
+    { name: { en: 'Kallakurichi', ta: 'கள்ளக்குறிச்சி' }, role: { en: 'Agriculturist', ta: 'விவசாயி' }, author: { en: 'Periyasamy', ta: 'பெரியசாமி' }, text: { en: 'Found sugarcane cutting laborers. Direct chat helper is awesome for our farming needs.', ta: 'கரும்பு வெட்டும் தொழிலாளர்களைக் கண்டேன். எங்கள் விவசாயத் தேவைகளுக்கு நேரடி அரட்டை உதவியாளர் அருமையாக உள்ளது.' }, rating: 5 },
+    { name: { en: 'Ranipet', ta: 'இராணிப்பேட்டை' }, role: { en: 'Tannery Worker', ta: 'தோல் பதனிடும் தொழிலாளி' }, author: { en: 'Elumalai', ta: 'ஏழுமலை' }, text: { en: 'Got leather tannery helper work. The Tamil translation in the app is perfect.', ta: 'தோல் பதனிடும் தொழிற்சாலை உதவியாளர் வேலை கிடைத்தது. செயலியில் உள்ள தமிழ் மொழிபெயர்ப்பு சரியானது.' }, rating: 5 },
+    { name: { en: 'Tirupathur', ta: 'திருப்பத்தூர்' }, role: { en: 'Timber Depot Owner', ta: 'மரக்கிடங்கு உரிமையாளர்' }, author: { en: 'Bashir', ta: 'பஷீர்' }, text: { en: 'Hired timber moving helpers. Verified accounts prevent scam bookings.', ta: 'மரங்களை நகர்த்தும் உதவியாளர்களை நியமித்தேன். சரிபார்க்கப்பட்ட கணக்குகள் போலி முன்பதிவுகளைத் தடுக்கின்றன.' }, rating: 5 },
+    { name: { en: 'Mayiladuthurai', ta: 'மயிலாடுதுறை' }, role: { en: 'Mason', ta: 'கொத்தனார்' }, author: { en: 'Viswanathan', ta: 'விஸ்வநாதன்' }, text: { en: 'Got temple restoration masonry work. Safe and direct booking via the app.', ta: 'கோயில் புனரமைப்பு கொத்தனார் வேலை கிடைத்தது. செயலி மூலம் பாதுகாப்பான மற்றும் நேரடி முன்பதிவு.' }, rating: 5 },
+    { name: { en: 'Karur', ta: 'கரூர்' }, role: { en: 'Exporter', ta: 'ஏற்றுமதியாளர்' }, author: { en: 'Ranganathan', ta: 'ரங்கநாதன்' }, text: { en: 'Hired home textile loaders. Daily wage updates are transparent and reliable.', ta: 'வீட்டு ஜவுளி சுமை தூக்குபவர்களை நியமித்தேன். தினசரி கூலி புதுப்பிப்புகள் வெளிப்படையானவை மற்றும் நம்பகமானவை.' }, rating: 5 }
+];
 
 function Home() {
-    const { language } = useLanguage()
+    const { t, language } = useLanguage()
     const { categories } = useJobs()
     const { user, isAuthenticated } = useAuth()
-    const [activeTestimonial, setActiveTestimonial] = useState(0)
     const [featuredJobs, setFeaturedJobs] = useState([])
     const [isLoadingJobs, setIsLoadingJobs] = useState(true)
     const [userLocation, setUserLocation] = useState(null)
 
-    // Category icons mapping
-    const categoryIcons = {
-        'construction': '🏗️', 'electrical': '⚡', 'plumbing': '🔧', 'painting': '🎨',
-        'cleaning': '🧹', 'cooking': '👨‍🍳', 'driving': '🚗', 'gardening': '🌱',
-        'security': '🛡️', 'carpentry': '🪚', 'other': '💼'
-    }
 
-    // Get user's location from profile
     useEffect(() => {
         if (user?.location) {
             setUserLocation(user.location)
         }
     }, [user])
 
-    // Fetch featured jobs from API - prioritize user's location
     useEffect(() => {
         const fetchFeaturedJobs = async () => {
             setIsLoadingJobs(true)
             try {
-                // Build URL with location filter if user has a saved location
-                let url = buildApiUrl('/jobs?limit=24&status=open')
+                let url = buildApiUrl('/jobs?limit=8&status=open')
 
                 if (userLocation) {
-                    // Extract city/district from user's location string
-                    const locationParts = userLocation.split(',').map(s => s.trim())
+                    const locationParts = userLocation.split(',').map((part) => part.trim())
                     const searchLocation = locationParts[0] || userLocation
                     url += `&location=${encodeURIComponent(searchLocation)}`
                 }
@@ -110,451 +89,416 @@ function Home() {
                 const response = await fetch(url)
                 const data = await response.json()
 
-                if (data.success && data.jobs && data.jobs.length > 0) {
-                    setFeaturedJobs(data.jobs)
-                } else if (userLocation) {
-                    // If no jobs found for user's location, fetch nearby district jobs
-                    const fallbackResponse = await fetch(buildApiUrl('/jobs?limit=24&status=open'))
-                    const fallbackData = await fallbackResponse.json()
-
-                    if (fallbackData.success && fallbackData.jobs) {
-                        // Sort to prioritize jobs matching user's location
-                        const sortedJobs = fallbackData.jobs.sort((a, b) => {
-                            const aMatches = a.location?.toLowerCase().includes(userLocation.toLowerCase().split(',')[0]) ? 1 : 0
-                            const bMatches = b.location?.toLowerCase().includes(userLocation.toLowerCase().split(',')[0]) ? 1 : 0
-                            return bMatches - aMatches
-                        })
-                        setFeaturedJobs(sortedJobs.slice(0, 24))
-                    }
-                } else {
-                    // No user location - just get any jobs
-                    const demoResponse = await import('../data/demoJobs.json')
-                    setFeaturedJobs((demoResponse.default || demoResponse).slice(0, 24))
+                if (data.success && data.jobs?.length) {
+                    setFeaturedJobs(data.jobs.slice(0, 8))
+                    return
                 }
+
+                const demoResponse = await import('../data/demoJobs.json')
+                setFeaturedJobs((demoResponse.default || demoResponse).slice(0, 8))
             } catch (error) {
                 console.error('Error fetching featured jobs:', error)
-                // Fallback to demo data on error
                 try {
                     const demoResponse = await import('../data/demoJobs.json')
-                    setFeaturedJobs((demoResponse.default || demoResponse).slice(0, 24))
-                } catch (e) {
-                    console.error('Failed to load demo jobs:', e)
+                    setFeaturedJobs((demoResponse.default || demoResponse).slice(0, 8))
+                } catch (fallbackError) {
+                    console.error('Failed to load demo jobs:', fallbackError)
                 }
             } finally {
                 setIsLoadingJobs(false)
             }
         }
+
         fetchFeaturedJobs()
     }, [userLocation])
 
-    // Testimonials
-    const testimonials = [
-        {
-            id: 1, name: language === 'ta' ? 'முருகன் கே.' : 'Murugan K.',
-            role: language === 'ta' ? 'கட்டுமான தொழிலாளி' : 'Construction Worker', location: 'Chennai', rating: 5,
-            text: language === 'ta' ? 'DayCraft மூலம் தினமும் நல்ல வேலை கிடைக்கிறது. குடும்பத்தை நன்றாக பராமரிக்க முடிகிறது.' : 'DayCraft has transformed my life. I find quality work every day and can provide for my family better than ever before.',
-            image: '👷'
-        },
-        {
-            id: 2, name: language === 'ta' ? 'லட்சுமி ஆர்.' : 'Lakshmi R.',
-            role: language === 'ta' ? 'வீட்டு உதவியாளர்' : 'House Helper', location: 'Coimbatore', rating: 5,
-            text: language === 'ta' ? 'பாதுகாப்பான வேலை சூழல். நம்பகமான வேலை வழங்குனர்கள்.' : 'Safe working environment with verified employers. Payments are always on time and transparent.',
-            image: '👩'
-        },
-    ]
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setActiveTestimonial((prev) => (prev + 1) % testimonials.length)
-        }, 6000)
-        return () => clearInterval(timer)
-    }, [testimonials.length])
 
-    const howItWorks = [
-        { icon: '📱', title: language === 'ta' ? 'பதிவு செய்க' : 'Sign Up', desc: language === 'ta' ? 'உங்கள் சுயவிவரத்தை உருவாக்குங்கள்' : 'Create your profile in minutes' },
-        { icon: '🔍', title: language === 'ta' ? 'வேலை தேடு' : 'Find Jobs', desc: language === 'ta' ? 'அருகிலுள்ள வேலைகளைக் கண்டறியவும்' : 'Discover opportunities nearby' },
-        { icon: '🤝', title: language === 'ta' ? 'இணைக்கவும்' : 'Connect', desc: language === 'ta' ? 'வேலை வழங்குனர்களை தொடர்புகொள்ளுங்கள்' : 'Chat with employers directly' },
-        { icon: '💰', title: language === 'ta' ? 'சம்பளம்' : 'Get Paid', desc: language === 'ta' ? 'உடனடி கூலி பெறுங்கள்' : 'Receive instant payments' },
-    ]
-
-    const benefits = [
-        { icon: '✅', title: language === 'ta' ? 'சரிபார்க்கப்பட்டது' : 'Verified Users', desc: language === 'ta' ? 'அனைவரும் OTP உடன் சரிபார்க்கப்படுகிறார்கள்' : 'All users are OTP verified' },
-        { icon: '⚡', title: language === 'ta' ? 'உடனடி கூலி' : 'Instant Pay', desc: language === 'ta' ? 'வேலை முடிந்ததும் உடனே பணம்' : 'Get paid immediately after work' },
-        { icon: '📍', title: language === 'ta' ? 'அருகிலுள்ளவை' : 'Hyperlocal', desc: language === 'ta' ? 'நடந்து செல்லக்கூடிய தூரத்தில்' : 'Find work within walking distance' },
-        { icon: '🛡️', title: language === 'ta' ? 'பாதுகாப்பு' : 'Secure', desc: language === 'ta' ? 'பாதுகாப்பான தளம்' : 'Safe and trusted platform' },
-        { icon: '📱', title: language === 'ta' ? 'எளிய செயலி' : 'Easy App', desc: language === 'ta' ? 'யாரும் எளிதாக பயன்படுத்தலாம்' : 'Simple for everyone to use' },
-        { icon: '🌐', title: language === 'ta' ? 'பல மொழிகள்' : 'Multi-language', desc: language === 'ta' ? 'தமிழ், ஆங்கிலம்' : 'Tamil & English support' },
-    ]
-
-    const partners = ['L&T', 'Tata Projects', 'Asian Paints', 'Godrej', 'Urban Company', 'HomeLane', 'Livspace', 'JSW']
+    const displayCategories = categories.slice(0, 10)
 
     return (
         <div className="home-page">
-            {/* HERO SECTION */}
-            <section className="hero">
-                <div className="hero-bg">
-                    <div className="hero-gradient"></div>
-                    <div className="hero-mesh"></div>
-                    <FloatingParticles />
-                </div>
-
-                <div className="container hero-container">
-                    <div className="hero-content">
-
-
-                        <h1 className="hero-title animate-fadeInUp">
-                            {language === 'ta' ? (
-                                <>உங்கள் அருகில் <span className="text-gradient">வேலை</span> கண்டறியுங்கள்</>
-                            ) : (
-                                <>Find <span className="text-gradient">Work</span> Near You</>
-                            )}
-                        </h1>
-
-                        <p className="hero-subtitle animate-fadeInUp delay-1">
-                            {language === 'ta'
-                                ? 'DayCraft தினசரி கூலி தொழிலாளர்களை சரிபார்க்கப்பட்ட உள்ளூர் வேலை வழங்குனர்களுடன் இணைக்கிறது. அருகிலுள்ள வேலைகளைக் கண்டறியுங்கள், விரைவாக வேலைக்கு அமருங்கள், எளிய நம்பகமான தளத்தின் மூலம் நிலையான வருமானத்தை உருவாக்குங்கள்.'
-                                : 'DayCraft connects daily-wage workers with verified local employers. Find nearby jobs, get hired faster, and build steady income through a simple, trusted platform.'}
+            <section className="home-hero">
+                <div className="container home-hero-container">
+                    <div className="home-hero-copy">
+                        <p className="home-eyebrow">{t('home.hero.eyebrow')}</p>
+                        <h1>{t('home.hero.title')}</h1>
+                        <p className="home-hero-text">
+                            {t('home.hero.description')}
                         </p>
 
-                        <div className="hero-cta animate-fadeInUp delay-2">
-                            <Link to="/jobs" className="btn btn-primary btn-xl">
-                                <FiSearch className="hero-cta-icon" aria-hidden="true" />
-                                <span>{language === 'ta' ? 'வேலைகளைத் தேடு' : 'Find Jobs'}</span>
+                        <div className="home-actions">
+                            <Link to="/jobs" className="btn btn-primary btn-lg">
+                                <FiSearch aria-hidden="true" />
+                                {t('home.hero.findJobs')}
                             </Link>
-                            <Link to="/workers" className="btn btn-white btn-xl">
-                                <FiUsers className="hero-cta-icon" aria-hidden="true" />
-                                <span>{language === 'ta' ? 'தொழிலாளர்களைக் கண்டுபிடி' : 'Find Employees'}</span>
+                            <Link to="/workers" className="btn btn-secondary btn-lg">
+                                <FiUsers aria-hidden="true" />
+                                {t('home.hero.findWorkers')}
                             </Link>
                         </div>
 
                         {!isAuthenticated && (
-                            <div className="hero-auth animate-fadeInUp delay-3">
-                                <p className="hero-auth-text">
-                                    {language === 'ta'
-                                        ? 'வேலைகளுக்கு விண்ணப்பிக்கவும் அல்லது தொழிலாளர்களை அமர்த்தவும் உள்நுழையவும் அல்லது பதிவு செய்யவும்.'
-                                        : 'Login or create an account to apply for jobs and hire workers.'}
-                                </p>
-                                <div className="hero-auth-actions">
-                                    <Link to="/login" className="btn btn-secondary btn-lg">
-                                        {language === 'ta' ? 'உள்நுழைய' : 'Login'}
-                                    </Link>
-                                    <Link to="/register" className="btn btn-primary btn-lg">
-                                        {language === 'ta' ? 'பதிவு செய்ய' : 'Register'}
-                                    </Link>
+                            <p className="home-login-note">
+                                {t('home.hero.loginNote')}
+                            </p>
+                        )}
+                    </div>
+
+                    <div className="home-hero-panel" aria-label="DayCraft overview">
+                        <div className="panel-header">
+                            <div>
+                                <span className="panel-kicker">{t('home.panel.kicker')}</span>
+                                <h2>{t('home.panel.title')}</h2>
+                            </div>
+                            <FiBriefcase aria-hidden="true" />
+                        </div>
+
+                        <div className="panel-list">
+                            <div className="panel-row">
+                                <FiMapPin aria-hidden="true" />
+                                <div>
+                                    <strong>{t('home.panel.nearbyOpenings')}</strong>
+                                    <span>{userLocation || t('home.panel.jobsAcrossTN')}</span>
                                 </div>
                             </div>
-                        )}
-
-                        <div className="hero-stats animate-fadeInUp delay-3">
-                            <div className="hero-stat glass-card">
-                                <span className="stat-value"><AnimatedCounter target={50} suffix="K+" /></span>
-                                <span className="stat-label">{language === 'ta' ? 'தொழிலாளர்கள்' : 'Workers'}</span>
+                            <div className="panel-row">
+                                <FiUsers aria-hidden="true" />
+                                <div>
+                                    <strong>{t('home.panel.skilledWorkers')}</strong>
+                                    <span>{t('home.panel.categoriesDesc')}</span>
+                                </div>
                             </div>
-                            <div className="hero-stat glass-card">
-                                <span className="stat-value"><AnimatedCounter target={100} suffix="K+" /></span>
-                                <span className="stat-label">{language === 'ta' ? 'வேலைகள்' : 'Jobs Done'}</span>
-                            </div>
-                            <div className="hero-stat glass-card">
-                                <span className="stat-value">4.9</span>
-                                <span className="stat-label">{language === 'ta' ? 'மதிப்பீடு' : 'Rating'}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="hero-visual animate-fadeInRight delay-2">
-                        <div className="hero-card-stack">
-                            <div className="hero-main-card glass-card">
-                                <img src="/hero-background.png" alt="Workers" className="hero-image" />
-                            </div>
-                            <div className="floating-badge badge-1 glass">
-                                <span className="fb-icon">✅</span>
-                                <span className="fb-text">{language === 'ta' ? 'சரிபார்க்கப்பட்டது' : 'Verified'}</span>
-                            </div>
-                            <div className="floating-badge badge-2 glass">
-                                <span className="fb-icon">💰</span>
-                                <span className="fb-text">₹800/day</span>
-                            </div>
-                            <div className="floating-badge badge-3 glass">
-                                <span className="fb-icon">⭐</span>
-                                <span className="fb-text">4.9 Rating</span>
+                            <div className="panel-row">
+                                <FiCheckCircle aria-hidden="true" />
+                                <div>
+                                    <strong>{t('home.panel.clearDetails')}</strong>
+                                    <span>{t('home.panel.detailsDesc')}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* TRUST BAR */}
-            <section className="trust-bar">
-                <div className="container">
-                    <div className="trust-items">
-                        <div className="trust-item"><span>✅</span> {language === 'ta' ? 'OTP சரிபார்க்கப்பட்டது' : 'OTP Verified'}</div>
-                        <div className="trust-item"><span>🛡️</span> {language === 'ta' ? 'நம்பகமான வேலையளிப்போர்' : 'Trusted Employers'}</div>
-                        <div className="trust-item"><span>📍</span> {language === 'ta' ? 'இட அடிப்படை' : 'Location-Based'}</div>
-                        <div className="trust-item"><span>⚡</span> {language === 'ta' ? 'உடனடி கூலி' : 'Instant Payments'}</div>
-                    </div>
+            <section className="home-trust">
+                <div className="container home-trust-grid">
+                    <span>{t('home.trust.verified')}</span>
+                    <span>{t('home.trust.nearby')}</span>
+                    <span>{t('home.trust.direct')}</span>
+                    <span>{t('home.trust.clearPay')}</span>
                 </div>
             </section>
 
-            {/* HOW IT WORKS */}
-            <section className="how-it-works section">
+            <section className="howto-section">
                 <div className="container">
-                    <div className="section-header">
-                        <span className="section-label">{language === 'ta' ? 'எப்படி செயல்படுகிறது' : 'How It Works'}</span>
-                        <h2>{language === 'ta' ? 'எளிய 4 படிகளில் தொடங்குங்கள்' : 'Get Started in 4 Simple Steps'}</h2>
+                    <div className="howto-header">
+                        <span className="howto-badge">{t('home.howto.badge')}</span>
+                        <h2>{t('home.howto.title')} <span className="text-gradient">DayCraft</span></h2>
+                        <p>{t('home.howto.subtitle')}</p>
                     </div>
-                    <div className="steps-container">
-                        {howItWorks.map((step, i) => (
-                            <div key={i} className="step-card glass-card" style={{ animationDelay: `${i * 0.1}s` }}>
-                                <div className="step-number">{i + 1}</div>
-                                <div className="step-icon">{step.icon}</div>
-                                <h4>{step.title}</h4>
-                                <p>{step.desc}</p>
+
+                    <div className="howto-timeline">
+                        <div className="howto-step">
+                            <div className="howto-step-number">
+                                <span>1</span>
                             </div>
-                        ))}
+                            <div className="howto-step-content">
+                                <div className="howto-step-icon-wrap">
+                                    <FiUserPlus aria-hidden="true" />
+                                </div>
+                                <h3>{t('home.howto.step1.title')}</h3>
+                                <p>
+                                    {t('home.howto.step1.description')}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="howto-step">
+                            <div className="howto-step-number">
+                                <span>2</span>
+                            </div>
+                            <div className="howto-step-content">
+                                <div className="howto-step-icon-wrap">
+                                    <FiSearch aria-hidden="true" />
+                                </div>
+                                <h3>{t('home.howto.step2.title')}</h3>
+                                <p>
+                                    {t('home.howto.step2.description')}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="howto-step">
+                            <div className="howto-step-number">
+                                <span>3</span>
+                            </div>
+                            <div className="howto-step-content">
+                                <div className="howto-step-icon-wrap">
+                                    <FiCheckCircle aria-hidden="true" />
+                                </div>
+                                <h3>{t('home.howto.step3.title')}</h3>
+                                <p>
+                                    {t('home.howto.step3.description')}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="howto-step">
+                            <div className="howto-step-number">
+                                <span>4</span>
+                            </div>
+                            <div className="howto-step-content">
+                                <div className="howto-step-icon-wrap">
+                                    <FiMessageCircle aria-hidden="true" />
+                                </div>
+                                <h3>{t('home.howto.step4.title')}</h3>
+                                <p>
+                                    {t('home.howto.step4.description')}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="howto-step">
+                            <div className="howto-step-number">
+                                <span>5</span>
+                            </div>
+                            <div className="howto-step-content">
+                                <div className="howto-step-icon-wrap">
+                                    <FiDollarSign aria-hidden="true" />
+                                </div>
+                                <h3>{t('home.howto.step5.title')}</h3>
+                                <p>
+                                    {t('home.howto.step5.description')}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* FEATURED JOBS */}
-            <section className="featured-section section">
+            <section className="home-section home-section-muted">
                 <div className="container">
-                    <div className="section-header">
-                        <span className="section-label">
-                            {userLocation
-                                ? (language === 'ta' ? `📍 ${userLocation} வேலைகள்` : `📍 Jobs in ${userLocation}`)
-                                : (language === 'ta' ? 'சிறப்பு வேலைகள்' : 'Featured Jobs')
-                            }
-                        </span>
-                        <h2>
-                            {userLocation
-                                ? (language === 'ta' ? 'உங்கள் அருகிலுள்ள வேலைகள்' : 'Jobs Near You')
-                                : (language === 'ta' ? 'இன்றைய சிறந்த வாய்ப்புகள்' : 'Today\'s Top Opportunities')
-                            }
-                        </h2>
+                    <div className="home-section-row">
+                        <div>
+                            <p className="home-eyebrow">
+                                {userLocation ? (language === 'ta' ? `${userLocation} இல் உள்ள வேலைகள்` : `Jobs in ${userLocation}`) : t('home.jobs.openJobs')}
+                            </p>
+                            <h2>{userLocation ? t('home.jobs.jobsNearYou') : t('home.jobs.recentOpenings')}</h2>
+                        </div>
+                        <Link to="/jobs" className="home-text-link">
+                            {t('home.jobs.viewAll')} <FiArrowRight aria-hidden="true" />
+                        </Link>
                     </div>
-                    <div className="featured-grid">
+
+                    <div className="home-jobs-grid">
                         {isLoadingJobs ? (
-                            // Skeleton loading state
-                            [...Array(8)].map((_, i) => (
-                                <div key={i} className="featured-card card-premium skeleton-card" style={{ animationDelay: `${i * 0.05}s` }}>
-                                    <div className="fc-header">
-                                        <div className="skeleton-icon"></div>
-                                    </div>
+                            [...Array(4)].map((_, index) => (
+                                <div key={index} className="home-job-card skeleton-card">
                                     <div className="skeleton-title"></div>
                                     <div className="skeleton-text"></div>
                                     <div className="skeleton-text short"></div>
-                                    <div className="fc-footer">
-                                        <div className="skeleton-wage"></div>
-                                        <div className="skeleton-btn"></div>
-                                    </div>
                                 </div>
                             ))
                         ) : featuredJobs.length > 0 ? (
-                            featuredJobs.map((job, i) => {
-                                const title = job.title?.[language] || job.title?.en || job.title || ''
-                                const categoryIcon = getDetailedIcon(job.title, job.category)
+                            featuredJobs.map((job) => {
+                                const title = job.title?.en || job.title || 'Job opening'
+                                const jobId = job._id || job.id
+
                                 return (
-                                    <Link to={`/jobs/${job._id || job.id}`} key={job._id || job.id} className="featured-card card-premium" style={{ animationDelay: `${(i % 10) * 0.05}s` }}>
-                                        <div className="fc-header">
-                                            <div className="fc-category">{categoryIcon}</div>
-                                            {job.urgent && <span className="badge badge-error">🔥 {language === 'ta' ? 'அவசரம்' : 'Urgent'}</span>}
+                                    <Link to={`/jobs/${jobId}`} key={jobId} className="home-job-card">
+                                        <div className="home-job-topline">
+                                            <span>{job.category || 'General'}</span>
+                                            {job.urgent && <strong>Urgent</strong>}
                                         </div>
-                                        <h4 className="fc-title">{title}</h4>
-                                        <p className="fc-employer">{job.employer?.name || 'Employer'}</p>
-                                        <div className="fc-meta">
-                                            <span className="fc-location">📍 {job.location}</span>
-                                        </div>
-                                        <div className="fc-footer">
-                                            <div className="fc-wage">
-                                                <span className="wage-amount">₹{job.wage?.toLocaleString() || '--'}</span>
-                                                <span className="wage-period">/{language === 'ta' ? 'நாள்' : 'day'}</span>
-                                            </div>
-                                            <span className="btn btn-primary btn-sm">{language === 'ta' ? 'விண்ணப்பி' : 'Apply'}</span>
+                                        <h3>{title}</h3>
+                                        <p>{job.employer?.name || 'Employer'}</p>
+                                        <div className="home-job-meta">
+                                            <span>{job.location || 'Location pending'}</span>
+                                            <strong>Rs. {job.wage?.toLocaleString() || '--'}/day</strong>
                                         </div>
                                     </Link>
                                 )
                             })
                         ) : (
-                            <p style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#666' }}>
-                                {language === 'ta' ? 'வேலைகள் இல்லை' : 'No jobs available'}
-                            </p>
+                            <p className="home-empty">{t('home.jobs.empty')}</p>
                         )}
-                    </div>
-                    <div className="text-center mt-8">
-                        <Link to="/jobs" className="btn btn-outline btn-lg">{language === 'ta' ? 'அனைத்து வேலைகளும்' : 'View All Jobs'} →</Link>
                     </div>
                 </div>
             </section>
 
-            {/* CATEGORIES */}
-            <section className="categories-section section">
+            <section className="home-section">
                 <div className="container">
-                    <div className="section-header">
-                        <span className="section-label">{language === 'ta' ? 'வகைகள்' : 'Categories'}</span>
-                        <h2>{language === 'ta' ? 'திறமை வாரியாக தேடுங்கள்' : 'Browse by Specialty'}</h2>
+                    <div className="home-section-row">
+                        <div>
+                            <p className="home-eyebrow">{t('home.categories.title')}</p>
+                            <h2>{t('home.categories.subtitle')}</h2>
+                        </div>
+                        <Link to="/jobs" className="home-text-link">
+                            {t('home.categories.explore')} <FiArrowRight aria-hidden="true" />
+                        </Link>
                     </div>
-                    <div className="categories-grid">
-                        {categories.map((cat, i) => (
-                            <Link to={`/jobs?category=${cat.id}`} key={cat.id} className="category-card glass-card" style={{ animationDelay: `${i * 0.05}s` }}>
-                                <div className="cat-icon">{cat.icon}</div>
-                                <div className="cat-name">{language === 'ta' ? cat.name.ta : cat.name.en}</div>
-                                <div className="cat-count">{cat.jobCount || 0}+ {language === 'ta' ? 'வேலைகள்' : 'Jobs'}</div>
+
+                    <div className="home-category-grid">
+                        {displayCategories.map((category) => (
+                            <Link
+                                to={`/jobs?category=${category.id}`}
+                                key={category.id}
+                                className="home-category-card"
+                            >
+                                <span>{category.name?.[language] || category.name?.en || category.label || category.id}</span>
+                                <small>{category.jobCount || 0}+ {t('home.categories.jobsSuffix')}</small>
                             </Link>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* BENEFITS */}
-            <section className="benefits-section section">
+            <section className="home-testimonials-section">
                 <div className="container">
-                    <div className="section-header">
-                        <span className="section-label">{language === 'ta' ? 'ஏன் நாங்கள்' : 'Why Choose Us'}</span>
-                        <h2>{language === 'ta' ? 'DayCraft சிறப்புகள்' : 'The DayCraft Advantage'}</h2>
+                    <div className="testimonials-header">
+                        <span className="testimonials-badge">{t('home.testimonials.badge')}</span>
+                        <h2>{t('home.testimonials.titlePre')} <span className="text-gradient">{t('home.testimonials.titleGrad')}</span> {t('home.testimonials.titlePost')}</h2>
+                        <p>{t('home.testimonials.subtitle')}</p>
                     </div>
-                    <div className="benefits-grid">
-                        {benefits.map((b, i) => (
-                            <div key={i} className="benefit-card" style={{ animationDelay: `${i * 0.1}s` }}>
-                                <div className="benefit-icon">{b.icon}</div>
-                                <h4>{b.title}</h4>
-                                <p>{b.desc}</p>
+
+                    <div className="marquee-section-container">
+                        
+                        {/* Single Row containing all 38 districts (Right to Left) */}
+                        <div className="marquee-row">
+                            <div className="marquee-track" style={{ animationDuration: '90s' }}>
+                                {tnDistrictsData.map((dist, idx) => {
+                                    const distName = dist.name[language] || dist.name.en;
+                                    const distRole = dist.role[language] || dist.role.en;
+                                    const distAuthor = dist.author[language] || dist.author.en;
+                                    const distText = dist.text[language] || dist.text.en;
+                                    return (
+                                        <div key={`m-${dist.name.en}-${idx}`} className="testimonial-marquee-card">
+                                            <div className="testimonial-card-header">
+                                                <div className="testimonial-quote-icon">&ldquo;</div>
+                                                <div className="testimonial-rating">
+                                                    {[...Array(dist.rating)].map((_, i) => (
+                                                        <FiStar key={i} className="star-filled" aria-hidden="true" />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <blockquote className="testimonial-text">
+                                                {distText}
+                                            </blockquote>
+                                            <div className="testimonial-footer">
+                                                <div className="testimonial-avatar">
+                                                    {distAuthor.charAt(0)}
+                                                </div>
+                                                <div className="testimonial-info">
+                                                    <strong>{distAuthor}</strong>
+                                                    <span>{distRole} · {distName}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                                {/* Duplicated copy for infinite seamless loop */}
+                                {tnDistrictsData.map((dist, idx) => {
+                                    const distName = dist.name[language] || dist.name.en;
+                                    const distRole = dist.role[language] || dist.role.en;
+                                    const distAuthor = dist.author[language] || dist.author.en;
+                                    const distText = dist.text[language] || dist.text.en;
+                                    return (
+                                        <div key={`m-dup-${dist.name.en}-${idx}`} className="testimonial-marquee-card" aria-hidden="true">
+                                            <div className="testimonial-card-header">
+                                                <div className="testimonial-quote-icon">&ldquo;</div>
+                                                <div className="testimonial-rating">
+                                                    {[...Array(dist.rating)].map((_, i) => (
+                                                        <FiStar key={i} className="star-filled" aria-hidden="true" />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <blockquote className="testimonial-text">
+                                                {distText}
+                                            </blockquote>
+                                            <div className="testimonial-footer">
+                                                <div className="testimonial-avatar">
+                                                    {distAuthor.charAt(0)}
+                                                </div>
+                                                <div className="testimonial-info">
+                                                    <strong>{distAuthor}</strong>
+                                                    <span>{distRole} · {distName}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
-                        ))}
+                        </div>
+
                     </div>
                 </div>
             </section>
 
-            {/* TESTIMONIALS */}
-            <section className="testimonials-section section">
+            <section className="home-about-section">
                 <div className="container">
-                    <div className="section-header">
-                        <span className="section-label">{language === 'ta' ? 'வெற்றிக் கதைகள்' : 'Success Stories'}</span>
-                        <h2>{language === 'ta' ? 'பயனர்கள் கூறுவது' : 'What Our Users Say'}</h2>
-                    </div>
-                    <div className="testimonial-container">
-                        {testimonials.map((t, i) => (
-                            <div key={t.id} className={`testimonial-card glass-card ${i === activeTestimonial ? 'active' : ''}`}>
-                                <div className="t-stars">{'⭐'.repeat(t.rating)}</div>
-                                <p className="t-text">"{t.text}"</p>
-                                <div className="t-author">
-                                    <div className="t-avatar">{t.image}</div>
-                                    <div className="t-info">
-                                        <strong>{t.name}</strong>
-                                        <span>{t.role} • 📍 {t.location}</span>
-                                    </div>
+                    <div className="about-content">
+                        <div className="about-text">
+                            <span className="about-badge">{t('home.about.badge')}</span>
+                            <h2>
+                                {t('home.about.titlePre')} <span className="text-gradient">{t('home.about.titleGrad')}</span> {t('home.about.titlePost')}
+                            </h2>
+                            <p className="about-description">
+                                {t('home.about.desc1')}
+                            </p>
+                            <p className="about-description">
+                                {t('home.about.desc2')}
+                            </p>
+                            <Link to="/register" className="btn btn-primary btn-lg about-cta-btn">
+                                {t('home.about.cta')} <FiArrowRight aria-hidden="true" />
+                            </Link>
+                        </div>
+                        <div className="about-features-grid">
+                            <div className="about-feature-card">
+                                <div className="about-feature-icon-wrap">
+                                    <FiShield aria-hidden="true" />
                                 </div>
+                                <h4>{t('home.about.feat1.title')}</h4>
+                                <p>{t('home.about.feat1.desc')}</p>
                             </div>
-                        ))}
-                    </div>
-                    <div className="testimonial-dots">
-                        {testimonials.map((_, i) => (
-                            <button key={i} className={`dot ${i === activeTestimonial ? 'active' : ''}`} onClick={() => setActiveTestimonial(i)} />
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* GLOBAL STATS */}
-            <section className="global-stats-section section">
-                <div className="container">
-                    <div className="stats-grid">
-                        <div className="global-stat">
-                            <span className="gs-value"><AnimatedCounter target={50000} suffix="+" /></span>
-                            <span className="gs-label">{language === 'ta' ? 'பதிவு செய்யப்பட்ட தொழிலாளர்கள்' : 'Registered Workers'}</span>
-                        </div>
-                        <div className="global-stat">
-                            <span className="gs-value"><AnimatedCounter target={100000} suffix="+" /></span>
-                            <span className="gs-label">{language === 'ta' ? 'முடிக்கப்பட்ட வேலைகள்' : 'Jobs Completed'}</span>
-                        </div>
-                        <div className="global-stat">
-                            <span className="gs-value"><AnimatedCounter target={500} suffix="+" /></span>
-                            <span className="gs-label">{language === 'ta' ? 'நகரங்கள்' : 'Cities Covered'}</span>
-                        </div>
-                        <div className="global-stat">
-                            <span className="gs-value">4.9<span className="gs-suffix">/5</span></span>
-                            <span className="gs-label">{language === 'ta' ? 'மதிப்பீடு' : 'Avg. Rating'}</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* PARTNERS */}
-            <section className="partners-section section-sm">
-                <div className="container">
-                    <p className="partners-label">{language === 'ta' ? 'நம்பகமான கூட்டாளர்கள்' : 'Trusted by leading companies'}</p>
-                    <div className="partners-marquee">
-                        <div className="partners-track">
-                            {[...partners, ...partners].map((p, i) => (
-                                <div key={i} className="partner-logo">{p}</div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* CTA */}
-            <section className="cta-section section">
-                <div className="container">
-                    <div className="cta-card">
-                        <div className="cta-bg"></div>
-                        <div className="cta-content">
-                            <h2>{language === 'ta' ? 'இன்றே தொடங்குங்கள்' : 'Ready to Get Started?'}</h2>
-                            <p>{language === 'ta' ? 'ஆயிரக்கணக்கான தொழிலாளர்கள் மற்றும் வேலை வழங்குனர்களுடன் இணைய பதிவு செய்யுங்கள்.' : 'Join thousands of workers and employers finding success on DayCraft.'}</p>
-                            <div className="cta-buttons">
-                                <Link to="/register" className="btn btn-white btn-xl">👷 {language === 'ta' ? 'தொழிலாளியாக சேர்க' : 'Join as Worker'}</Link>
-                                <Link to="/register" className="btn btn-outline-white btn-xl">💼 {language === 'ta' ? 'வேலை வழங்குனராக' : 'Hire Workers'}</Link>
+                            <div className="about-feature-card">
+                                <div className="about-feature-icon-wrap">
+                                    <FiMapPin aria-hidden="true" />
+                                </div>
+                                <h4>{t('home.about.feat2.title')}</h4>
+                                <p>{t('home.about.feat2.desc')}</p>
+                            </div>
+                            <div className="about-feature-card">
+                                <div className="about-feature-icon-wrap">
+                                    <FiBriefcase aria-hidden="true" />
+                                </div>
+                                <h4>{t('home.about.feat3.title')}</h4>
+                                <p>{t('home.about.feat3.desc')}</p>
+                            </div>
+                            <div className="about-feature-card">
+                                <div className="about-feature-icon-wrap">
+                                    <FiCheckCircle aria-hidden="true" />
+                                </div>
+                                <h4>{t('home.about.feat4.title')}</h4>
+                                <p>{t('home.about.feat4.desc')}</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* FOOTER */}
-            <footer className="footer">
-                <div className="container">
-                    <div className="footer-grid">
-                        <div className="footer-brand">
-                            <img src={logo} alt="DayCraft" className="footer-logo" />
-                            <p>{language === 'ta' ? 'இந்தியாவின் #1 தினசரி கூலி வேலை தளம்' : 'India\'s #1 daily-wage job platform'}</p>
-                            <div className="social-links">
-                                <a href="#">📘</a><a href="#">🐦</a><a href="#">📷</a><a href="#">💼</a>
-                            </div>
-                        </div>
-                        <div className="footer-links">
-                            <h4>{language === 'ta' ? 'விரைவு இணைப்புகள்' : 'Quick Links'}</h4>
-                            <ul>
-                                <li><Link to="/jobs">{language === 'ta' ? 'வேலைகள்' : 'Find Jobs'}</Link></li>
-                                <li><Link to="/workers">{language === 'ta' ? 'தொழிலாளர்கள்' : 'Find Workers'}</Link></li>
-                                <li><Link to="/register">{language === 'ta' ? 'பதிவு' : 'Register'}</Link></li>
-                            </ul>
-                        </div>
-                        <div className="footer-links">
-                            <h4>{language === 'ta' ? 'ஆதரவு' : 'Support'}</h4>
-                            <ul>
-                                <li><a href="#">{language === 'ta' ? 'உதவி' : 'Help'}</a></li>
-                                <li><a href="#">{language === 'ta' ? 'தொடர்பு' : 'Contact'}</a></li>
-                                <li><a href="#">{language === 'ta' ? 'தனியுரிமை' : 'Privacy'}</a></li>
-                            </ul>
-                        </div>
-                        <div className="footer-newsletter">
-                            <h4>{language === 'ta' ? 'புதுப்பிப்புகள்' : 'Stay Updated'}</h4>
-                            <p>{language === 'ta' ? 'புதிய வேலைகளைப் பெறுங்கள்' : 'Get notified about new jobs'}</p>
-                            <div className="newsletter-form">
-                                <input type="email" placeholder={language === 'ta' ? 'மின்னஞ்சல்' : 'Email'} className="form-input" />
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={() => alert(language === 'ta' ? 'நன்றி! நீங்கள் இணைந்தீர்கள்.' : 'Thanks for joining!')}
-                                >
-                                    {language === 'ta' ? 'சேர்' : 'Join'}
-                                </button>
-                            </div>
-                        </div>
+            <section className="home-cta">
+                <div className="container home-cta-inner">
+                    <div>
+                        <p className="home-eyebrow">{t('home.cta.eyebrow')}</p>
+                        <h2>{t('home.cta.title')}</h2>
                     </div>
-                    <div className="footer-bottom">
-                        <p>© 2026 DayCraft. {language === 'ta' ? 'அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.' : 'All rights reserved.'}</p>
+                    <div className="home-actions">
+                        <Link to="/register" className="btn btn-primary btn-lg">{t('home.cta.createAccount')}</Link>
+                        <Link to="/post-job" className="btn btn-secondary btn-lg">{t('home.cta.postJob')}</Link>
                     </div>
                 </div>
-            </footer>
+            </section>
         </div>
     )
 }
