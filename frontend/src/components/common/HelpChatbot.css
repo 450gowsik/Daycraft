@@ -1,4 +1,4 @@
-/* ===== DAYCRAFT AI HELP ASSISTANT - PRODUCTION STYLES ===== */
+/* ===== DAYCRAFT HELP CENTER ===== */
 
 /* Base Chat Container */
 .help-chatbot-window {
@@ -48,7 +48,7 @@
 
 /* Header */
 .chatbot-header {
-    background: linear-gradient(135deg, #5b4bff, #6c5cff);
+    background: #15803d;
     color: #ffffff;
     padding: 14px 18px;
     display: flex;
@@ -118,7 +118,7 @@
     box-shadow: 0 2px 4px rgba(91, 75, 255, 0.2);
 }
 
-/* AI Message */
+/* Help message */
 .message.bot {
     align-self: flex-start;
     max-width: 80%;

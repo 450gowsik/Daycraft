@@ -376,7 +376,7 @@ function JobDetails() {
                         cursor: 'pointer'
                     }}
                 >
-                    👥 View Applicants
+                    👥 {language === 'ta' ? 'விண்ணப்பதாரர்களை காண்க' : 'View Applicants'}
                 </button>
             </div>
 
@@ -620,8 +620,8 @@ function JobDetails() {
                                     }}>🏢 {job.employer.companyName}</span>
                                 )}
                                 <div style={{ marginTop: '8px', display: 'flex', gap: '12px', fontSize: '13px', color: '#666' }}>
-                                    <span>⭐ 4.5 Rating</span>
-                                    <span>📋 {job.employer?.completedJobs || 5}+ Jobs Posted</span>
+                                    <span>⭐ 4.5 {language === 'ta' ? 'மதிப்பீடு' : 'Rating'}</span>
+                                    <span>📋 {job.employer?.completedJobs || 5}+ {language === 'ta' ? 'வேலைகள் இடுகையிட்டவை' : 'Jobs Posted'}</span>
                                 </div>
                             </div>
                         </div>
@@ -696,36 +696,27 @@ function JobDetails() {
                                 onClick={handleRelease}
                                 disabled={releasing}
                             >
-                                {releasing ? 'Releasing...' : 'Confirm Completion & Release Payment'}
+                                {releasing
+                                    ? (language === 'ta' ? 'விடுவிக்கிறது...' : 'Releasing...')
+                                    : (language === 'ta' ? 'கட்டணத்தை விடுவி' : 'Release Payment')}
                             </button>
                         )}
-                        {payment && payment.status === 'released' && (
-                            <div className="payment-status-tag bg-green-100 text-green-700 p-3 rounded-lg text-center font-bold">
-                                ✓ Payment Released to Worker
+                        {payment && (
+                            <div className={`p-3 rounded-lg text-center font-bold ${payment.status === 'released' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+                                {payment.status === 'released'
+                                    ? `✓ ${language === 'ta' ? 'கட்டணம் பெறப்பட்டது' : 'Payment Received'}`
+                                    : `🛡️ ${language === 'ta' ? 'கட்டணம் எஸ்க்ரோவில் உள்ளது' : 'Payment in Escrow'}`}
                             </div>
-                        )}
-                        {!payment && job.status !== 'hired' && (
-                            <button className="btn btn-secondary w-full py-3" onClick={() => navigate(`/jobs/${jobId}/applicants`)}>
-                                Manage Applicants
-                            </button>
                         )}
                     </div>
                 ) : (
-                    <div style={{ flex: 1.5 }}>
-                        {payment && payment.worker?._id === user?.id ? (
-                            <div className={`p-3 rounded-lg text-center font-bold ${payment.status === 'released' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
-                                {payment.status === 'released' ? '✓ Payment Received' : '🛡️ Payment in Escrow'}
-                            </div>
-                        ) : (
-                            <button
-                                className={`btn-apply-large ${hasApplied ? 'applied' : ''} ${isApplying ? 'loading' : ''} w-full`}
-                                onClick={handleApply}
-                                disabled={hasApplied || isApplying}
-                            >
-                                {isApplying ? t.applying : hasApplied ? t.applied : (isAuthenticated ? t.apply : t.loginToApply)}
-                            </button>
-                        )}
-                    </div>
+                    <button
+                        className={`btn-apply-large ${hasApplied ? 'applied' : ''} ${isApplying ? 'loading' : ''} w-full`}
+                        onClick={handleApply}
+                        disabled={hasApplied || isApplying}
+                    >
+                        {isApplying ? t.applying : hasApplied ? t.applied : (isAuthenticated ? t.apply : t.loginToApply)}
+                    </button>
                 )}
             </div>
         </div>

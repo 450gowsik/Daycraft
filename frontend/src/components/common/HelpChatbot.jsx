@@ -3,7 +3,7 @@ import { useLanguage } from '../../context/LanguageContext.jsx'
 import { useAuth } from '../../context/AuthContext.jsx'
 import { useNavigate } from 'react-router-dom'
 import api from '../../services/api.js'
-import { FaRobot, FaTimes, FaPaperPlane, FaQuestionCircle, FaBolt } from 'react-icons/fa'
+import { FaTimes, FaPaperPlane, FaQuestionCircle } from 'react-icons/fa'
 import './HelpChatbot.css'
 
 // Add styles locally since we can't easily edit the CSS file directly in this tool call context
@@ -24,7 +24,7 @@ const linkStyles = `
 
 // Quick question suggestions
 const getQuickQuestions = (language) => [
-    { en: "What is AI Recommendation?", ta: "AI பரிந்துரை என்றால் என்ன?" },
+    { en: "How are jobs recommended?", ta: "How are jobs recommended?" },
     { en: "How does Match Score work?", ta: "பொருத்த மதிப்பெண் எப்படி வேலை செய்கிறது?" },
     { en: "What is 'Best for You'?", ta: "'உங்களுக்கான சிறந்தவை' என்ன?" },
     { en: "Is my data safe?", ta: "என் தகவல் பாதுகாப்பானதா?" }
@@ -46,11 +46,11 @@ function HelpChatbot() {
     // Translations
     const t = {
         welcome: language === 'ta'
-            ? "👋 வணக்கம்! நான் DayCraft AI உதவியாளர். DayCraft பற்றி எந்த கேள்வியும் கேளுங்கள் - AI பரிந்துரைகள், பொருத்த மதிப்பெண், விரைவு விண்ணப்பம், மற்றும் பல!"
-            : "👋 Hi! I'm the DayCraft AI Assistant powered by Llama. Ask me anything about DayCraft - AI recommendations, match scores, quick apply, and more!",
+            ? "Hi! Ask a question about jobs, workers, applications, payments, or your DayCraft account."
+            : "Hi! Ask a question about jobs, workers, applications, payments, or your DayCraft account.",
         placeholder: language === 'ta' ? 'கேள்வி கேளுங்கள்...' : 'Ask me anything...',
-        title: language === 'ta' ? 'AI உதவியாளர்' : 'AI Help Assistant',
-        online: language === 'ta' ? 'ஆன்லைன்' : 'Powered by Llama',
+        title: language === 'ta' ? 'Help Center' : 'Help Center',
+        online: language === 'ta' ? 'Online' : 'Online',
         error: language === 'ta' ? 'மன்னிக்கவும், பதில் பெற முடியவில்லை.' : 'Sorry, I couldn\'t get a response. Please try again.'
     }
 
@@ -252,7 +252,7 @@ function HelpChatbot() {
                     {/* Header */}
                     <div className="chatbot-header">
                         <div className="header-info">
-                            <FaRobot size={20} />
+                            <FaQuestionCircle size={20} />
                             <div>
                                 <h3>{t.title}</h3>
                                 <span className="status-text">{t.online}</span>
@@ -269,7 +269,7 @@ function HelpChatbot() {
                             <div key={i} className={`message ${msg.type}`}>
                                 {msg.type === 'bot' && (
                                     <div className="msg-icon">
-                                        <FaRobot size={14} />
+                                        <FaQuestionCircle size={14} />
                                     </div>
                                 )}
                                 <div
@@ -292,7 +292,7 @@ function HelpChatbot() {
                         {isTyping && (
                             <div className="message bot">
                                 <div className="msg-icon">
-                                    <FaRobot size={14} />
+                                    <FaQuestionCircle size={14} />
                                 </div>
                                 <div className="message-bubble typing">
                                     <span></span><span></span><span></span>

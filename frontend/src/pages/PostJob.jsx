@@ -276,11 +276,11 @@ function PostJob() {
 
     // Step indicator
     const steps = [
-        { num: 1, label: 'Basic Info', icon: '📝' },
-        { num: 2, label: 'Details', icon: '📋' },
-        { num: 3, label: 'Requirements', icon: '✅' },
-        { num: 4, label: 'Review', icon: '👁️' },
-        { num: 5, label: 'Published', icon: '🎉' }
+        { num: 1, label: language === 'en' ? 'Basic Info' : 'அடிப்படை', icon: '📝' },
+        { num: 2, label: language === 'en' ? 'Details' : 'விவரங்கள்', icon: '📋' },
+        { num: 3, label: language === 'en' ? 'Requirements' : 'தேவைகள்', icon: '✅' },
+        { num: 4, label: language === 'en' ? 'Review' : 'சரிபார்க்கல்', icon: '👁️' },
+        { num: 5, label: language === 'en' ? 'Published' : 'வெளியிட்டது', icon: '🎉' }
     ]
 
     return (
@@ -288,8 +288,8 @@ function PostJob() {
             <div className="post-job-container">
                 {/* Header */}
                 <div className="post-job-header">
-                    <h1>Post a New Job</h1>
-                    <p>Find the perfect workers for your project</p>
+                    <h1>{language === 'en' ? 'Post a New Job' : 'புதிய வேலையை இடுங்கள்'}</h1>
+                    <p>{language === 'en' ? 'Find the perfect workers for your project' : 'உங்கள் திட்டத்திற்கு சீரான தொழிலாளர்களைக் கண்டறியுங்கள்'}</p>
                 </div>
 
                 {/* Step Progress - hidden on success */}
@@ -319,19 +319,19 @@ function PostJob() {
                     {/* Step 1: Basic Info */}
                     {currentStep === 1 && (
                         <div className="form-step">
-                            <h2>Let's start with the basics</h2>
-                            <p className="step-description">Tell us what type of job you're posting</p>
+                            <h2>{language === 'en' ? "Let's start with the basics" : 'அடிப்படை தகவல்களை தொடங்கலாம்'}</h2>
+                            <p className="step-description">{language === 'en' ? "Tell us what type of job you're posting" : 'எத்தகைய வேலையை இடுகிறீர்கள் என்பதை சோல்லுங்கள்'}</p>
 
                             {/* Job Title */}
                             <div className="form-group">
-                                <label htmlFor="title">Job Title *</label>
+                                <label htmlFor="title">{language === 'en' ? 'Job Title *' : 'வேலையின் தலைப்பு *'}</label>
                                 <input
                                     type="text"
                                     id="title"
                                     name="title"
                                     value={formData.title}
                                     onChange={handleChange}
-                                    placeholder="e.g., Construction Worker Needed"
+                                    placeholder={language === 'en' ? 'e.g., Construction Worker Needed' : 'எ.g., கட்டுமான தொழிலாளர் தேவை'}
                                     className={errors.title ? 'error' : ''}
                                 />
                                 {errors.title && <span className="error-text">{errors.title}</span>}
@@ -339,7 +339,7 @@ function PostJob() {
 
                             {/* Category */}
                             <div className="form-group">
-                                <label>Category *</label>
+                                <label>{language === 'en' ? 'Category *' : 'வகை *'}</label>
                                 <div className="category-grid">
                                     {CATEGORIES.map(cat => (
                                         <button
@@ -358,7 +358,7 @@ function PostJob() {
 
                             {/* Job Type */}
                             <div className="form-group">
-                                <label>Job Type</label>
+                                <label>{language === 'en' ? 'Job Type' : 'வேலை வகை'}</label>
                                 <div className="type-options">
                                     {JOB_TYPES.map(jt => (
                                         <label
@@ -386,18 +386,18 @@ function PostJob() {
                     {/* Step 2: Details */}
                     {currentStep === 2 && (
                         <div className="form-step">
-                            <h2>Job Details</h2>
-                            <p className="step-description">Describe the work and location</p>
+                            <h2>{language === 'en' ? 'Job Details' : 'வேலை விவரங்கள்'}</h2>
+                            <p className="step-description">{language === 'en' ? 'Describe the work and location' : 'வேலை மற்றும் இடத்தை விவரிக்கவும்'}</p>
 
                             {/* Description */}
                             <div className="form-group">
-                                <label htmlFor="description">Description *</label>
+                                <label htmlFor="description">{language === 'en' ? 'Description *' : 'விளக்கம் *'}</label>
                                 <textarea
                                     id="description"
                                     name="description"
                                     value={formData.description}
                                     onChange={handleChange}
-                                    placeholder="Describe the job responsibilities, requirements, working hours, etc."
+                                    placeholder={language === 'en' ? 'Describe the job responsibilities, requirements, working hours, etc.' : 'வேலையின் பணிகள், தேவைகள், வேலை நேரம் முதலியவற்றை விளக்குங்கள்.'}
                                     rows={6}
                                     className={errors.description ? 'error' : ''}
                                 />
@@ -411,11 +411,11 @@ function PostJob() {
 
                             {/* Location */}
                             <div className="form-group">
-                                <label>Location *</label>
+                                <label>{language === 'en' ? 'Location *' : 'இடம் *'}</label>
                                 <LocationPicker
                                     value={formData.location}
                                     onChange={handleLocationSelect}
-                                    placeholder="Select work location"
+                                    placeholder={language === 'en' ? 'Select work location' : 'இடத்தைத் தேர்வு செய்க்'}
                                     className={errors.location ? 'error' : ''}
                                 />
                                 {errors.location && <span className="error-text">{errors.location}</span>}
@@ -425,8 +425,8 @@ function PostJob() {
                             <div className="form-group">
                                 <label className="toggle-label">
                                     <div className="toggle-info">
-                                        <span className="toggle-title">Remote Work Available</span>
-                                        <span className="toggle-desc">Workers can work from anywhere</span>
+                                        <span className="toggle-title">{language === 'en' ? 'Remote Work Available' : 'தொலைவிலையில் செய்யலாம்'}</span>
+                                        <span className="toggle-desc">{language === 'en' ? 'Workers can work from anywhere' : 'தொழிலாளர்கள் எங்கிருந்தும் செயல்படலாம்'}</span>
                                     </div>
                                     <div className={`toggle-switch ${formData.isRemote ? 'active' : ''}`}>
                                         <input
@@ -445,12 +445,12 @@ function PostJob() {
                     {/* Step 3: Requirements */}
                     {currentStep === 3 && (
                         <div className="form-step">
-                            <h2>Requirements & Payment</h2>
-                            <p className="step-description">Set your expectations and budget</p>
+                            <h2>{language === 'en' ? 'Requirements & Payment' : 'தேவைகள் மற்றும் கட்டணம்'}</h2>
+                            <p className="step-description">{language === 'en' ? 'Set your expectations and budget' : 'உங்கள் எதிர்பார்ப்புகள் மற்றும் பஜெட்டையிடுங்கள்'}</p>
 
                             {/* Skills */}
                             <div className="form-group">
-                                <label>Required Skills</label>
+                                <label>{language === 'en' ? 'Required Skills' : 'தேவையான திறன்கள்'}</label>
                                 <div className="skills-input-wrapper">
                                     <input
                                         type="text"
@@ -466,7 +466,7 @@ function PostJob() {
                                                 handleAddSkill(skillInput)
                                             }
                                         }}
-                                        placeholder="Type a skill and press Enter"
+                                        placeholder={language === 'en' ? 'Type a skill and press Enter' : 'திறன் தட்டி Enter அழுத்துக்கவும்'}
                                     />
                                     {showSkillSuggestions && skillInput && filteredSuggestions.length > 0 && (
                                         <div className="skill-suggestions">
@@ -494,7 +494,7 @@ function PostJob() {
 
                             {/* Experience Level */}
                             <div className="form-group">
-                                <label>Experience Level</label>
+                                <label>{language === 'en' ? 'Experience Level' : 'அனுபவ நிலை'}</label>
                                 <div className="experience-options">
                                     {EXPERIENCE_LEVELS.map(exp => (
                                         <button
@@ -512,7 +512,7 @@ function PostJob() {
 
                             {/* Workers Needed */}
                             <div className="form-group">
-                                <label htmlFor="workersNeeded">Workers Needed</label>
+                                <label htmlFor="workersNeeded">{language === 'en' ? 'Workers Needed' : 'தேவையான தொழிலாளர்கள்'}</label>
                                 <div className="number-input">
                                     <button
                                         type="button"
@@ -542,7 +542,7 @@ function PostJob() {
 
                             {/* Salary */}
                             <div className="form-group">
-                                <label htmlFor="salary">Salary *</label>
+                                <label htmlFor="salary">{language === 'en' ? 'Salary *' : 'சம்பளம் *'}</label>
                                 <div className="salary-input-group">
                                     <span className="currency-prefix">₹</span>
                                     <input
@@ -572,29 +572,29 @@ function PostJob() {
                     {/* Step 4: Review */}
                     {currentStep === 4 && (
                         <div className="form-step review-step">
-                            <h2>Review Your Job Posting</h2>
-                            <p className="step-description">Make sure everything looks good before publishing</p>
+                            <h2>{language === 'en' ? 'Review Your Job Posting' : 'உங்கள் வேலையின் விவரங்களை சரிபார்க்கவும்'}</h2>
+                            <p className="step-description">{language === 'en' ? 'Make sure everything looks good before publishing' : 'வெளியிடுவதற்கு முன் அனைத்தும் சரியாக உள்ளதா என்பதை உறுதிப்படுத்திக்கோள்கிறீர்கள்'}</p>
 
                             {/* Review Sections */}
                             <div className="review-section">
                                 <div className="review-header">
-                                    <h3>Basic Info</h3>
-                                    <button type="button" onClick={() => setCurrentStep(1)}>Edit</button>
+                                    <h3>{language === 'en' ? 'Basic Info' : 'அடிப்படை'}</h3>
+                                    <button type="button" onClick={() => setCurrentStep(1)}>{language === 'en' ? 'Edit' : 'திருத்து'}</button>
                                 </div>
                                 <div className="review-content">
                                     <div className="review-row">
-                                        <span className="review-label">Title</span>
+                                        <span className="review-label">{language === 'en' ? 'Title' : 'தலைப்பு'}</span>
                                         <span className="review-value">{formData.title}</span>
                                     </div>
                                     <div className="review-row">
-                                        <span className="review-label">Category</span>
+                                        <span className="review-label">{language === 'en' ? 'Category' : 'வகை'}</span>
                                         <span className="review-value">
                                             {CATEGORIES.find(c => c.value === formData.category)?.icon}{' '}
                                             {CATEGORIES.find(c => c.value === formData.category)?.label}
                                         </span>
                                     </div>
                                     <div className="review-row">
-                                        <span className="review-label">Type</span>
+                                        <span className="review-label">{language === 'en' ? 'Type' : 'வேலை வகை'}</span>
                                         <span className="review-value">
                                             {JOB_TYPES.find(t => t.value === formData.type)?.label}
                                         </span>
@@ -604,19 +604,19 @@ function PostJob() {
 
                             <div className="review-section">
                                 <div className="review-header">
-                                    <h3>Details</h3>
-                                    <button type="button" onClick={() => setCurrentStep(2)}>Edit</button>
+                                    <h3>{language === 'en' ? 'Details' : 'விவரங்கள்'}</h3>
+                                    <button type="button" onClick={() => setCurrentStep(2)}>{language === 'en' ? 'Edit' : 'திருத்து'}</button>
                                 </div>
                                 <div className="review-content">
                                     <div className="review-row full">
-                                        <span className="review-label">Description</span>
+                                        <span className="review-label">{language === 'en' ? 'Description' : 'விளக்கம்'}</span>
                                         <p className="review-description">{formData.description}</p>
                                     </div>
                                     <div className="review-row">
-                                        <span className="review-label">Location</span>
+                                        <span className="review-label">{language === 'en' ? 'Location' : 'இடம்'}</span>
                                         <span className="review-value">
-                                            📍 {formData.location?.displayText || 'Not specified'}
-                                            {formData.isRemote && ' (Remote available)'}
+                                            📍 {formData.location?.displayText || (language === 'en' ? 'Not specified' : 'தெரிவிக்கப்படவில்லை')}
+                                            {formData.isRemote && (language === 'en' ? ' (Remote available)' : ' (தொலை வெளியில் சேவை உள்ளது)')}
                                         </span>
                                     </div>
                                 </div>
@@ -624,13 +624,13 @@ function PostJob() {
 
                             <div className="review-section">
                                 <div className="review-header">
-                                    <h3>Requirements & Payment</h3>
-                                    <button type="button" onClick={() => setCurrentStep(3)}>Edit</button>
+                                    <h3>{language === 'en' ? 'Requirements & Payment' : 'தேவைகள் மற்றும் கட்டணம்'}</h3>
+                                    <button type="button" onClick={() => setCurrentStep(3)}>{language === 'en' ? 'Edit' : 'திருத்து'}</button>
                                 </div>
                                 <div className="review-content">
                                     {(formData.skills || []).length > 0 && (
                                         <div className="review-row full">
-                                            <span className="review-label">Skills</span>
+                                            <span className="review-label">{language === 'en' ? 'Skills' : 'திறன்கள்'}</span>
                                             <div className="review-skills">
                                                 {(formData.skills || []).map(skill => (
                                                     <span key={skill} className="skill-tag">{skill}</span>
@@ -639,17 +639,17 @@ function PostJob() {
                                         </div>
                                     )}
                                     <div className="review-row">
-                                        <span className="review-label">Experience</span>
+                                        <span className="review-label">{language === 'en' ? 'Experience' : 'அனுபவம்'}</span>
                                         <span className="review-value">
                                             {EXPERIENCE_LEVELS.find(e => e.value === formData.experienceLevel)?.label}
                                         </span>
                                     </div>
                                     <div className="review-row">
-                                        <span className="review-label">Workers Needed</span>
+                                        <span className="review-label">{language === 'en' ? 'Workers Needed' : 'தேவையான தொழிலாளர்கள்'}</span>
                                         <span className="review-value">{formData.workersNeeded}</span>
                                     </div>
                                     <div className="review-row">
-                                        <span className="review-label">Salary</span>
+                                        <span className="review-label">{language === 'en' ? 'Salary' : 'சம்பளம்'}</span>
                                         <span className="review-value salary-highlight">
                                             ₹{formData.salary} {PAYMENT_TYPES.find(p => p.value === formData.paymentType)?.label}
                                         </span>
@@ -670,8 +670,8 @@ function PostJob() {
                                     </svg>
                                 </div>
                             </div>
-                            <h2>Job Posted Successfully! 🎉</h2>
-                            <p className="success-subtitle">Your job is now live and visible to workers</p>
+                            <h2>{language === 'en' ? 'Job Posted Successfully! 🎉' : 'வேலை வெளியிடப்பட்டது! 🎉'}</h2>
+                            <p className="success-subtitle">{language === 'en' ? 'Your job is now live and visible to workers' : 'உங்கள் வேலை ஏற்கெனவே உலைவில் உள்ளது'}</p>
 
                             <div className="success-summary">
                                 <div className="success-job-card">
@@ -685,10 +685,10 @@ function PostJob() {
                             </div>
 
                             <div className="share-section">
-                                <h4>Share this job</h4>
+                                <h4>{language === 'en' ? 'Share this job' : 'ஈ வேலையை பகிர்வு செய்யுங்கள்'}</h4>
                                 <div className="share-buttons">
                                     <button type="button" className="share-btn copy" onClick={handleCopyLink}>
-                                        <span>📋</span> Copy Link
+                                        <span>📋</span> {language === 'en' ? 'Copy Link' : 'இணைப்பை நகலெடு'}
                                     </button>
                                     <button type="button" className="share-btn whatsapp" onClick={handleShareWhatsApp}>
                                         <span>💬</span> WhatsApp
@@ -701,7 +701,7 @@ function PostJob() {
 
                             <div className="success-actions">
                                 <button type="button" className="btn-secondary" onClick={() => navigate('/dashboard')}>
-                                    Go to Dashboard
+                                    {language === 'en' ? 'Go to Dashboard' : 'டாஷ்போர்டுக்கு செல்ல்'}
                                 </button>
                                 <button type="button" className="btn-primary-outline" onClick={() => {
                                     setCurrentStep(1)
@@ -720,7 +720,7 @@ function PostJob() {
                                     })
                                     setPublishedJob(null)
                                 }}>
-                                    Post Another Job
+                                    {language === 'en' ? 'Post Another Job' : 'முற்பு இன்னொரு வேலையை இடுங்கள்'}
                                 </button>
                             </div>
                         </div>
@@ -731,13 +731,13 @@ function PostJob() {
                         <div className="form-actions">
                             {currentStep > 1 && (
                                 <button type="button" className="btn-back" onClick={handleBack}>
-                                    ← Back
+                                    ← {language === 'en' ? 'Back' : 'முதுகு'}
                                 </button>
                             )}
                             <div className="actions-right">
                                 {currentStep < 4 ? (
                                     <button type="button" className="btn-next" onClick={handleNext}>
-                                        Continue →
+                                        {language === 'en' ? 'Continue →' : 'தொடர்வு →'}
                                     </button>
                                 ) : (
                                     <button
@@ -749,7 +749,7 @@ function PostJob() {
                                         {isLoading ? (
                                             <span className="btn-loader"></span>
                                         ) : (
-                                            <>🚀 Publish Job</>
+                                            <>🚀 {language === 'en' ? 'Publish Job' : 'வேலையை வெளியிடு'}</>
                                         )}
                                     </button>
                                 )}

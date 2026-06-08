@@ -228,7 +228,7 @@
 }
 
 .message-input button:disabled {
-    background: var(--gray-300);
+    background: var(--slate-300);
     cursor: not-allowed;
 }
 

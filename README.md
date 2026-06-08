@@ -299,7 +299,25 @@ npm run dev
 
 Backend runs at `http://localhost:5000`
 
-## 13. Conclusion
+## 13. Vercel Deployment
+
+This repository is configured for a single Vercel project using Vercel Services:
+
+- frontend service: `frontend` mounted at `/`
+- backend service: `backend/src/app.js` mounted at `/api`
+
+The Vercel config lives in `vercel.json`. The important detail is that the backend service must use `/api` as its `routePrefix`, because the Express app already defines routes like `/api/auth`, `/api/jobs`, and `/api/health`.
+
+If you use `/_/backend` as the backend prefix, requests will reach the app as `/_/backend/...` and the existing Express routes will not match.
+
+Before deploying on Vercel:
+
+1. Create the Vercel project with the `Services` framework preset enabled
+2. Add the backend environment variables in the Vercel dashboard, especially `MONGODB_URI`, `JWT_SECRET`, `GOOGLE_CLIENT_ID`, and any payment or messaging secrets you need
+3. Add the frontend environment variables in the Vercel dashboard, especially `VITE_GOOGLE_CLIENT_ID` and `VITE_RAZORPAY_KEY_ID`
+4. Leave `VITE_API_URL` unset or set it to `/api`
+
+## 14. Conclusion
 
 DayCraft is a full-stack marketplace application designed with real product flows in mind: verified onboarding, role-aware experiences, job discovery, communication, and payments. The current implementation is intentionally practical, while the architecture leaves room for future growth into Redis-backed caching, containerized multi-service deployment, and automated cloud delivery.
 

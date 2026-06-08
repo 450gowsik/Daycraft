@@ -5,6 +5,17 @@ import { useAuth } from '../../context/AuthContext.jsx'
 import { useNotifications } from '../../context/NotificationContext.jsx'
 import NotificationPanel from '../common/NotificationPanel'
 import logo from '../../assets/images/logo.png'
+import { 
+    FiLayout, 
+    FiUser, 
+    FiCreditCard, 
+    FiPlusCircle, 
+    FiSettings, 
+    FiLogOut,
+    FiGlobe,
+    FiBell,
+    FiChevronDown
+} from 'react-icons/fi'
 import './Navbar.css'
 
 function Navbar() {
@@ -46,17 +57,17 @@ function Navbar() {
         {
             to: '/dashboard',
             label: t('nav.dashboard'),
-            icon: '📊'
+            icon: <FiLayout className="dropdown-item-icon" />
         },
         {
             to: '/profile',
             label: language === 'en' ? 'Profile' : 'சுயவிவரம்',
-            icon: '👤'
+            icon: <FiUser className="dropdown-item-icon" />
         },
         {
             to: '/wallet',
             label: language === 'en' ? 'My Wallet' : 'எனது பணப்பை',
-            icon: '💰'
+            icon: <FiCreditCard className="dropdown-item-icon" />
         }
     ]
 
@@ -64,7 +75,7 @@ function Navbar() {
         accountLinks.push({
             to: '/post-job',
             label: language === 'en' ? 'Post Job' : 'வேலை இடுக',
-            icon: '➕'
+            icon: <FiPlusCircle className="dropdown-item-icon" />
         })
     }
 
@@ -72,7 +83,7 @@ function Navbar() {
         accountLinks.push({
             to: '/admin',
             label: 'Admin Panel',
-            icon: '⚙️'
+            icon: <FiSettings className="dropdown-item-icon" />
         })
     }
 
@@ -123,7 +134,7 @@ function Navbar() {
                                 </button>
                             ))}
                             <button className="mobile-account-link mobile-logout-btn" onClick={handleLogout}>
-                                <span className="mobile-account-icon">🚪</span>
+                                <span className="mobile-account-icon"><FiLogOut /></span>
                                 <span>{language === 'en' ? 'Logout' : 'வெளியேறு'}</span>
                             </button>
                         </div>
@@ -147,7 +158,7 @@ function Navbar() {
                         onClick={toggleLanguage}
                         title={language === 'en' ? 'தமிழ்' : 'English'}
                     >
-                        <span className="lang-icon">🌐</span>
+                        <FiGlobe className="lang-icon" />
                         <span className="lang-text">{language === 'en' ? 'தமிழ்' : 'EN'}</span>
                     </button>
 
@@ -158,7 +169,7 @@ function Navbar() {
                                 onClick={toggleNotif}
                                 title={language === 'en' ? 'Notifications' : 'அறிவிப்புகள்'}
                             >
-                                <span className="notif-icon">🔔</span>
+                                <FiBell className="notif-icon" />
                                 {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
                             </button>
                             {notifOpen && (
@@ -184,7 +195,7 @@ function Navbar() {
                                     )}
                                 </span>
                                 <span className="user-name hide-mobile">{user?.name}</span>
-                                <span className="dropdown-arrow">▼</span>
+                                <FiChevronDown className={`dropdown-arrow ${dropdownOpen ? 'rotated' : ''}`} />
                             </button>
                             {dropdownOpen && (
                                 <div className="user-dropdown">
@@ -195,12 +206,13 @@ function Navbar() {
                                             className="dropdown-item"
                                             onClick={() => handleAccountNavigate(item.to)}
                                         >
-                                            {item.icon} {item.label}
+                                            {item.icon} <span>{item.label}</span>
                                         </button>
                                     ))}
                                     <hr className="dropdown-divider" />
                                     <button className="dropdown-item logout-btn" onClick={handleLogout}>
-                                        🚪 {language === 'en' ? 'Logout' : 'வெளியேறு'}
+                                        <FiLogOut className="dropdown-item-icon logout-icon" />
+                                        <span>{language === 'en' ? 'Logout' : 'வெளியேறு'}</span>
                                     </button>
                                 </div>
                             )}

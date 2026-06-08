@@ -6,6 +6,8 @@ import JobCard from '../components/jobs/JobCard.jsx'
 import BestForYouSection from '../components/jobs/BestForYouSection.jsx'
 import LocationModal from '../components/common/LocationModal.jsx'
 import { JOB_CATEGORIES } from '../constants/categories.js'
+import CategoryIcon from '../components/jobs/CategoryIcon.jsx'
+import { FaThLarge } from 'react-icons/fa'
 import './Jobs.css'
 
 // Skeleton Loader Component
@@ -158,7 +160,8 @@ function Jobs() {
                             className={`category-pill ${!selectedCategory ? 'active' : ''}`}
                             onClick={() => setSelectedCategory('')}
                         >
-                            {t.allCategories}
+                            <FaThLarge className="category-pill-icon" size={14} style={{ marginRight: '6px' }} />
+                            <span>{t.allCategories}</span>
                         </button>
                         {tickerCategories.map((cat, index) => (
                             <button
@@ -166,8 +169,8 @@ function Jobs() {
                                 className={`category-pill ${selectedCategory === cat.id ? 'active' : ''}`}
                                 onClick={() => setSelectedCategory(selectedCategory === cat.id ? '' : cat.id)}
                             >
-                                <span style={{ marginRight: '6px' }}>{cat.icon}</span>
-                                {language === 'ta' ? cat.ta : cat.label}
+                                <CategoryIcon category={cat.id} size={16} className="category-pill-icon" />
+                                <span>{language === 'ta' ? cat.ta : cat.label}</span>
                             </button>
                         ))}
                     </div>

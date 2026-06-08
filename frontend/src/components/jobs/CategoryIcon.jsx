@@ -3,7 +3,8 @@ import {
     FaUtensils, FaBroom, FaIndustry, FaSeedling, FaBuilding, FaCar,
     FaBolt, FaHammer, FaCubes, FaMoon, FaSun, FaParking, FaDoorOpen,
     FaWarehouse, FaCamera, FaHome, FaTint, FaSnowflake, FaBox,
-    FaBaby, FaUserTie, FaCheckCircle, FaClock, FaTimesCircle, FaSyncAlt
+    FaBaby, FaUserTie, FaCheckCircle, FaClock, FaTimesCircle, FaSyncAlt,
+    FaLaptopCode
 } from 'react-icons/fa'
 import { MdSecurity, MdEvent, MdLocalShipping, MdAgriculture } from 'react-icons/md'
 import { GiFactory, GiBrickWall, GiAnvil } from 'react-icons/gi'
@@ -24,7 +25,8 @@ const CATEGORY_ICONS = {
     factory: GiFactory,
     housekeeping: FaBroom,
     cooking: FaUtensils,
-    security: FaShieldAlt
+    security: FaShieldAlt,
+    development: FaLaptopCode
 }
 
 // Title-based icon mapping (more specific icons)

@@ -1,0 +1,755 @@
+/* ===== PREMIUM WALLET PAGE CSS ===== */
+/* Inspired by Wise, Upwork, and Stripe dashboard styling */
+
+.wallet-page {
+    min-height: calc(100vh - 72px);
+    background: #f8fafc;
+    color: var(--slate-900);
+    padding: var(--space-10) 0 var(--space-20);
+}
+
+.wallet-container {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+}
+
+/* Header */
+.wallet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-8);
+}
+
+.wallet-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--slate-900);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0;
+}
+
+.wallet-title-icon {
+    color: var(--primary-600);
+    stroke-width: 2.5;
+}
+
+.wallet-subtitle {
+    margin-top: 4px;
+    color: var(--slate-500);
+    font-size: var(--fs-sm);
+}
+
+/* ============================== */
+/* FINANCIAL OVERVIEW CARD        */
+/* ============================== */
+.financial-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    margin-bottom: var(--space-10);
+}
+
+/* Primary Card (Stripe styled card) */
+.balance-card-primary {
+    position: relative;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #ffffff;
+    border-radius: var(--radius-2xl);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 240px;
+    box-shadow: var(--shadow-xl), 0 10px 40px -10px rgba(15, 23, 42, 0.3);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.balance-card-glow {
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: var(--primary-400);
+    filter: blur(80px);
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+.balance-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 2;
+}
+
+.balance-card-header span {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--slate-400);
+}
+
+.escrow-shield-badge {
+    background: rgba(20, 168, 0, 0.15);
+    border: 1px solid rgba(20, 168, 0, 0.3);
+    color: var(--primary-300);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.balance-card-amount {
+    margin: var(--space-4) 0;
+    z-index: 2;
+}
+
+.balance-label {
+    font-size: var(--fs-sm);
+    color: var(--slate-400);
+    margin: 0 0 4px;
+}
+
+.balance-value-large {
+    font-size: 3rem;
+    font-weight: 800;
+    font-family: var(--font-display);
+    color: #ffffff;
+    line-height: 1;
+}
+
+.balance-card-footer {
+    display: flex;
+    gap: var(--space-3);
+    z-index: 2;
+}
+
+/* Secondary Funds Breakdowns */
+.balance-breakdown-card {
+    background: #ffffff;
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 240px;
+}
+
+.breakdown-row-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+.breakdown-box {
+    background: var(--slate-50);
+    border: 1px solid var(--slate-100);
+    border-radius: var(--radius-xl);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: transform 0.2s;
+}
+
+.breakdown-box:hover {
+    transform: translateY(-2px);
+}
+
+.breakdown-label {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    color: var(--slate-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.breakdown-icon-pending { color: #ea580c; }
+.breakdown-icon-escrow { color: #2563eb; }
+
+.breakdown-val {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--slate-900);
+    font-family: var(--font-display);
+}
+
+.breakdown-card-footer {
+    font-size: var(--fs-xs);
+    color: var(--slate-500);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--slate-100);
+}
+
+.breakdown-card-footer-icon {
+    color: var(--primary-600);
+}
+
+/* Buttons */
+.btn-white-premium {
+    background: #ffffff;
+    color: var(--slate-900);
+    border: none;
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-white-premium:hover {
+    background: var(--slate-50);
+    transform: translateY(-1px);
+}
+
+.btn-outline-white-premium {
+    background: transparent;
+    color: #ffffff;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: var(--radius-lg);
+    transition: all 0.2s;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-outline-white-premium:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #ffffff;
+}
+
+/* ============================== */
+/* TWO COLUMN CONTENT LAYOUT      */
+/* ============================== */
+.wallet-main-layout {
+    display: grid;
+    grid-template-columns: 1.05fr 0.45fr;
+    gap: var(--space-8);
+}
+
+/* ============================== */
+/* TRANSACTION HISTORY PANEL      */
+/* ============================== */
+.transaction-panel {
+    background: #ffffff;
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-sm);
+}
+
+.transaction-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--slate-100);
+    padding-bottom: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.transaction-panel-header h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--slate-900);
+    margin: 0;
+}
+
+.refresh-button {
+    background: var(--slate-50);
+    border: 1px solid var(--slate-200);
+    color: var(--slate-600);
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-xs);
+    transition: all 0.2s;
+}
+
+.refresh-button:hover {
+    background: var(--slate-100);
+    color: var(--slate-900);
+}
+
+.refresh-button-icon {
+    font-size: var(--fs-sm);
+}
+
+/* Tabs */
+.transaction-tabs {
+    display: flex;
+    gap: var(--space-2);
+    border-bottom: 1px solid var(--slate-100);
+    padding-bottom: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 6px 16px;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    color: var(--slate-500);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    background: var(--slate-50);
+    color: var(--slate-800);
+}
+
+.tab-btn.active {
+    background: var(--primary-50);
+    color: var(--primary-700);
+}
+
+/* List rendering */
+.transactions-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.transaction-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4) var(--space-5);
+    background: var(--slate-50);
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-xl);
+    transition: all 0.2s;
+}
+
+.transaction-card-row:hover {
+    background: #ffffff;
+    border-color: var(--primary-200);
+    box-shadow: var(--shadow-sm);
+}
+
+.tx-details-wrap {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.tx-type-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.tx-type-icon--incoming {
+    background: #ecfdf5;
+    color: #059669;
+}
+
+.tx-type-icon--outgoing {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.tx-info h4 {
+    font-size: var(--fs-base);
+    font-weight: 800;
+    color: var(--slate-900);
+    margin: 0 0 2px;
+}
+
+.tx-info p {
+    margin: 0;
+    font-size: var(--fs-xs);
+    color: var(--slate-500);
+}
+
+.tx-financials {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+}
+
+.tx-amount {
+    font-size: var(--fs-base);
+    font-weight: 800;
+}
+
+.tx-amount.income {
+    color: var(--success-600);
+}
+
+.tx-amount.expense {
+    color: var(--slate-900);
+}
+
+.tx-status-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.tx-status-pill--released {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+}
+
+.tx-status-pill--escrowed {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.tx-status-pill--refunded {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+/* Empty transactions */
+.empty-tx-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: var(--space-12) 0;
+}
+
+.empty-tx-icon {
+    font-size: 3.5rem;
+    color: var(--slate-300);
+    margin-bottom: var(--space-4);
+}
+
+.empty-tx-state h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--slate-800);
+    margin: 0 0 var(--space-1);
+}
+
+.empty-tx-state p {
+    color: var(--slate-500);
+    font-size: var(--fs-sm);
+    margin: 0;
+}
+
+/* ============================== */
+/* ESCROW PROTOCOL TIMELINE (Sidebar) */
+/* ============================== */
+.escrow-info-panel {
+    background: #ffffff;
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-sm);
+}
+
+.escrow-info-panel h3 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--slate-900);
+    margin: 0 0 var(--space-2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.escrow-info-panel-icon {
+    color: var(--primary-600);
+}
+
+.escrow-info-panel p.sub {
+    font-size: var(--fs-xs);
+    color: var(--slate-500);
+    margin: 0 0 var(--space-6);
+}
+
+/* Steps Timeline */
+.escrow-steps-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+.escrow-timeline-step {
+    display: flex;
+    gap: var(--space-4);
+    position: relative;
+}
+
+.escrow-timeline-step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    top: 32px;
+    left: 15px;
+    bottom: -24px;
+    width: 2px;
+    background: var(--slate-200);
+}
+
+.step-num-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--slate-100);
+    border: 2px solid var(--slate-300);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: var(--fs-sm);
+    color: var(--slate-600);
+    flex-shrink: 0;
+    z-index: 2;
+    transition: all 0.3s;
+}
+
+.escrow-timeline-step:hover .step-num-icon {
+    background: var(--primary-50);
+    border-color: var(--primary-500);
+    color: var(--primary-700);
+}
+
+.step-details h4 {
+    margin: 0 0 2px;
+    font-size: var(--fs-sm);
+    font-weight: 800;
+    color: var(--slate-800);
+}
+
+.step-details p {
+    margin: 0;
+    font-size: 11px;
+    color: var(--slate-500);
+    line-height: var(--lh-relaxed);
+}
+
+/* Linked payment methods */
+.sidebar-payment-methods {
+    background: #ffffff;
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-sm);
+    margin-top: var(--space-6);
+}
+
+.sidebar-payment-methods h3 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--slate-900);
+    margin: 0 0 var(--space-2);
+}
+
+.payment-method-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--slate-50);
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-xl);
+    padding: var(--space-4);
+    margin-top: var(--space-4);
+}
+
+.method-details h5 {
+    margin: 0 0 2px;
+    font-size: var(--fs-sm);
+    font-weight: 800;
+    color: var(--slate-800);
+}
+
+.method-details p {
+    margin: 0;
+    font-size: 10px;
+    color: var(--slate-500);
+}
+
+.primary-badge {
+    background: var(--primary-50);
+    color: var(--primary-700);
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+}
+
+/* Payout Dialog simulated box */
+.payout-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s;
+}
+
+.payout-drawer {
+    background: #ffffff;
+    border-radius: var(--radius-2xl);
+    width: 100%;
+    max-width: 440px;
+    padding: var(--space-8);
+    box-shadow: var(--shadow-2xl);
+    border: 1px solid var(--slate-200);
+    animation: slideUp 0.3s var(--ease-spring);
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.payout-drawer h3 {
+    margin: 0 0 var(--space-2);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--slate-900);
+}
+
+.payout-input-group {
+    margin: var(--space-5) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.payout-input-group label {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    color: var(--slate-500);
+    text-transform: uppercase;
+}
+
+.payout-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.payout-input-symbol {
+    position: absolute;
+    left: var(--space-4);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--slate-400);
+}
+
+.payout-input-field {
+    width: 100%;
+    padding: 12px 16px 12px 36px;
+    border: 1.5px solid var(--slate-200);
+    border-radius: var(--radius-lg);
+    font-size: 1.25rem;
+    font-weight: 700;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.payout-input-field:focus {
+    border-color: var(--primary-500);
+}
+
+.payout-options-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+}
+
+.payout-option-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border: 1.5px solid var(--slate-200);
+    border-radius: var(--radius-xl);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.payout-option-row:hover {
+    border-color: var(--primary-300);
+    background: var(--slate-50);
+}
+
+.payout-option-row.selected {
+    border-color: var(--primary-500);
+    background: var(--primary-50);
+}
+
+.payout-drawer-actions {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.payout-drawer-actions .btn {
+    flex: 1;
+}
+
+/* ============================== */
+/* RESPONSIVE LAYOUT              */
+/* ============================== */
+@media (max-width: 1024px) {
+    .wallet-main-layout {
+        grid-template-columns: 1fr;
+        gap: var(--space-8);
+    }
+}
+
+@media (max-width: 768px) {
+    .financial-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-5);
+    }
+
+    .balance-card-primary,
+    .balance-breakdown-card {
+        min-height: auto;
+    }
+}
