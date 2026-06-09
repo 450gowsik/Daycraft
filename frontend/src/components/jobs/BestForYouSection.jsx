@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { useAuth } from '../../context/AuthContext.jsx'
+import { useJobs } from '../../context/JobContext.jsx'
 import { jobService } from '../../services/jobService.js'
 import { CategoryIcon } from './CategoryIcon.jsx'
 import { FaBolt, FaChevronRight, FaMapMarkerAlt, FaStar } from 'react-icons/fa'
@@ -11,6 +12,7 @@ function BestForYouSection() {
     const navigate = useNavigate()
     const { language } = useLanguage()
     const { isAuthenticated, isWorker, user } = useAuth()
+    const { selectedLocation } = useJobs()
 
     const [recommendations, setRecommendations] = useState([])
     const [loading, setLoading] = useState(true)
@@ -133,7 +135,21 @@ function BestForYouSection() {
         )
     }
 
-    if (recommendations.length === 0) {
+    const filteredRecommendations = selectedLocation
+        ? recommendations.filter(job => {
+            const cityName = selectedLocation.city?.name?.en?.toLowerCase() || ''
+            const districtName = selectedLocation.district?.name?.en?.toLowerCase() || ''
+            const displayText = selectedLocation.displayText?.toLowerCase() || ''
+            const jobLocation = job.location?.toLowerCase() || ''
+            return jobLocation.includes(cityName) ||
+                jobLocation.includes(districtName) ||
+                cityName.includes(jobLocation.split(',')[0]?.trim()) ||
+                districtName.includes(jobLocation.split(',')[0]?.trim()) ||
+                jobLocation.includes(displayText)
+          })
+        : recommendations
+
+    if (filteredRecommendations.length === 0) {
         return null
     }
 
@@ -152,7 +168,7 @@ function BestForYouSection() {
             </div>
 
             <div className="recommendations-scroll">
-                {recommendations.map((job, index) => {
+                {filteredRecommendations.map((job, index) => {
                     const jobId = job._id || job.id
                     const title = job.title?.[language] || job.title?.en || job.title || 'Job'
                     const isApplying = applyingJobId === jobId

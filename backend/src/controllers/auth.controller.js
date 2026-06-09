@@ -243,7 +243,8 @@ exports.emailRegister = async (req, res) => {
             geoLocation: geoLocation ? { type: 'Point', coordinates: geoLocation } : undefined,
             authProvider: 'local',
             emailVerified: false,
-            isActive: true
+            isActive: true,
+            profileCompleted: true
         })
 
         // Create role-specific profile
@@ -639,7 +640,8 @@ exports.googleAuth = async (req, res) => {
                 geoLocation: geoLocation ? { type: 'Point', coordinates: geoLocation } : undefined,
                 authProvider: 'google',
                 emailVerified: true,    // Google email is pre-verified
-                isActive: true
+                isActive: true,
+                profileCompleted: true
             })
 
             // Create role-specific profile

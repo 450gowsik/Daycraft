@@ -59,7 +59,7 @@ const jobSchema = new mongoose.Schema({
     },
     wageType: {
         type: String,
-        enum: ['daily', 'hourly', 'fixed'],
+        enum: ['daily', 'hourly', 'fixed', 'weekly', 'monthly'],
         default: 'daily'
     },
     duration: {

@@ -8,6 +8,8 @@ export function JobProvider({ children }) {
     const [categories, setCategories] = useState([])
     const [filteredJobs, setFilteredJobs] = useState([])
     // Location-first matching state
+    const [rawPriorityJobs, setRawPriorityJobs] = useState([])
+    const [rawOtherJobs, setRawOtherJobs] = useState([])
     const [priorityJobs, setPriorityJobs] = useState([])
     const [otherJobs, setOtherJobs] = useState([])
     const [useLocationMatching, setUseLocationMatching] = useState(false)
@@ -30,6 +32,8 @@ export function JobProvider({ children }) {
         } else {
             // Reset to normal mode when no location selected
             setUseLocationMatching(false)
+            setRawPriorityJobs([])
+            setRawOtherJobs([])
             setPriorityJobs([])
             setOtherJobs([])
         }
@@ -40,6 +44,36 @@ export function JobProvider({ children }) {
             applyFilters()
         }
     }, [jobs, selectedCategory, selectedLocation, searchQuery, useLocationMatching])
+
+    useEffect(() => {
+        if (useLocationMatching) {
+            let filteredP = rawPriorityJobs
+            let filteredO = rawOtherJobs
+
+            if (searchQuery) {
+                const query = searchQuery.toLowerCase()
+                const filterFn = job => {
+                    const titleEn = job.title?.en?.toLowerCase() || ''
+                    const titleTa = job.title?.ta?.toLowerCase() || ''
+                    const descEn = job.description?.en?.toLowerCase() || ''
+                    const descTa = job.description?.ta?.toLowerCase() || ''
+                    const location = job.location?.toLowerCase() || ''
+
+                    return titleEn.includes(query) ||
+                        titleTa.includes(query) ||
+                        descEn.includes(query) ||
+                        descTa.includes(query) ||
+                        location.includes(query)
+                }
+                filteredP = filteredP.filter(filterFn)
+                filteredO = filteredO.filter(filterFn)
+            }
+
+            setPriorityJobs(filteredP)
+            setOtherJobs(filteredO)
+            setFilteredJobs([...filteredP, ...filteredO])
+        }
+    }, [searchQuery, rawPriorityJobs, rawOtherJobs, useLocationMatching])
 
     const fetchCategories = async () => {
         try {
@@ -95,6 +129,41 @@ export function JobProvider({ children }) {
         }
     }
 
+    // Helper to load and filter demo jobs
+    const loadFilteredDemoJobs = async () => {
+        try {
+            const demoResponse = await import('../data/demoJobs.json')
+            const demoJobs = demoResponse.default || demoResponse
+
+            const locationQuery = selectedLocation?.displayText?.toLowerCase() || ''
+            const cityName = selectedLocation?.city?.name?.en?.toLowerCase() || ''
+            const districtName = selectedLocation?.district?.name?.en?.toLowerCase() || ''
+
+            const filteredDemo = demoJobs.filter(job => {
+                const jobLocation = job.location?.toLowerCase() || ''
+                const matchesLocation = (cityName && jobLocation.includes(cityName)) ||
+                                       (districtName && jobLocation.includes(districtName)) ||
+                                       (cityName && cityName.includes(jobLocation.split(',')[0]?.trim())) ||
+                                       (districtName && districtName.includes(jobLocation.split(',')[0]?.trim())) ||
+                                       jobLocation.includes(locationQuery)
+
+                if (selectedCategory) {
+                    return matchesLocation && job.category === selectedCategory
+                }
+                return matchesLocation
+            })
+
+            setRawPriorityJobs(filteredDemo)
+            setRawOtherJobs([])
+            setUseLocationMatching(true)
+        } catch (err) {
+            console.error('Failed to load demo jobs in fallback:', err)
+            setRawPriorityJobs([])
+            setRawOtherJobs([])
+            setUseLocationMatching(true)
+        }
+    }
+
     // Location-first matching: Fetch jobs prioritized by user's location
     const fetchLocationMatchedJobs = async () => {
         if (!selectedLocation) return
@@ -123,20 +192,22 @@ export function JobProvider({ children }) {
             const data = await response.json()
 
             if (data.success) {
-                setPriorityJobs(data.priorityJobs || [])
-                setOtherJobs(data.otherJobs || [])
-                setUseLocationMatching(true)
-                // Also update filteredJobs for components that use it
-                setFilteredJobs([...(data.priorityJobs || []), ...(data.otherJobs || [])])
+                const fetchedPriority = data.priorityJobs || []
+                if (fetchedPriority.length > 0) {
+                    setRawPriorityJobs(fetchedPriority)
+                    setRawOtherJobs([]) // Do not display unrelated locations
+                    setUseLocationMatching(true)
+                } else {
+                    // Fallback to filtered demo jobs
+                    await loadFilteredDemoJobs()
+                }
             } else {
-                // Fallback to regular filtering
-                setUseLocationMatching(false)
-                applyFilters()
+                // Fallback to filtered demo jobs
+                await loadFilteredDemoJobs()
             }
         } catch (err) {
-            console.error('Location matching failed, falling back to filters:', err)
-            setUseLocationMatching(false)
-            applyFilters()
+            console.error('Location matching failed, falling back to demo jobs:', err)
+            await loadFilteredDemoJobs()
         } finally {
             setLoading(false)
         }

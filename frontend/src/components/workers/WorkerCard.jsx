@@ -31,7 +31,7 @@ function WorkerCard({ worker, onHire }) {
                 <div className="worker-header-info">
                     <h3 className="worker-name">{worker.name}</h3>
                     <div className="worker-rating">
-                        <span className="star">⭐</span>
+                        <span className="star-text">★</span>
                         <span className="rating-value">{worker.rating || '0.0'}</span>
                         <span className="rating-count">({worker.completedJobs || 0})</span>
                         {worker.idVerified && (
@@ -41,10 +41,10 @@ function WorkerCard({ worker, onHire }) {
                     {/* Worker Availability Badge */}
                     <div className="worker-availability-row">
                         <span className={`availability-badge availability-${worker.availability || 'available'}`}>
-                            {worker.availability === 'available' && (language === 'ta' ? '🟢 கிடைக்கிறது' : '🟢 Available')}
-                            {worker.availability === 'busy' && (language === 'ta' ? '🟡 பிஸி' : '🟡 Busy')}
-                            {worker.availability === 'unavailable' && (language === 'ta' ? '🔴 கிடைக்கவில்லை' : '🔴 Unavailable')}
-                            {!worker.availability && (language === 'ta' ? '🟢 கிடைக்கிறது' : '🟢 Available')}
+                            {worker.availability === 'available' && (language === 'ta' ? 'கிடைக்கிறது' : 'Available')}
+                            {worker.availability === 'busy' && (language === 'ta' ? 'பிஸி' : 'Busy')}
+                            {worker.availability === 'unavailable' && (language === 'ta' ? 'கிடைக்கவில்லை' : 'Unavailable')}
+                            {!worker.availability && (language === 'ta' ? 'கிடைக்கிறது' : 'Available')}
                         </span>
                     </div>
                 </div>
@@ -65,7 +65,7 @@ function WorkerCard({ worker, onHire }) {
                         <span className="meta-value">{worker.experience || '0'} {language === 'ta' ? 'ஆண்டுகள்' : 'yrs'}</span>
                     </div>
                     <div className="worker-meta-item">
-                        <span className="meta-label">📍 {language === 'ta' ? 'இடம்' : 'Location'}</span>
+                        <span className="meta-label">{language === 'ta' ? 'இடம்' : 'Location'}</span>
                         <span className="meta-value">{worker.location || 'Local'}</span>
                     </div>
                 </div>

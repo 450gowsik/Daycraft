@@ -326,7 +326,8 @@ exports.verifyOtp = async (req, res) => {
                 geoLocation: geoLocation || undefined,
                 authProvider: 'phone',
                 phoneVerified: true,
-                isActive: true
+                isActive: true,
+                profileCompleted: true
             })
 
             // Create role-specific profile

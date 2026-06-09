@@ -39,12 +39,25 @@ function CompleteProfile() {
     // Profile data - removed unused states
     const totalSteps = 1  // Only location step for now
 
-    // Redirect if profile already completed OR user already has location
+    // Redirect if profile already completed
     useEffect(() => {
-        if (user?.profileCompleted || user?.location) {
+        if (user?.profileCompleted) {
             navigate('/')
         }
     }, [user, navigate])
+
+    // Sync local state with user if user data loads
+    useEffect(() => {
+        if (user) {
+            if (user.location && !manualLocation) {
+                setManualLocation(user.location)
+                setLocationGranted(true)
+            }
+            if (user.geoLocation && !location) {
+                setLocation(user.geoLocation)
+            }
+        }
+    }, [user, manualLocation, location])
 
     // Get geolocation
     const handleUseCurrentLocation = async () => {

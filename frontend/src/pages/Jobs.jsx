@@ -132,7 +132,7 @@ function Jobs() {
             {/* Sticky Location Bar */}
             <div className="sticky-location-bar">
                 <div className="location-info">
-                    <span className="location-icon">📍</span>
+                    <span className="location-dot"></span>
                     <div className="location-text">
                         <span className="location-label">{t.stickyLocation}</span>
                         <span className="location-value">
@@ -180,7 +180,7 @@ function Jobs() {
             {/* Search Bar */}
             <div className="search-filter-bar">
                 <div className="search-input-wrapper">
-                    <span className="search-icon">🔍</span>
+                    <span className="search-icon-svg" aria-hidden="true">&#x2315;</span>
                     <input
                         type="text"
                         className="search-input"
@@ -199,7 +199,7 @@ function Jobs() {
             {/* Trust Messaging Bar */}
             <div className="trust-messaging-bar">
                 <span className="trust-message">
-                    ✅ {language === 'ta' ? 'சரிபார்க்கப்பட்ட உள்ளூர் வேலைகள். இடைத்தரகர்கள் இல்லை. வெளிப்படையான ஊதியம்.' : 'Verified local jobs. No middlemen. Pay transparency.'}
+                    {language === 'ta' ? 'சரிபார்க்கப்பட்ட உள்ளூர் வேலைகள். இடைத்தரகர்கள் இல்லை. வெளிப்படையான ஊதியம்.' : 'Verified local jobs. No middlemen. Pay transparency.'}
                 </span>
             </div>
 
@@ -213,7 +213,7 @@ function Jobs() {
                 </span>
                 {selectedLocation && (
                     <span className="location-tag">
-                        📍 {selectedLocation.displayText}
+                        {selectedLocation.displayText}
                     </span>
                 )}
             </div>
@@ -235,7 +235,7 @@ function Jobs() {
                             <section className="jobs-section priority-section">
                                 <div className="section-header">
                                     <h2 className="section-title">
-                                        <span className="section-icon">📍</span>
+                                        <span className="section-icon-dot"></span>
                                         {t.jobsInYourArea}
                                     </h2>
                                     <span className="section-subtitle">
@@ -271,7 +271,7 @@ function Jobs() {
                                 {priorityJobs.length === 0 && (
                                     <div className="section-header">
                                         <h2 className="section-title">
-                                            <span className="section-icon">🗺️</span>
+                                            <span className="section-icon-dot"></span>
                                             {t.moreJobsNearYou}
                                         </h2>
                                     </div>
@@ -293,7 +293,7 @@ function Jobs() {
                         {/* Empty state when no jobs at all */}
                         {priorityJobs.length === 0 && otherJobs.length === 0 && (
                             <div className="empty-state">
-                                <div className="empty-icon">💼</div>
+                                <div className="empty-icon-badge">J</div>
                                 <h3>{language === 'ta' ? 'இப்போது அருகில் வேலைகள் இல்லை' : 'No jobs nearby right now'}</h3>
                                 <p className="empty-subtext">
                                     {language === 'ta'
@@ -322,7 +322,7 @@ function Jobs() {
                 ) : (
                     // Empty State
                     <div className="empty-state">
-                        <div className="empty-icon">💼</div>
+                        <div className="empty-icon-badge">J</div>
                         <h3>{language === 'ta' ? 'இப்போது அருகில் வேலைகள் இல்லை' : 'No jobs nearby right now'}</h3>
                         <p className="empty-subtext">
                             {language === 'ta'

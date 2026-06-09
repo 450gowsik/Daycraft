@@ -1,19 +1,19 @@
 export const JOB_CATEGORIES = [
-    { id: 'construction', label: 'Construction', ta: 'கட்டுமானம்', icon: '🏗️' },
-    { id: 'electrical', label: 'Electrical', ta: 'மின்சாரம்', icon: '⚡' },
-    { id: 'plumbing', label: 'Plumbing', ta: 'குழாய் பணி', icon: '🔧' },
-    { id: 'painting', label: 'Painting', ta: 'பெயிண்டிங்', icon: '🎨' },
-    { id: 'carpentry', label: 'Carpentry', ta: 'மரவேலை', icon: '🪚' },
-    { id: 'masonry', label: 'Masonry & Tiles', ta: 'கற்றளம் & ஓடு', icon: '🧱' },
-    { id: 'welding', label: 'Welding & Fabrication', ta: 'வெல்டிங் & உருவாக்கம்', icon: '🔩' },
-    { id: 'agriculture', label: 'Agriculture & Farming', ta: 'விவசாயம்', icon: '🌾' },
-    { id: 'gardening', label: 'Gardening & Landscaping', ta: 'தோட்டக்கலை', icon: '🌳' },
-    { id: 'transport', label: 'Transport & Loading', ta: 'போக்குவரத்து & ஏற்றுதல்', icon: '🚚' },
-    { id: 'factory', label: 'Factory & Manufacturing', ta: 'தொழிற்சாலை', icon: '🏭' },
-    { id: 'housekeeping', label: 'Domestic Help', ta: 'வீட்டு உதவி', icon: '🧹' },
-    { id: 'cooking', label: 'Cooking & Catering', ta: 'சமையல்', icon: '🍳' },
-    { id: 'security', label: 'Security & Watchman', ta: 'பாதுகாப்பு', icon: '👮' },
-    { id: 'development', label: 'Development & IT', ta: 'தகவல் தொழில்நுட்பம்', icon: '💻' }
+    { id: 'construction', label: 'Construction', ta: 'கட்டுமானம்', abbr: 'CO', color: '#E8500A' },
+    { id: 'electrical', label: 'Electrical', ta: 'மின்சாரம்', abbr: 'EL', color: '#D97706' },
+    { id: 'plumbing', label: 'Plumbing', ta: 'குழாய் பணி', abbr: 'PL', color: '#0891B2' },
+    { id: 'painting', label: 'Painting', ta: 'பெயிண்டிங்', abbr: 'PA', color: '#DB2777' },
+    { id: 'carpentry', label: 'Carpentry', ta: 'மரவேலை', abbr: 'CA', color: '#92400E' },
+    { id: 'masonry', label: 'Masonry & Tiles', ta: 'கற்றளம் & ஓடு', abbr: 'MA', color: '#6B7280' },
+    { id: 'welding', label: 'Welding & Fabrication', ta: 'வெல்டிங் & உருவாக்கம்', abbr: 'WE', color: '#374151' },
+    { id: 'agriculture', label: 'Agriculture & Farming', ta: 'விவசாயம்', abbr: 'AG', color: '#15803D' },
+    { id: 'gardening', label: 'Gardening & Landscaping', ta: 'தோட்டக்கலை', abbr: 'GA', color: '#16A34A' },
+    { id: 'transport', label: 'Transport & Loading', ta: 'போக்குவரத்து & ஏற்றுதல்', abbr: 'TR', color: '#1D4ED8' },
+    { id: 'factory', label: 'Factory & Manufacturing', ta: 'தொழிற்சாலை', abbr: 'FA', color: '#7C3AED' },
+    { id: 'housekeeping', label: 'Domestic Help', ta: 'வீட்டு உதவி', abbr: 'HK', color: '#9D174D' },
+    { id: 'cooking', label: 'Cooking & Catering', ta: 'சமையல்', abbr: 'CK', color: '#DC2626' },
+    { id: 'security', label: 'Security & Watchman', ta: 'பாதுகாப்பு', abbr: 'SE', color: '#1E3A5F' },
+    { id: 'development', label: 'Development & IT', ta: 'தகவல் தொழில்நுட்பம்', abbr: 'IT', color: '#0E7490' }
 ];
 
 export const ROLES_BY_CATEGORY = {
@@ -123,69 +123,26 @@ export const ALL_SKILLS = Object.entries(ROLES_BY_CATEGORY).flatMap(([catId, rol
     }))
 );
 
-// Icon mapping based on job title keywords
-const TITLE_ICON_MAP = [
-    { keywords: ['night watch', 'night guard', 'night shift', 'night security'], icon: '🌙' },
-    { keywords: ['day guard', 'day shift', 'day security'], icon: '☀️' },
-    { keywords: ['event security', 'event', 'function'], icon: '🎟️' },
-    { keywords: ['parking'], icon: '🅿️' },
-    { keywords: ['gate keeping', 'gate guard', 'gate'], icon: '🚪' },
-    { keywords: ['office security', 'office'], icon: '🏢' },
-    { keywords: ['building watch', 'building'], icon: '🏗️' },
-    { keywords: ['factory guard', 'factory'], icon: '🏭' },
-    { keywords: ['atm'], icon: '🏧' },
-    { keywords: ['shop security', 'shop'], icon: '🛒' },
-    { keywords: ['construction', 'mason', 'brick', 'rcc', 'concrete'], icon: '🏗️' },
-    { keywords: ['electric', 'wire', 'fan', 'light'], icon: '⚡' },
-    { keywords: ['plumb', 'pipe', 'drainage', 'water tank'], icon: '🔧' },
-    { keywords: ['paint', 'texture', 'putty'], icon: '🎨' },
-    { keywords: ['carpenter', 'wood', 'door', 'furniture'], icon: '🪚' },
-    { keywords: ['clean', 'maid', 'sweep', 'deep cleaning'], icon: '🧹' },
-    { keywords: ['cook', 'kitchen', 'catering', 'chef'], icon: '🍳' },
-    { keywords: ['driver', 'taxi', 'auto', 'truck', 'van'], icon: '🚗' },
-    { keywords: ['garden', 'lawn', 'landscap', 'tree'], icon: '🌳' },
-    { keywords: ['delivery', 'courier'], icon: '📦' },
-    { keywords: ['babysit', 'nanny', 'child care'], icon: '👶' },
-    { keywords: ['elder care', 'senior care', 'caregiver'], icon: '👴' },
-    { keywords: ['warehouse', 'loading', 'godown'], icon: '📦' },
-    { keywords: ['ac ', 'air condition'], icon: '❄️' },
-    { keywords: ['cctv', 'camera'], icon: '📹' },
-    { keywords: ['roof', 'waterproof'], icon: '🏠' },
-    { keywords: ['tile', 'flooring', 'marble'], icon: '🧱' },
-    { keywords: ['weld', 'fabricat', 'grille'], icon: '🔩' },
-    { keywords: ['dev', 'software', 'code', 'web', 'app', 'program', 'developer'], icon: '💻' },
-    { keywords: ['design', 'ui', 'ux', 'graphic'], icon: '🎨' },
-    { keywords: ['it support', 'computer', 'laptop', 'desktop', 'hardware'], icon: '🖥️' },
-    { keywords: ['market', 'seo', 'social media', 'digital'], icon: '📈' },
-    { keywords: ['data', 'excel', 'typing', 'entry'], icon: '📊' },
-];
-
 /**
- * Get a detailed icon based on job title, falling back to category icon.
- * @param {string} title - The job title (can be string or object with en/ta keys)
+ * Get a category abbreviation badge element props based on job category.
+ * Returns { abbr, color } for rendering a colored badge.
  * @param {string} category - The job category ID
- * @returns {string} An emoji icon
+ * @returns {{ abbr: string, color: string }}
  */
-export function getDetailedIcon(title, category) {
-    // Normalize title to lowercase string
-    let titleStr = '';
-    if (typeof title === 'object' && title !== null) {
-        titleStr = (title.en || title.ta || '').toLowerCase();
-    } else if (typeof title === 'string') {
-        titleStr = title.toLowerCase();
-    }
-
-    // Search for a matching keyword
-    for (const mapping of TITLE_ICON_MAP) {
-        for (const keyword of mapping.keywords) {
-            if (titleStr.includes(keyword)) {
-                return mapping.icon;
-            }
-        }
-    }
-
-    // Fallback to category icon
-    const categoryObj = JOB_CATEGORIES.find(c => c.id === category);
-    return categoryObj?.icon || '💼';
+export function getCategoryBadge(category) {
+    const cat = JOB_CATEGORIES.find(c => c.id === category);
+    return cat
+        ? { abbr: cat.abbr, color: cat.color }
+        : { abbr: 'JB', color: '#6B7280' };
 }
 
+/**
+ * Get detailed category badge based on job title keywords, falling back to category.
+ * @param {string|object} title - The job title
+ * @param {string} category - The job category ID
+ * @returns {{ abbr: string, color: string }}
+ */
+export function getDetailedIcon(title, category) {
+    // This now returns a badge object instead of an emoji
+    return getCategoryBadge(category);
+}

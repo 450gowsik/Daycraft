@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useLanguage } from '../../context/LanguageContext.jsx'
+import logo from '../../assets/images/logo.png'
 import './Footer.css'
 
 function Footer() {
@@ -12,8 +13,7 @@ function Footer() {
                 <div className="footer-grid">
                     <div className="footer-brand">
                         <Link to="/" className="brand-link">
-                            <span className="brand-icon">🛠️</span>
-                            <span className="brand-text">DayCraft</span>
+                            <img src={logo} alt="DayCraft" className="brand-logo" />
                         </Link>
                         <p className="footer-description">
                             {t('footer.description')}
@@ -34,15 +34,15 @@ function Footer() {
                         <h4>{t('footer.contact')}</h4>
                         <ul>
                             <li>
-                                <span className="contact-icon">📧</span>
+                                <span className="contact-icon-text">@</span>
                                 <span>{t('footer.email')}</span>
                             </li>
                             <li>
-                                <span className="contact-icon">📞</span>
+                                <span className="contact-icon-text">Ph</span>
                                 <span>{t('footer.phone')}</span>
                             </li>
                             <li>
-                                <span className="contact-icon">📍</span>
+                                <span className="contact-icon-text">Lo</span>
                                 <span>{t('footer.address')}</span>
                             </li>
                         </ul>

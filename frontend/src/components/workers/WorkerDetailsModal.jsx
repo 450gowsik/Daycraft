@@ -17,21 +17,21 @@ function WorkerDetailsModal({ worker, isOpen, onClose, onRequest }) {
     const verifications = [
         {
             key: 'phone',
-            icon: '📱',
+            icon: 'PH',
             label: language === 'ta' ? 'மொபைல்' : 'Mobile',
             tooltip: language === 'ta' ? 'DayCraft-ல் சரிபார்க்கப்பட்டது' : 'Verified by DayCraft',
             verified: worker.phoneVerified
         },
         {
             key: 'id',
-            icon: '🆔',
+            icon: 'ID',
             label: language === 'ta' ? 'ஐடி' : 'ID',
             tooltip: language === 'ta' ? 'அரசாங்க ஐடி சரிபார்க்கப்பட்டது' : 'Government ID Verified',
             verified: worker.idVerified
         },
         {
             key: 'location',
-            icon: '📍',
+            icon: 'LO',
             label: language === 'ta' ? 'இடம்' : 'Location',
             tooltip: language === 'ta' ? 'முகவரி சரிபார்க்கப்பட்டது' : 'Address Verified',
             verified: worker.locationVerified
@@ -76,7 +76,7 @@ function WorkerDetailsModal({ worker, isOpen, onClose, onRequest }) {
                         <div className="modal-header-info">
                             <h2 className="modal-name">{worker.name}</h2>
                             <div className="trust-metrics">
-                                <span className="star">⭐</span>
+                                <span className="star-text">★</span>
                                 <span>{worker.rating || '0.0'}</span>
                                 <span className="divider"></span>
                                 <span>{worker.completedJobs || 0} {language === 'ta' ? 'வேலைகள்' : 'jobs'}</span>
@@ -143,7 +143,7 @@ function WorkerDetailsModal({ worker, isOpen, onClose, onRequest }) {
                     {/* Pro Section - Recent Work */}
                     {worker.completedJobs > 0 && daysSinceLastJob && (
                         <div className="recent-work">
-                            <span className="recent-work-icon">🏆</span>
+                            <div className="recent-work-icon-badge">TW</div>
                             <div className="recent-work-text">
                                 <strong>{language === 'ta' ? 'சமீபத்திய பணி' : 'Recent Activity'}</strong>
                                 <span>
@@ -157,8 +157,7 @@ function WorkerDetailsModal({ worker, isOpen, onClose, onRequest }) {
 
                     {/* CTA Button - Serious Action */}
                     <button className="request-btn" onClick={handleRequest}>
-                        <span className="icon">📩</span>
-                        {language === 'ta' ? 'பணி கோரிக்கை அனுப்பு' : 'Send Work Request'}
+                        {language === 'ta' ? 'பணி கொரிக்கை அனுப்பு' : 'Send Work Request'}
                     </button>
 
                     {/* Helper text - Trust builder */}

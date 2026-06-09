@@ -21,13 +21,18 @@
     display: flex;
     align-items: center;
     gap: var(--space-2);
-    font-size: 1.5rem;
-    font-weight: 800;
     text-decoration: none;
 }
 
-.brand-text {
-    color: var(--primary-500);
+.brand-logo {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.brand-link:hover .brand-logo {
+    transform: scale(1.05);
 }
 
 .footer-description {

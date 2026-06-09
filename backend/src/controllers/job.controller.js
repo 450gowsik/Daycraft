@@ -23,7 +23,7 @@ exports.getJobs = async (req, res) => {
 
         // Geo-spatial query if coordinates provided
         if (lat && lng) {
-            query.locationCoordinates = {
+            query.geoLocation = {
                 $near: {
                     $geometry: {
                         type: 'Point',
@@ -114,7 +114,7 @@ exports.createJob = async (req, res) => {
             description,
             location,
             isRemote: isRemote || false,
-            skills: skills || [],
+            skills: (skills || []).map(s => typeof s === 'string' ? { en: s, ta: s } : s),
             experienceLevel: experienceLevel || 'any',
             requiredWorkers: workersNeeded || 1,
             wage: salary,
@@ -124,7 +124,7 @@ exports.createJob = async (req, res) => {
 
         // Add geo coordinates if provided
         if (geoLocation && geoLocation.coordinates) {
-            jobData.locationCoordinates = {
+            jobData.geoLocation = {
                 type: 'Point',
                 coordinates: geoLocation.coordinates
             }

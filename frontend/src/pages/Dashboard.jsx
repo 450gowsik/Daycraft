@@ -212,7 +212,7 @@ function Dashboard() {
                                 </span>
                                 {user?.location && (
                                     <span className="location-badge">
-                                        📍 {user.location}
+                                        <FiMapPin size={12} style={{marginRight:'4px'}}/>{user.location}
                                     </span>
                                 )}
                             </div>
@@ -282,7 +282,7 @@ function Dashboard() {
                                     </div>
                                 ) : recentJobs.length === 0 ? (
                                     <div className="empty-panel-state">
-                                        <div className="empty-illustration">📋</div>
+                                        <div className="empty-illustration"><FiBriefcase size={32} /></div>
                                         <h3>{language === 'en' ? 'No Jobs Posted Yet' : 'இன்னும் வேலைகள் இடப்படவில்லை'}</h3>
                                         <p>{language === 'en' ? 'Create a job listing to connect with verified skilled workers in your area.' : 'உங்கள் பகுதியில் சரிபார்க்கப்பட்ட திறமையான தொழிலாளர்களுடன் இணைய வேலை பட்டியலை உருவாக்கவும்.'}</p>
                                         <Link to="/post-job" className="btn btn-primary btn-md">
@@ -378,12 +378,11 @@ function Dashboard() {
                                                 <h3 className="rec-job-title">{title}</h3>
                                                 
                                                 <div className="rec-job-meta">
-                                                    <span>📍 {job.location}</span>
+                                                    <span><FiMapPin size={12}/> {job.location}</span>
                                                     <span>₹{job.wage?.toLocaleString()}/day</span>
                                                 </div>
                                                 
                                                 <div className="rec-match-reason">
-                                                    <span className="sparkle-icon">✨</span>
                                                     <span>
                                                         {job.match?.breakdown?.skill > 30
                                                             ? (language === 'en' ? 'Matches your skills' : 'உங்கள் திறமைகளுடன் பொருந்துகிறது')
@@ -418,7 +417,7 @@ function Dashboard() {
                                     </div>
                                 ) : myApplications.length === 0 ? (
                                     <div className="empty-panel-state-google">
-                                        <div className="illustration-wrap">💼</div>
+                                        <div className="illustration-wrap"><FiBriefcase size={32} /></div>
                                         <h3>{language === 'en' ? 'No Applications Yet' : 'இன்னும் விண்ணப்பங்கள் இல்லை'}</h3>
                                         <p className="illustration-sub">{language === 'en' ? 'Start applying to local jobs. Most active workers receive offers within 2–3 applications!' : 'உள்ளூர் வேலைகளுக்கு விண்ணப்பிக்கத் தொடங்குங்கள். சுறுசுறுப்பான தொழிலாளர்கள் 2-3 விண்ணப்பங்களுக்குள் வாய்ப்புகளைப் பெறுவார்கள்!'}</p>
                                         <Link to="/jobs" className="btn btn-premium btn-md">
@@ -440,7 +439,7 @@ function Dashboard() {
                                                         <div className="app-job-info-text">
                                                             <h4>{jobTitle}</h4>
                                                             <p>
-                                                                <span>📍 {item.job?.location}</span>
+                                                                <span><FiMapPin size={11}/> {item.job?.location}</span>
                                                                 <span className="dot-divider">•</span>
                                                                 <strong>₹{item.job?.wage?.toLocaleString()}/day</strong>
                                                             </p>
@@ -491,16 +490,29 @@ function Dashboard() {
                                     <FiChevronRight className="arrow-right" />
                                 </Link>
 
-                                <Link to="/workers" className="vertical-action-card">
-                                    <div className="action-card-icon-wrap workers-bg">
-                                        <FiUsers />
-                                    </div>
-                                    <div className="action-card-text">
-                                        <h4>{language === 'en' ? 'Find Workers' : 'தொழிலாளர்களைக் கண்டுபிடி'}</h4>
-                                        <p>{language === 'en' ? 'Find verified service providers' : 'சரிபார்க்கப்பட்ட சேவை வழங்குநர்களைக் கண்டறியவும்'}</p>
-                                    </div>
-                                    <FiChevronRight className="arrow-right" />
-                                </Link>
+                                {isEmployer ? (
+                                    <Link to="/post-job" className="vertical-action-card">
+                                        <div className="action-card-icon-wrap workers-bg">
+                                            <FiPlus />
+                                        </div>
+                                        <div className="action-card-text">
+                                            <h4>{language === 'en' ? 'Post a Job' : 'வேலையை இடு'}</h4>
+                                            <p>{language === 'en' ? 'Create a job listing to find workers' : 'தொழிலாளர்களைக் கண்டறிய வேலை பட்டியலை உருவாக்கவும்'}</p>
+                                        </div>
+                                        <FiChevronRight className="arrow-right" />
+                                    </Link>
+                                ) : (
+                                    <Link to="/workers" className="vertical-action-card">
+                                        <div className="action-card-icon-wrap workers-bg">
+                                            <FiUsers />
+                                        </div>
+                                        <div className="action-card-text">
+                                            <h4>{language === 'en' ? 'Find Workers' : 'தொழிலாளர்களைக் கண்டுபிடி'}</h4>
+                                            <p>{language === 'en' ? 'Find verified service providers' : 'சரிபார்க்கப்பட்ட சேவை வழங்குநர்களைக் கண்டறியவும்'}</p>
+                                        </div>
+                                        <FiChevronRight className="arrow-right" />
+                                    </Link>
+                                )}
                             </div>
                         </div>
 

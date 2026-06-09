@@ -3,6 +3,7 @@ import { useJobs } from '../context/JobContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useLanguage } from '../context/LanguageContext.jsx'
 import { useState, useEffect } from 'react'
+import LocationModal from '../components/common/LocationModal.jsx'
 import {
     FiArrowRight,
     FiBriefcase,
@@ -61,18 +62,39 @@ const tnDistrictsData = [
 
 function Home() {
     const { t, language } = useLanguage()
-    const { categories } = useJobs()
-    const { user, isAuthenticated } = useAuth()
+    const { categories, selectedLocation, setSelectedLocation } = useJobs()
+    const { user, isAuthenticated, isWorker, isEmployer, updateProfile } = useAuth()
     const [featuredJobs, setFeaturedJobs] = useState([])
     const [isLoadingJobs, setIsLoadingJobs] = useState(true)
     const [userLocation, setUserLocation] = useState(null)
+    const [showLocationModal, setShowLocationModal] = useState(false)
 
-
+    // Sync userLocation state with global selectedLocation or user.location
     useEffect(() => {
-        if (user?.location) {
+        if (selectedLocation) {
+            setUserLocation(selectedLocation.displayText)
+        } else if (user?.location) {
             setUserLocation(user.location)
+            setSelectedLocation({
+                displayText: user.location,
+                source: 'user_profile'
+            })
+        } else {
+            setUserLocation(null)
         }
-    }, [user])
+    }, [selectedLocation, user, setSelectedLocation])
+
+    const handleLocationSelect = async (loc) => {
+        setSelectedLocation(loc)
+        setUserLocation(loc.displayText)
+        if (isAuthenticated && updateProfile) {
+            try {
+                await updateProfile({ location: loc.displayText })
+            } catch (err) {
+                console.error('Failed to update profile location:', err)
+            }
+        }
+    }
 
     useEffect(() => {
         const fetchFeaturedJobs = async () => {
@@ -94,13 +116,35 @@ function Home() {
                     return
                 }
 
+                // Fallback to demo data - filter by location!
                 const demoResponse = await import('../data/demoJobs.json')
-                setFeaturedJobs((demoResponse.default || demoResponse).slice(0, 8))
+                const demoJobs = demoResponse.default || demoResponse
+                
+                if (userLocation) {
+                    const locationParts = userLocation.split(',').map((part) => part.trim())
+                    const searchLocation = locationParts[0]?.toLowerCase() || userLocation.toLowerCase()
+                    const filteredDemo = demoJobs.filter(job => 
+                        job.location?.toLowerCase().includes(searchLocation)
+                    )
+                    setFeaturedJobs(filteredDemo.slice(0, 8))
+                } else {
+                    setFeaturedJobs(demoJobs.slice(0, 8))
+                }
             } catch (error) {
                 console.error('Error fetching featured jobs:', error)
                 try {
                     const demoResponse = await import('../data/demoJobs.json')
-                    setFeaturedJobs((demoResponse.default || demoResponse).slice(0, 8))
+                    const demoJobs = demoResponse.default || demoResponse
+                    if (userLocation) {
+                        const locationParts = userLocation.split(',').map((part) => part.trim())
+                        const searchLocation = locationParts[0]?.toLowerCase() || userLocation.toLowerCase()
+                        const filteredDemo = demoJobs.filter(job => 
+                            job.location?.toLowerCase().includes(searchLocation)
+                        )
+                        setFeaturedJobs(filteredDemo.slice(0, 8))
+                    } else {
+                        setFeaturedJobs(demoJobs.slice(0, 8))
+                    }
                 } catch (fallbackError) {
                     console.error('Failed to load demo jobs:', fallbackError)
                 }
@@ -128,14 +172,18 @@ function Home() {
                         </p>
 
                         <div className="home-actions">
-                            <Link to="/jobs" className="btn btn-primary btn-lg">
-                                <FiSearch aria-hidden="true" />
-                                {t('home.hero.findJobs')}
-                            </Link>
-                            <Link to="/workers" className="btn btn-secondary btn-lg">
-                                <FiUsers aria-hidden="true" />
-                                {t('home.hero.findWorkers')}
-                            </Link>
+                            {(!isAuthenticated || isWorker) && (
+                                <Link to="/jobs" className="btn btn-primary btn-lg">
+                                    <FiSearch aria-hidden="true" />
+                                    {t('home.hero.findJobs')}
+                                </Link>
+                            )}
+                            {(!isAuthenticated || isEmployer) && (
+                                <Link to="/post-job" className="btn btn-secondary btn-lg">
+                                    <FiBriefcase aria-hidden="true" />
+                                    {t('home.cta.postJob')}
+                                </Link>
+                            )}
                         </div>
 
                         {!isAuthenticated && (
@@ -155,11 +203,17 @@ function Home() {
                         </div>
 
                         <div className="panel-list">
-                            <div className="panel-row">
+                            <div 
+                                className="panel-row" 
+                                onClick={() => setShowLocationModal(true)}
+                                style={{ cursor: 'pointer' }}
+                            >
                                 <FiMapPin aria-hidden="true" />
                                 <div>
                                     <strong>{t('home.panel.nearbyOpenings')}</strong>
-                                    <span>{userLocation || t('home.panel.jobsAcrossTN')}</span>
+                                    <span style={{ borderBottom: '1px dashed #4F46E5', paddingBottom: '2px', display: 'inline-block' }}>
+                                        {userLocation || t('home.panel.jobsAcrossTN')}
+                                    </span>
                                 </div>
                             </div>
                             <div className="panel-row">
@@ -494,11 +548,24 @@ function Home() {
                         <h2>{t('home.cta.title')}</h2>
                     </div>
                     <div className="home-actions">
-                        <Link to="/register" className="btn btn-primary btn-lg">{t('home.cta.createAccount')}</Link>
-                        <Link to="/post-job" className="btn btn-secondary btn-lg">{t('home.cta.postJob')}</Link>
+                        {!isAuthenticated && (
+                            <Link to="/register" className="btn btn-primary btn-lg">{t('home.cta.createAccount')}</Link>
+                        )}
+                        {(!isAuthenticated || isWorker) && isAuthenticated && (
+                            <Link to="/jobs" className="btn btn-primary btn-lg">{t('home.hero.findJobs')}</Link>
+                        )}
+                        {(!isAuthenticated || isEmployer) && (
+                            <Link to="/post-job" className="btn btn-secondary btn-lg">{t('home.cta.postJob')}</Link>
+                        )}
                     </div>
                 </div>
             </section>
+            <LocationModal
+                isOpen={showLocationModal}
+                onClose={() => setShowLocationModal(false)}
+                onSelect={handleLocationSelect}
+                selectedLocation={selectedLocation}
+            />
         </div>
     )
 }

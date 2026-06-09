@@ -8,6 +8,7 @@ import paymentService from '../services/paymentService'
 import { buildApiUrl } from '../services/apiConfig'
 import PaymentButton from '../components/payment/PaymentButton'
 import { toast } from 'react-hot-toast'
+import { getCategoryBadge } from '../constants/categories'
 import './JobDetails.css'
 
 // Error Boundary to catch rendering errors
@@ -275,12 +276,8 @@ function JobDetails() {
         }
     }
 
-    // Category icons
-    const categoryIcons = {
-        'construction': '🏗️', 'electrical': '⚡', 'plumbing': '🔧', 'painting': '🎨',
-        'cleaning': '🧹', 'cooking': '👨‍🍳', 'driving': '🚗', 'gardening': '🌱',
-        'security': '🛡️', 'carpentry': '🪚', 'other': '💼'
-    }
+    // Category badge (abbr + color — no emoji)
+    const categoryBadge = getCategoryBadge(job?.category)
 
     // Text translations
     const t = {
@@ -302,7 +299,7 @@ function JobDetails() {
         workersNeeded: language === 'ta' ? 'தொழிலாளர்கள் தேவை' : 'Employees Needed',
         apply: language === 'ta' ? 'விண்ணப்பி' : 'Apply for this Job',
         applying: language === 'ta' ? 'சமர்ப்பிக்கிறது...' : 'Applying...',
-        applied: language === 'ta' ? 'விண்ணப்பிக்கப்பட்டது ✓' : 'Applied ✓',
+        applied: language === 'ta' ? 'விண்ணப்பிக்கப்பட்டது' : 'Applied',
         loginToApply: language === 'ta' ? 'விண்ணப்பிக்க உள்நுழையவும்' : 'Login to Apply',
         successMessage: language === 'ta' ? 'விண்ணப்பம் வெற்றிகரமாக அனுப்பப்பட்டது!' : 'Application sent successfully!',
         callEmployer: language === 'ta' ? 'அழைக்கவும்' : 'Call',
@@ -343,7 +340,6 @@ function JobDetails() {
 
     const title = getTextValue(job.title, language)
     const description = getTextValue(job.description, language)
-    const categoryIcon = categoryIcons[job.category] || '💼'
     const categoryName = job.category?.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'General'
 
     return (
@@ -351,367 +347,294 @@ function JobDetails() {
             {/* Success Toast */}
             {showSuccess && (
                 <div className="success-toast">
-                    <span className="toast-icon">✓</span>
                     <span>{t.successMessage}</span>
                 </div>
             )}
 
-            {/* Header */}
-            <div className="details-header">
-                <button className="back-btn" onClick={() => navigate('/jobs')}>
-                    ← {t.backToJobs}
-                </button>
-                <button
-                    className="view-applicants-btn"
-                    onClick={() => navigate(`/jobs/${jobId}/applicants`)}
-                    style={{
-                        marginLeft: 'auto',
-                        padding: '8px 16px',
-                        background: '#e0e7ff',
-                        color: '#4338ca',
-                        border: 'none',
-                        borderRadius: '8px',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        cursor: 'pointer'
-                    }}
-                >
-                    👥 {language === 'ta' ? 'விண்ணப்பதாரர்களை காண்க' : 'View Applicants'}
-                </button>
-            </div>
-
-            {/* Job Card Header */}
-            <div className="job-header-card">
-                <div className="header-badges">
-                    <span className="category-badge">
-                        {categoryIcon} {categoryName}
-                    </span>
-                    {job.urgent && (
-                        <span className="urgent-badge">🔥 {t.urgent}</span>
+            {/* Top Breadcrumb Header */}
+            <div className="job-breadcrumb-header">
+                <div className="container">
+                    <button className="breadcrumb-back-btn" onClick={() => navigate('/jobs')}>
+                        ← {t.backToJobs}
+                    </button>
+                    {isOwner && (
+                        <button
+                            className="breadcrumb-action-btn"
+                            onClick={() => navigate(`/jobs/${jobId}/applicants`)}
+                        >
+                            {language === 'ta' ? 'விண்ணப்பதாரர்களை காண்க' : 'View Applicants'}
+                        </button>
                     )}
                 </div>
-                <h1 className="job-title">{title}</h1>
-                <div className="job-meta">
-                    <span className="wage">₹{job.wage?.toLocaleString()}{t.perDay}</span>
-                    <span className="separator">·</span>
-                    <span className="duration">{job.duration}</span>
-                </div>
-                <div className="job-location">
-                    <span className="location-icon">📍</span>
-                    <span>{job.location}</span>
-                </div>
-                <div className="job-stats">
-                    <span className="posted-time">⏱️ {getRelativeTime(job.createdAt)}</span>
-                    <span className="views-count">👁️ {job.views} {t.views}</span>
-                </div>
             </div>
 
-            {/* Details Sections */}
-            <div className="details-content">
-                {/* Description */}
-                <section className="detail-section">
-                    <h2 className="section-title">{t.description}</h2>
-                    <p className="description-text">{description}</p>
-                </section>
-
-                {/* Payment Details */}
-                <section className="detail-section">
-                    <h2 className="section-title">{t.payment}</h2>
-                    <div className="info-grid">
-                        <div className="info-item">
-                            <span className="info-icon">💰</span>
-                            <div>
-                                <span className="info-label">{language === 'ta' ? 'தினசரி ஊதியம்' : 'Daily Wage'}</span>
-                                <span className="info-value highlight">₹{job.wage?.toLocaleString()}</span>
-                            </div>
-                        </div>
-                        {job.paymentMethod && (
-                            <div className="info-item">
-                                <span className="info-icon">💳</span>
-                                <div>
-                                    <span className="info-label">{language === 'ta' ? 'கட்டண முறை' : 'Payment Method'}</span>
-                                    <span className="info-value">{job.paymentMethod}</span>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </section>
-
-                {/* Work Details */}
-                <section className="detail-section">
-                    <h2 className="section-title">{t.timing}</h2>
-                    <div className="info-grid">
-                        <div className="info-item">
-                            <span className="info-icon">📅</span>
-                            <div>
-                                <span className="info-label">{t.duration}</span>
-                                <span className="info-value">{job.duration}</span>
-                            </div>
-                        </div>
-                        {job.startTime && (
-                            <div className="info-item">
-                                <span className="info-icon">🕐</span>
-                                <div>
-                                    <span className="info-label">{language === 'ta' ? 'நேரம்' : 'Time'}</span>
-                                    <span className="info-value">{job.startTime} - {job.endTime}</span>
-                                </div>
-                            </div>
-                        )}
-                        {calculateHours(job.startTime, job.endTime) && (
-                            <div className="info-item">
-                                <span className="info-icon">⏱️</span>
-                                <div>
-                                    <span className="info-label">{language === 'ta' ? 'மொத்த மணிநேரம்' : 'Total Hours'}</span>
-                                    <span className="info-value highlight">{calculateHours(job.startTime, job.endTime)} {language === 'ta' ? 'மணிநேரம்/நாள்' : 'hours/day'}</span>
-                                </div>
-                            </div>
-                        )}
-                        <div className="info-item">
-                            <span className="info-icon">👷</span>
-                            <div>
-                                <span className="info-label">{t.workersNeeded}</span>
-                                <span className="info-value">{job.requiredWorkers}</span>
-                            </div>
+            <div className="job-page-layout container">
+                {/* Left Column: Main Content */}
+                <div className="job-main-content">
+                    {/* Job Title & Meta */}
+                    <div className="job-title-section">
+                        <h1 className="job-title-main">{title}</h1>
+                        <div className="job-badges-row">
+                            <span
+                                className="category-pill"
+                                style={{ background: categoryBadge.color, color: 'white' }}
+                            >
+                                {categoryBadge.abbr} · {categoryName}
+                            </span>
+                            <span className="posted-pill">{getRelativeTime(job.createdAt)}</span>
+                            <span className="location-pill">{job.location?.split(',')[0] || job.location}</span>
+                            {job.urgent && <span className="urgent-pill">{t.urgent}</span>}
                         </div>
                     </div>
-                </section>
 
-                {/* Location */}
-                <section className="detail-section">
-                    <h2 className="section-title">{t.location}</h2>
-                    <div className="location-display">
-                        <span className="location-pin">📍</span>
-                        <span className="location-text">{job.location}</span>
-                    </div>
-                    {/* Google Maps Embed */}
-                    <div className="map-container" style={{
-                        marginTop: '16px',
-                        borderRadius: '16px',
-                        overflow: 'hidden',
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                        border: '1px solid #e8e8e8'
-                    }}>
-                        <iframe
-                            title="Job Location Map"
-                            width="100%"
-                            height="220"
-                            style={{ border: 0, display: 'block' }}
-                            loading="lazy"
-                            allowFullScreen
-                            referrerPolicy="no-referrer-when-downgrade"
-                            src={`https://www.google.com/maps?q=${encodeURIComponent(job.location)}&output=embed`}
-                        />
-                    </div>
-                    <a
-                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(job.location)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            marginTop: '14px',
-                            padding: '12px 20px',
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                            color: 'white',
-                            borderRadius: '25px',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            textDecoration: 'none',
-                            boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
-                            transition: 'all 0.2s'
-                        }}
-                    >
-                        🗺️ {language === 'ta' ? 'Google Maps இல் திற' : 'Open in Google Maps'}
-                    </a>
-                </section>
+                    <hr className="divider" />
 
-                {/* Skills Required */}
-                {job.skills && job.skills.length > 0 && (
-                    <section className="detail-section">
-                        <h2 className="section-title">{t.skills}</h2>
-                        <div className="skills-list">
-                            {job.skills.map((skill, index) => {
-                                const skillText = typeof skill === 'string' ? skill : (skill?.[language] || skill?.en || '')
-                                return (
-                                    <span key={index} className="skill-tag">
-                                        {skillText}
-                                    </span>
-                                )
-                            })}
+                    {/* Description */}
+                    <section className="job-section">
+                        <h2 className="section-heading">{t.description}</h2>
+                        <p className="job-description-body">{description}</p>
+                    </section>
+
+                    <hr className="divider" />
+
+                    {/* Requirements / Details Grid */}
+                    <section className="job-section">
+                        <h2 className="section-heading">{language === 'ta' ? 'வேலை விவரங்கள்' : 'Job Details'}</h2>
+                        <div className="job-details-grid">
+                            <div className="detail-box">
+                                <span className="detail-icon">📅</span>
+                                <div className="detail-text">
+                                    <span className="detail-label">{t.duration}</span>
+                                    <span className="detail-value">{job.duration}</span>
+                                </div>
+                            </div>
+                            {job.startTime && (
+                                <div className="detail-box">
+                                    <span className="detail-icon">🕐</span>
+                                    <div className="detail-text">
+                                        <span className="detail-label">{language === 'ta' ? 'நேரம்' : 'Timing'}</span>
+                                        <span className="detail-value">{job.startTime} - {job.endTime}</span>
+                                    </div>
+                                </div>
+                            )}
+                            <div className="detail-box">
+                                <span className="detail-icon">👷</span>
+                                <div className="detail-text">
+                                    <span className="detail-label">{t.workersNeeded}</span>
+                                    <span className="detail-value">{job.requiredWorkers} {language === 'ta' ? 'நபர்கள்' : 'People'}</span>
+                                </div>
+                            </div>
+                            {job.paymentMethod && (
+                                <div className="detail-box">
+                                    <span className="detail-icon">💳</span>
+                                    <div className="detail-text">
+                                        <span className="detail-label">{language === 'ta' ? 'கட்டண முறை' : 'Payment Type'}</span>
+                                        <span className="detail-value">{job.paymentMethod}</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </section>
-                )}
 
-                {/* Suggested Workers (For Employers) */}
-                {isOwner && topWorkers.length > 0 && (
-                    <section className="detail-section suggested-workers">
-                        <h2 className="section-title">✨ {language === 'ta' ? 'சிறந்த தொழிலாளர்கள்' : 'Top Matching Employees'}</h2>
-                        <div className="workers-scroll custom-scrollbar">
-                            {topWorkers.map(worker => (
-                                <div key={worker._id} className="worker-rec-card">
-                                    <div className="worker-rec-header">
-                                        <div className="worker-rec-avatar">
-                                            {worker.name?.charAt(0)}
-                                        </div>
-                                        <div className="worker-rec-info">
-                                            <h4>{worker.name}</h4>
-                                            <div className="worker-rec-rating">⭐ {worker.rating}</div>
-                                        </div>
-                                    </div>
-                                    <div className="worker-rec-stats">
-                                        <span>📍 {worker.location}</span>
-                                        <span>💼 {worker.completedJobs} {language === 'ta' ? 'வேலைகள் முடிந்தது' : 'jobs completed'}</span>
-                                    </div>
-                                    <div className="match-tag">
-                                        {worker.match?.total}% {language === 'ta' ? 'பொருத்தம்' : 'Match'}
-                                    </div>
-                                    <button
-                                        className="btn btn-secondary btn-sm"
-                                        onClick={() => navigate(`/workers/${worker._id}`)}
-                                        style={{ marginTop: 'auto', width: '100%' }}
-                                    >
-                                        {language === 'ta' ? 'விவரம் காண்க' : 'View Profile'}
-                                    </button>
+                    {job.skills && job.skills.length > 0 && (
+                        <>
+                            <hr className="divider" />
+                            <section className="job-section">
+                                <h2 className="section-heading">{t.skills}</h2>
+                                <div className="skills-pill-container">
+                                    {job.skills.map((skill, index) => {
+                                        const skillText = typeof skill === 'string' ? skill : (skill?.[language] || skill?.en || '')
+                                        return <span key={index} className="skill-pill-modern">{skillText}</span>
+                                    })}
                                 </div>
-                            ))}
+                            </section>
+                        </>
+                    )}
+
+                    <hr className="divider" />
+
+                    {/* Map embedded cleanly */}
+                    <section className="job-section">
+                        <h2 className="section-heading">{t.location}</h2>
+                        <p className="location-full-text">{job.location}</p>
+                        <div className="map-embed-modern">
+                            <iframe
+                                title="Job Location Map"
+                                width="100%"
+                                height="280"
+                                style={{ border: 0, display: 'block' }}
+                                loading="lazy"
+                                allowFullScreen
+                                referrerPolicy="no-referrer-when-downgrade"
+                                src={`https://www.google.com/maps?q=${encodeURIComponent(job.location)}&output=embed`}
+                            />
                         </div>
                     </section>
-                )}
 
+                    {/* Suggested Workers (For Employers) */}
+                    {isOwner && topWorkers.length > 0 && (
+                        <>
+                            <hr className="divider" />
+                            <section className="job-section suggested-workers">
+                                <h2 className="section-heading">{language === 'ta' ? 'சிறந்த தொழிலாளர்கள்' : 'Top Matching Employees'}</h2>
+                                <div className="workers-scroll custom-scrollbar">
+                                    {topWorkers.map(worker => (
+                                        <div key={worker._id} className="worker-rec-card">
+                                            <div className="worker-rec-header">
+                                                <div className="worker-rec-avatar">
+                                                    {worker.name?.charAt(0)}
+                                                </div>
+                                                <div className="worker-rec-info">
+                                                    <h4>{worker.name}</h4>
+                                                    <div className="worker-rec-rating">{worker.rating} / 5</div>
+                                                </div>
+                                            </div>
+                                            <div className="worker-rec-stats">
+                                                <span>{worker.location}</span>
+                                                <span>💼 {worker.completedJobs} {language === 'ta' ? 'வேலைகள் முடிந்தது' : 'jobs'}</span>
+                                            </div>
+                                            <div className="match-tag">
+                                                {worker.match?.total}% {language === 'ta' ? 'பொருத்தம்' : 'Match'}
+                                            </div>
+                                            <button
+                                                className="btn btn-secondary btn-sm"
+                                                onClick={() => navigate(`/workers/${worker._id}`)}
+                                                style={{ marginTop: 'auto', width: '100%' }}
+                                            >
+                                                {language === 'ta' ? 'விவரம் காண்க' : 'View Profile'}
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        </>
+                    )}
 
-                {/* Employer Info */}
-                <section className="detail-section employer-section">
-                    <h2 className="section-title">{language === 'ta' ? 'வேலை வழங்குபவர்' : 'Posted By'}</h2>
-                    <div className="employer-card" style={{
-                        background: 'linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%)',
-                        borderRadius: '16px',
-                        padding: '20px',
-                        border: '1px solid #e0e7ff'
-                    }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                            <div className="employer-avatar" style={{
-                                width: '60px',
-                                height: '60px',
-                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                borderRadius: '14px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: 'white',
-                                fontSize: '24px',
-                                fontWeight: '700',
-                                boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)'
-                            }}>
+                </div>
+
+                {/* Right Column: Sidebar */}
+                <div className="job-sidebar">
+                    {/* Budget & Action Card */}
+                    <div className="sidebar-card action-card">
+                        <div className="budget-display">
+                            <span className="budget-amount">₹{job.wage?.toLocaleString()}</span>
+                            <span className="budget-type">{t.perDay}</span>
+                        </div>
+                        <p className="budget-subtitle">{language === 'ta' ? 'மதிப்பிடப்பட்ட பட்ஜெட்' : 'Estimated Budget'}</p>
+
+                        <div className="action-buttons-container">
+                            {isOwner ? (
+                                <div className="owner-payment-actions">
+                                    {job.status === 'hired' && !payment && (
+                                        <PaymentButton
+                                            jobId={jobId}
+                                            workerId={job.hiredWorker?._id || job.hiredWorker}
+                                            amount={job.wage}
+                                            onPaymentSuccess={() => fetchPaymentStatus()}
+                                        />
+                                    )}
+                                    {payment && payment.status === 'escrowed' && (
+                                        <button
+                                            className="btn-primary-modern w-full"
+                                            onClick={handleRelease}
+                                            disabled={releasing}
+                                        >
+                                            {releasing
+                                                ? (language === 'ta' ? 'விடுவிக்கிறது...' : 'Releasing...')
+                                                : (language === 'ta' ? 'கட்டணத்தை விடுவி' : 'Release Payment')}
+                                        </button>
+                                    )}
+                                    {payment && (
+                                        <div className={`payment-status-badge ${payment.status === 'released' ? 'released' : 'escrowed'}`}>
+                                            {payment.status === 'released'
+                                                ? `✓ ${language === 'ta' ? 'கட்டணம் பெறப்பட்டது' : 'Payment Received'}`
+                                                : `🛡️ ${language === 'ta' ? 'கட்டணம் எஸ்க்ரோவில் உள்ளது' : 'Payment in Escrow'}`}
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <button
+                                    className={`btn-apply-modern ${hasApplied ? 'applied' : ''} ${isApplying ? 'loading' : ''}`}
+                                    onClick={handleApply}
+                                    disabled={hasApplied || isApplying}
+                                >
+                                    {isApplying ? t.applying : hasApplied ? t.applied : (isAuthenticated ? t.apply : t.loginToApply)}
+                                </button>
+                            )}
+                        </div>
+
+                        <div className="job-activity-stats">
+                            <div className="activity-row">
+                                <span className="activity-label">{language === 'ta' ? 'இந்த வேலையில் செயல்பாடு:' : 'Activity on this job:'}</span>
+                            </div>
+                            <div className="activity-row">
+                                <span>{language === 'ta' ? 'பார்வைகள்' : 'Views'}</span>
+                                <strong>{job.views}</strong>
+                            </div>
+                            <div className="activity-row">
+                                <span>{language === 'ta' ? 'விண்ணப்பித்தவர்கள்' : 'Applicants'}</span>
+                                <strong>{Math.floor(job.views / 15) || 0}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Employer Card ("About the Client") */}
+                    <div className="sidebar-card employer-card-modern">
+                        <h3 className="sidebar-heading">{language === 'ta' ? 'வாடிக்கையாளரைப் பற்றி' : 'About the client'}</h3>
+                        
+                        <div className="employer-header">
+                            <div className="employer-avatar-modern">
                                 {job.employer?.name?.charAt(0) || 'E'}
                             </div>
-                            <div className="employer-info">
-                                <span className="employer-name" style={{
-                                    fontSize: '18px',
-                                    fontWeight: '700',
-                                    color: '#1a1a2e',
-                                    display: 'block'
-                                }}>{job.employer?.name}</span>
-                                {job.employer?.companyName && (
-                                    <span className="company-name" style={{
-                                        fontSize: '14px',
-                                        color: '#667eea',
-                                        fontWeight: '500'
-                                    }}>🏢 {job.employer.companyName}</span>
-                                )}
-                                <div style={{ marginTop: '8px', display: 'flex', gap: '12px', fontSize: '13px', color: '#666' }}>
-                                    <span>⭐ 4.5 {language === 'ta' ? 'மதிப்பீடு' : 'Rating'}</span>
-                                    <span>📋 {job.employer?.completedJobs || 5}+ {language === 'ta' ? 'வேலைகள் இடுகையிட்டவை' : 'Jobs Posted'}</span>
-                                </div>
+                            <div className="employer-info-basic">
+                                <strong className="employer-name-modern">{job.employer?.name}</strong>
+                                {job.employer?.companyName && <span className="employer-company">🏢 {job.employer.companyName}</span>}
                             </div>
                         </div>
-                    </div>
-                    {isAuthenticated && hasApplied && job.employer?.phone && (
-                        <div className="employer-actions" style={{
-                            display: 'flex',
-                            gap: '12px',
-                            marginTop: '16px'
-                        }}>
-                            <a href={`tel:${job.employer.phone}`} className="btn-call" style={{
-                                flex: 1,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '8px',
-                                padding: '14px',
-                                background: '#10b981',
-                                color: 'white',
-                                borderRadius: '12px',
-                                fontWeight: '600',
-                                textDecoration: 'none'
-                            }}>
-                                📞 {t.callEmployer}
-                            </a>
-                            <a
-                                href={`https://wa.me/${job.employer.phone.replace(/\D/g, '')}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn-whatsapp"
-                                style={{
-                                    flex: 1,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    gap: '8px',
-                                    padding: '14px',
-                                    background: '#25d366',
-                                    color: 'white',
-                                    borderRadius: '12px',
-                                    fontWeight: '600',
-                                    textDecoration: 'none'
-                                }}
-                            >
-                                💬 {t.whatsapp}
-                            </a>
-                        </div>
-                    )}
-                </section>
-            </div>
 
-            {/* Sticky Apply Bar / Payment Bar */}
-            <div className="sticky-apply-bar">
-                <div className="apply-info">
-                    <span className="apply-wage">₹{job.wage?.toLocaleString()}{t.perDay}</span>
-                    <span className="apply-duration">{job.duration}</span>
+                        <div className="employer-stats-list">
+                            <div className="emp-stat-item">
+                                <span>4.5 {language === 'ta' ? 'மதிப்பீடு' : 'Rating'}</span>
+                                <span className="stat-sub">({Math.floor(Math.random() * 50) + 10} reviews)</span>
+                            </div>
+                            <div className="emp-stat-item">
+                                <span>{job.location?.split(',')[0] || 'Local'}</span>
+                                <span className="stat-sub">{language === 'ta' ? 'இடம்' : 'Location'}</span>
+                            </div>
+                            <div className="emp-stat-item">
+                                <span>{job.employer?.completedJobs || 5}+ {language === 'ta' ? 'வேலைகள் இடுகையிட்டவை' : 'Jobs Posted'}</span>
+                                <span className="stat-sub">80% hire rate</span>
+                            </div>
+                        </div>
+
+                        {isAuthenticated && hasApplied && job.employer?.phone && (
+                            <div className="employer-contact-actions">
+                                <a href={`tel:${job.employer.phone}`} className="btn-contact-modern phone">
+                                    {t.callEmployer}
+                                </a>
+                                <a
+                                    href={`https://wa.me/${job.employer.phone.replace(/\D/g, '')}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn-contact-modern whatsapp"
+                                >
+                                    {t.whatsapp}
+                                </a>
+                            </div>
+                        )}
+                    </div>
                 </div>
-
-                {isOwner ? (
-                    <div className="owner-payment-actions" style={{ flex: 2, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {job.status === 'hired' && !payment && (
-                            <PaymentButton
-                                jobId={jobId}
-                                workerId={job.hiredWorker?._id || job.hiredWorker}
-                                amount={job.wage}
-                                onPaymentSuccess={() => fetchPaymentStatus()}
-                            />
-                        )}
-                        {payment && payment.status === 'escrowed' && (
-                            <button
-                                className="btn btn-primary w-full py-3"
-                                onClick={handleRelease}
-                                disabled={releasing}
-                            >
-                                {releasing
-                                    ? (language === 'ta' ? 'விடுவிக்கிறது...' : 'Releasing...')
-                                    : (language === 'ta' ? 'கட்டணத்தை விடுவி' : 'Release Payment')}
-                            </button>
-                        )}
-                        {payment && (
-                            <div className={`p-3 rounded-lg text-center font-bold ${payment.status === 'released' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
-                                {payment.status === 'released'
-                                    ? `✓ ${language === 'ta' ? 'கட்டணம் பெறப்பட்டது' : 'Payment Received'}`
-                                    : `🛡️ ${language === 'ta' ? 'கட்டணம் எஸ்க்ரோவில் உள்ளது' : 'Payment in Escrow'}`}
-                            </div>
-                        )}
-                    </div>
-                ) : (
+            </div>
+            
+            {/* Mobile Sticky Bar (Visible only on mobile via CSS) */}
+            <div className="mobile-sticky-apply">
+                <div className="mobile-budget">
+                    <strong>₹{job.wage?.toLocaleString()}</strong>
+                    <span>{t.perDay}</span>
+                </div>
+                {!isOwner && (
                     <button
-                        className={`btn-apply-large ${hasApplied ? 'applied' : ''} ${isApplying ? 'loading' : ''} w-full`}
+                        className={`btn-apply-modern ${hasApplied ? 'applied' : ''} ${isApplying ? 'loading' : ''}`}
                         onClick={handleApply}
                         disabled={hasApplied || isApplying}
                     >

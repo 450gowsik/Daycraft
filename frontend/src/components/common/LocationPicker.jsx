@@ -23,7 +23,7 @@ function LocationPicker({ value, onChange, placeholder, className = '' }) {
                 className={`location-picker ${value ? 'has-value' : ''} ${className}`}
                 onClick={() => setIsModalOpen(true)}
             >
-                <span className="picker-icon">📍</span>
+                <span className="picker-dot"></span>
                 <span className="picker-text">
                     {value ? value.displayText : (placeholder || (language === 'ta' ? 'இருப்பிடம் தேர்வு செய்க' : 'Select Location'))}
                 </span>

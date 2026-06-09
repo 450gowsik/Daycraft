@@ -1,5 +1,17 @@
-import { Navigate, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
+import { toast } from 'react-hot-toast'
+
+// Helper component to handle redirection with a side-effect toast
+function RedirectWithToast({ to, message }) {
+    const navigate = useNavigate()
+    useEffect(() => {
+        toast.error(message)
+        navigate(to, { replace: true })
+    }, [navigate, to, message])
+    return null
+}
 
 function ProtectedRoute({ children, roles }) {
     const { isAuthenticated, user, loading } = useAuth()
@@ -45,7 +57,12 @@ function ProtectedRoute({ children, roles }) {
         const hasPermission = userRoles.some(r => roles.includes(r))
 
         if (!hasPermission) {
-            return <Navigate to="/" replace />
+            return (
+                <RedirectWithToast
+                    to="/"
+                    message="Only employers can post jobs! / முதலாளிகள் மட்டுமே வேலைகளைப் பதிவு செய்ய முடியும்!"
+                />
+            )
         }
     }
 
