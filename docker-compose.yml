@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  db:
+    image: mongo:latest
+    container_name: daycraft-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - daycraft-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - MONGODB_URI=mongodb://db:27017/daycraft
+    depends_on:
+      - db
+    networks:
+      - daycraft-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - daycraft-network
+
+networks:
+  daycraft-network:
+    driver: bridge
+
+volumes:
+  mongo_data:
