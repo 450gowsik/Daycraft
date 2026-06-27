@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 
 async function forceVerifyWorkers() {
     try {
-        await mongoose.connect('mongodb://localhost:27017/daycraft')
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/daycraft')
         console.log('Connected to MongoDB')
 
         // First check current state

@@ -236,11 +236,14 @@ function Home() {
             </section>
 
             <section className="home-trust">
-                <div className="container home-trust-grid">
-                    <span>{t('home.trust.verified')}</span>
-                    <span>{t('home.trust.nearby')}</span>
-                    <span>{t('home.trust.direct')}</span>
-                    <span>{t('home.trust.clearPay')}</span>
+                <div className="home-trust-track">
+                    <span className="trust-chip"><span className="trust-dot trust-dot--green"></span>{t('home.trust.verified')}</span>
+                    <span className="trust-divider">·</span>
+                    <span className="trust-chip"><span className="trust-dot trust-dot--blue"></span>{t('home.trust.nearby')}</span>
+                    <span className="trust-divider">·</span>
+                    <span className="trust-chip"><span className="trust-dot trust-dot--purple"></span>{t('home.trust.direct')}</span>
+                    <span className="trust-divider">·</span>
+                    <span className="trust-chip"><span className="trust-dot trust-dot--amber"></span>{t('home.trust.clearPay')}</span>
                 </div>
             </section>
 

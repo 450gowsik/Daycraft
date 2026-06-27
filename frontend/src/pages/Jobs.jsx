@@ -7,7 +7,7 @@ import BestForYouSection from '../components/jobs/BestForYouSection.jsx'
 import LocationModal from '../components/common/LocationModal.jsx'
 import { JOB_CATEGORIES } from '../constants/categories.js'
 import CategoryIcon from '../components/jobs/CategoryIcon.jsx'
-import { FaThLarge } from 'react-icons/fa'
+import { FaThLarge, FaSearch } from 'react-icons/fa'
 import './Jobs.css'
 
 // Skeleton Loader Component
@@ -180,7 +180,7 @@ function Jobs() {
             {/* Search Bar */}
             <div className="search-filter-bar">
                 <div className="search-input-wrapper">
-                    <span className="search-icon-svg" aria-hidden="true">&#x2315;</span>
+                    <FaSearch className="search-icon" aria-hidden="true" />
                     <input
                         type="text"
                         className="search-input"

@@ -4,7 +4,7 @@ const { ObjectId } = mongoose.Types
 
 async function seedDemoData() {
     try {
-        await mongoose.connect('mongodb://localhost:27017/daycraft')
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/daycraft')
         console.log('✅ Connected to MongoDB')
 
         const db = mongoose.connection.db
@@ -23,17 +23,26 @@ async function seedDemoData() {
 
         // 1. Seed Applications (job applications)
         const applications = []
-        for (let i = 0; i < 15; i++) {
-            const worker = workers[i % workers.length]
-            const job = jobs[i % jobs.length]
+        const pairs = []
+        for (let w = 0; w < workers.length; w++) {
+            for (let j = 0; j < jobs.length; j++) {
+                pairs.push({ worker: workers[w], job: jobs[j] })
+            }
+        }
+        // Shuffle pairs
+        pairs.sort(() => 0.5 - Math.random())
+
+        const numApplications = Math.min(pairs.length, 15)
+        for (let i = 0; i < numApplications; i++) {
+            const { worker, job } = pairs[i]
             applications.push({
                 _id: new ObjectId(),
-                jobId: job._id,
-                workerId: worker._id,
-                employerId: job.employer || employers[0]._id,
-                status: ['pending', 'accepted', 'rejected', 'completed'][Math.floor(Math.random() * 4)],
+                job: job._id,
+                worker: worker._id,
+                employer: job.employer || employers[0]._id,
+                status: ['applied', 'viewed', 'shortlisted', 'hired', 'rejected', 'withdrawn'][Math.floor(Math.random() * 6)],
                 appliedAt: new Date(Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000)),
-                message: `I am interested in this ${job.title || 'job'} position.`,
+                message: `I am interested in this ${job.title?.en || 'job'} position.`,
                 workerLocation: worker.location || 'Local Area',
                 createdAt: new Date(),
                 updatedAt: new Date()

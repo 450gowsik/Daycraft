@@ -3,7 +3,7 @@ const env = require('../config/env');
 
 // Initialize Twilio client
 let client = null;
-if (env.TWILIO_ACCOUNT_SID && env.TWILIO_AUTH_TOKEN) {
+if (env.TWILIO_ACCOUNT_SID && env.TWILIO_ACCOUNT_SID.startsWith('AC') && env.TWILIO_AUTH_TOKEN) {
     client = twilio(env.TWILIO_ACCOUNT_SID, env.TWILIO_AUTH_TOKEN);
 }
 

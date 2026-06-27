@@ -41,7 +41,7 @@ const wageRanges = {
 
 async function seedMassiveJobs() {
     try {
-        await mongoose.connect('mongodb://localhost:27017/daycraft')
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/daycraft')
         console.log('Connected to MongoDB')
 
         const employers = await mongoose.connection.db.collection('users')
