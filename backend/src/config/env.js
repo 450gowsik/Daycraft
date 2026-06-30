@@ -12,9 +12,26 @@ const env = {
     // Database
     MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/daycraft',
 
+    // Redis
+    REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379',
+
+    // Instance ID (for load balancer identification)
+    INSTANCE_ID: process.env.INSTANCE_ID || 'api-local',
+
     // JWT
-    JWT_SECRET: process.env.JWT_SECRET || 'default_secret_change_in_production',
+    JWT_SECRET: (() => {
+        const secret = process.env.JWT_SECRET
+        if (!secret && process.env.NODE_ENV === 'production') {
+            console.error('FATAL: JWT_SECRET environment variable is not set. Refusing to start in production.')
+            process.exit(1)
+        }
+        return secret || 'dev-only-secret-not-for-production'
+    })(),
     JWT_EXPIRE: process.env.JWT_EXPIRE || '30d',
+
+    // Cookie settings
+    COOKIE_SECURE: process.env.NODE_ENV === 'production',
+    COOKIE_DOMAIN: process.env.COOKIE_DOMAIN || undefined,
 
     // SMS (Fast2SMS)
     FAST2SMS_API_KEY: process.env.FAST2SMS_API_KEY || '',

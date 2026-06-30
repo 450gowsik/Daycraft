@@ -15,15 +15,30 @@ const Otp = require('../models/Otp')
 const User = require('../models/User')
 const Worker = require('../models/Worker')
 const Employer = require('../models/Employer')
-const RefreshToken = require('../models/RefreshToken')
+const env = require('../config/env')
+const refreshTokenService = require('../services/refreshTokenService')
 const { sendOTP } = require('../services/smsService')
 const { sendWelcomeEmail, sendLoginNotification } = require('../services/emailService')
+const crypto = require('crypto')
 const {
     generateAccessToken,
     generateRefreshToken,
     hashRefreshToken,
     getTokenExpiry
 } = require('../utils/jwt')
+
+const REFRESH_COOKIE_NAME = 'refreshToken'
+const REFRESH_COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000
+
+const setRefreshTokenCookie = (res, token) => {
+    res.cookie(REFRESH_COOKIE_NAME, token, {
+        httpOnly: true,
+        secure: env.COOKIE_SECURE,
+        sameSite: env.COOKIE_SECURE ? 'strict' : 'lax',
+        maxAge: REFRESH_COOKIE_MAX_AGE,
+        path: '/api/auth'
+    })
+}
 
 // ===========================================
 // HELPER FUNCTIONS
@@ -79,31 +94,31 @@ const normalizePhone = (phone) => {
  * Generate 6-digit OTP - BYPASS MODE
  */
 const generateOTPCode = () => {
-    // BYPASS: Hardcoded OTP for development as requested
-    return '123456'
+    if (env.isDevelopment()) return '123456'
+    return crypto.randomInt(100000, 999999).toString()
 }
 
 /**
  * Create auth tokens and save refresh token
  */
-const createAuthTokens = async (user, req) => {
+const createAuthTokens = async (user, req, res) => {
     const accessToken = generateAccessToken({
         id: user._id,
         role: user.role
     })
     const refreshToken = generateRefreshToken()
 
-    await RefreshToken.create({
-        userId: user._id,
-        userModel: 'User',
-        tokenHash: hashRefreshToken(refreshToken),
-        deviceInfo: {
+    await refreshTokenService.storeToken(
+        user._id.toString(),
+        hashRefreshToken(refreshToken),
+        {
             userAgent: req.headers['user-agent'] || 'unknown',
             ip: req.ip || req.connection.remoteAddress,
             deviceName: req.body.deviceName || 'Mobile'
-        },
-        expiresAt: getTokenExpiry('refresh')
-    })
+        }
+    )
+
+    setRefreshTokenCookie(res, refreshToken)
 
     return { accessToken, refreshToken }
 }
@@ -362,7 +377,7 @@ exports.verifyOtp = async (req, res) => {
         }
 
         // Create auth tokens
-        const { accessToken, refreshToken } = await createAuthTokens(user, req)
+        const { accessToken } = await createAuthTokens(user, req, res)
 
         // Build response with profile
         const userResponse = await buildUserResponse(user)
@@ -371,7 +386,6 @@ exports.verifyOtp = async (req, res) => {
             success: true,
             message: isNewUser ? 'Registration successful' : 'Login successful',
             accessToken,
-            refreshToken,
             user: userResponse,
             isNewUser
         })

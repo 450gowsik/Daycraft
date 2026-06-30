@@ -207,12 +207,12 @@ userSchema.pre('save', function (next) {
 userSchema.pre('save', async function (next) {
     // Check both password and passwordHash for compatibility
     if (this.isModified('passwordHash') && this.passwordHash && !this.passwordHash.startsWith('$2')) {
-        const salt = await bcrypt.genSalt(10)
+        const salt = await bcrypt.genSalt(12)
         this.passwordHash = await bcrypt.hash(this.passwordHash, salt)
     }
     // Legacy password field support
     if (this.password && this.isModified('password')) {
-        const salt = await bcrypt.genSalt(10)
+        const salt = await bcrypt.genSalt(12)
         this.passwordHash = await bcrypt.hash(this.password, salt)
         this.password = undefined  // Don't store plain password
     }

@@ -1,7 +1,10 @@
 const env = require('./config/env')
 const { connectDB } = require('./config/db')
+const { isRedisConnected } = require('./config/redis')
 const express = require('express')
 const cors = require('cors')
+const helmet = require('helmet')
+const cookieParser = require('cookie-parser')
 
 // Import routes
 const authRoutes = require('./routes/auth.routes')
@@ -18,20 +21,29 @@ const chatbotRoutes = require('./routes/chatbot.routes')
 const app = express()
 const corsOrigin = env.CORS_ORIGINS.includes('*') ? true : env.CORS_ORIGINS
 
+// Trust proxy for load balancer (Nginx)
+// Required for correct req.ip behind reverse proxy
+app.set('trust proxy', true)
+
 const ensureDatabaseConnection = async (req, res, next) => {
     try {
         await connectDB()
         next()
     } catch (error) {
+        if (env.isDevelopment()) {
+            return next()
+        }
         next(error)
     }
 }
 
 // Middleware
+app.use(helmet())
 app.use(cors({
     origin: corsOrigin,
     credentials: true
 }))
+app.use(cookieParser())
 app.use(express.json())
 
 // Root routes
@@ -39,12 +51,18 @@ app.get(['/', '/api'], (req, res) => {
     res.status(200).send('DayCraft Backend Running')
 })
 
-// Health check routes
+// Health check routes (includes Redis + MongoDB status + instance ID)
 app.get(['/health', '/api/health'], (req, res) => {
+    const { isDbConnected } = require('./config/db')
     res.status(200).json({
         status: 'ok',
         message: 'DayCraft API is running',
-        environment: env.NODE_ENV
+        instance: env.INSTANCE_ID,
+        environment: env.NODE_ENV,
+        services: {
+            mongodb: isDbConnected() ? 'connected' : 'disconnected',
+            redis: isRedisConnected() ? 'connected' : 'disconnected'
+        }
     })
 })
 

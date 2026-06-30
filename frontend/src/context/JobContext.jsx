@@ -51,22 +51,27 @@ export function JobProvider({ children }) {
             let filteredO = rawOtherJobs
 
             if (searchQuery) {
-                const query = searchQuery.toLowerCase()
-                const filterFn = job => {
-                    const titleEn = job.title?.en?.toLowerCase() || ''
-                    const titleTa = job.title?.ta?.toLowerCase() || ''
-                    const descEn = job.description?.en?.toLowerCase() || ''
-                    const descTa = job.description?.ta?.toLowerCase() || ''
-                    const location = job.location?.toLowerCase() || ''
+                const queryTerms = searchQuery.toLowerCase().split(/[\s,]+/).filter(t => t.length > 0)
+                
+                if (queryTerms.length > 0) {
+                    const filterFn = job => {
+                        const titleEn = job.title?.en?.toLowerCase() || ''
+                        const titleTa = job.title?.ta?.toLowerCase() || ''
+                        const descEn = job.description?.en?.toLowerCase() || ''
+                        const descTa = job.description?.ta?.toLowerCase() || ''
+                        const location = job.location?.toLowerCase() || ''
 
-                    return titleEn.includes(query) ||
-                        titleTa.includes(query) ||
-                        descEn.includes(query) ||
-                        descTa.includes(query) ||
-                        location.includes(query)
+                        return queryTerms.every(term => 
+                            titleEn.includes(term) ||
+                            titleTa.includes(term) ||
+                            descEn.includes(term) ||
+                            descTa.includes(term) ||
+                            location.includes(term)
+                        )
+                    }
+                    filteredP = filteredP.filter(filterFn)
+                    filteredO = filteredO.filter(filterFn)
                 }
-                filteredP = filteredP.filter(filterFn)
-                filteredO = filteredO.filter(filterFn)
             }
 
             setPriorityJobs(filteredP)
@@ -238,20 +243,25 @@ export function JobProvider({ children }) {
 
         // Filter by search query
         if (searchQuery) {
-            const query = searchQuery.toLowerCase()
-            result = result.filter(job => {
-                const titleEn = job.title?.en?.toLowerCase() || ''
-                const titleTa = job.title?.ta?.toLowerCase() || ''
-                const descEn = job.description?.en?.toLowerCase() || ''
-                const descTa = job.description?.ta?.toLowerCase() || ''
-                const location = job.location?.toLowerCase() || ''
+            const queryTerms = searchQuery.toLowerCase().split(/[\s,]+/).filter(t => t.length > 0)
+            
+            if (queryTerms.length > 0) {
+                result = result.filter(job => {
+                    const titleEn = job.title?.en?.toLowerCase() || ''
+                    const titleTa = job.title?.ta?.toLowerCase() || ''
+                    const descEn = job.description?.en?.toLowerCase() || ''
+                    const descTa = job.description?.ta?.toLowerCase() || ''
+                    const location = job.location?.toLowerCase() || ''
 
-                return titleEn.includes(query) ||
-                    titleTa.includes(query) ||
-                    descEn.includes(query) ||
-                    descTa.includes(query) ||
-                    location.includes(query)
-            })
+                    return queryTerms.every(term => 
+                        titleEn.includes(term) ||
+                        titleTa.includes(term) ||
+                        descEn.includes(term) ||
+                        descTa.includes(term) ||
+                        location.includes(term)
+                    )
+                })
+            }
         }
 
         setFilteredJobs(result)

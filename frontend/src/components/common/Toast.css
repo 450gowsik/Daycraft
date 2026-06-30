@@ -79,6 +79,35 @@
     font-size: 24px;
     flex-shrink: 0;
     animation: iconPop 0.5s var(--ease-spring) 0.2s both;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toast-react-icon {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2.5px;
+}
+
+.toast-react-icon.success {
+    color: #10b981;
+}
+
+.toast-react-icon.error {
+    color: #ef4444;
+}
+
+.toast-react-icon.info {
+    color: #3b82f6;
+}
+
+.toast-react-icon.warning {
+    color: #f59e0b;
+}
+
+.toast-react-icon.celebrate {
+    color: #8b5cf6;
 }
 
 @keyframes iconPop {

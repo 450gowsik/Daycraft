@@ -235,181 +235,139 @@ function Home() {
                 </div>
             </section>
 
-            <section className="home-trust">
-                <div className="home-trust-track">
-                    <span className="trust-chip"><span className="trust-dot trust-dot--green"></span>{t('home.trust.verified')}</span>
-                    <span className="trust-divider">·</span>
-                    <span className="trust-chip"><span className="trust-dot trust-dot--blue"></span>{t('home.trust.nearby')}</span>
-                    <span className="trust-divider">·</span>
-                    <span className="trust-chip"><span className="trust-dot trust-dot--purple"></span>{t('home.trust.direct')}</span>
-                    <span className="trust-divider">·</span>
-                    <span className="trust-chip"><span className="trust-dot trust-dot--amber"></span>{t('home.trust.clearPay')}</span>
-                </div>
-            </section>
 
-            <section className="howto-section">
+            <section className="home-about-section">
                 <div className="container">
-                    <div className="howto-header">
-                        <span className="howto-badge">{t('home.howto.badge')}</span>
-                        <h2>{t('home.howto.title')} <span className="text-gradient">DayCraft</span></h2>
-                        <p>{t('home.howto.subtitle')}</p>
-                    </div>
-
-                    <div className="howto-timeline">
-                        <div className="howto-step">
-                            <div className="howto-step-number">
-                                <span>1</span>
-                            </div>
-                            <div className="howto-step-content">
-                                <div className="howto-step-icon-wrap">
-                                    <FiUserPlus aria-hidden="true" />
-                                </div>
-                                <h3>{t('home.howto.step1.title')}</h3>
-                                <p>
-                                    {t('home.howto.step1.description')}
-                                </p>
-                            </div>
+                    <div className="about-content">
+                        <div className="about-text">
+                            <span className="about-badge">{t('home.about.badge')}</span>
+                            <h2>
+                                {t('home.about.titlePre')} <span className="text-gradient">{t('home.about.titleGrad')}</span> {t('home.about.titlePost')}
+                            </h2>
+                            <p className="about-description">
+                                {t('home.about.desc1')}
+                            </p>
+                            <p className="about-description">
+                                {t('home.about.desc2')}
+                            </p>
+                            <Link to="/register" className="btn btn-primary btn-lg about-cta-btn">
+                                {t('home.about.cta')} <FiArrowRight aria-hidden="true" />
+                            </Link>
                         </div>
-
-                        <div className="howto-step">
-                            <div className="howto-step-number">
-                                <span>2</span>
-                            </div>
-                            <div className="howto-step-content">
-                                <div className="howto-step-icon-wrap">
-                                    <FiSearch aria-hidden="true" />
+                        <div className="about-features-grid">
+                            <div className="about-feature-card">
+                                <div className="about-feature-icon-wrap">
+                                    <FiShield aria-hidden="true" />
                                 </div>
-                                <h3>{t('home.howto.step2.title')}</h3>
-                                <p>
-                                    {t('home.howto.step2.description')}
-                                </p>
+                                <h4>{t('home.about.feat1.title')}</h4>
+                                <p>{t('home.about.feat1.desc')}</p>
                             </div>
-                        </div>
-
-                        <div className="howto-step">
-                            <div className="howto-step-number">
-                                <span>3</span>
+                            <div className="about-feature-card">
+                                <div className="about-feature-icon-wrap">
+                                    <FiMapPin aria-hidden="true" />
+                                </div>
+                                <h4>{t('home.about.feat2.title')}</h4>
+                                <p>{t('home.about.feat2.desc')}</p>
                             </div>
-                            <div className="howto-step-content">
-                                <div className="howto-step-icon-wrap">
+                            <div className="about-feature-card">
+                                <div className="about-feature-icon-wrap">
+                                    <FiBriefcase aria-hidden="true" />
+                                </div>
+                                <h4>{t('home.about.feat3.title')}</h4>
+                                <p>{t('home.about.feat3.desc')}</p>
+                            </div>
+                            <div className="about-feature-card">
+                                <div className="about-feature-icon-wrap">
                                     <FiCheckCircle aria-hidden="true" />
                                 </div>
-                                <h3>{t('home.howto.step3.title')}</h3>
-                                <p>
-                                    {t('home.howto.step3.description')}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="howto-step">
-                            <div className="howto-step-number">
-                                <span>4</span>
-                            </div>
-                            <div className="howto-step-content">
-                                <div className="howto-step-icon-wrap">
-                                    <FiMessageCircle aria-hidden="true" />
-                                </div>
-                                <h3>{t('home.howto.step4.title')}</h3>
-                                <p>
-                                    {t('home.howto.step4.description')}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="howto-step">
-                            <div className="howto-step-number">
-                                <span>5</span>
-                            </div>
-                            <div className="howto-step-content">
-                                <div className="howto-step-icon-wrap">
-                                    <FiDollarSign aria-hidden="true" />
-                                </div>
-                                <h3>{t('home.howto.step5.title')}</h3>
-                                <p>
-                                    {t('home.howto.step5.description')}
-                                </p>
+                                <h4>{t('home.about.feat4.title')}</h4>
+                                <p>{t('home.about.feat4.desc')}</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section className="home-section home-section-muted">
-                <div className="container">
-                    <div className="home-section-row">
-                        <div>
-                            <p className="home-eyebrow">
-                                {userLocation ? (language === 'ta' ? `${userLocation} இல் உள்ள வேலைகள்` : `Jobs in ${userLocation}`) : t('home.jobs.openJobs')}
-                            </p>
-                            <h2>{userLocation ? t('home.jobs.jobsNearYou') : t('home.jobs.recentOpenings')}</h2>
-                        </div>
-                        <Link to="/jobs" className="home-text-link">
-                            {t('home.jobs.viewAll')} <FiArrowRight aria-hidden="true" />
-                        </Link>
-                    </div>
-
-                    <div className="home-jobs-grid">
-                        {isLoadingJobs ? (
-                            [...Array(4)].map((_, index) => (
-                                <div key={index} className="home-job-card skeleton-card">
-                                    <div className="skeleton-title"></div>
-                                    <div className="skeleton-text"></div>
-                                    <div className="skeleton-text short"></div>
+            {isAuthenticated && (
+                <>
+                    <section className="home-section home-section-muted">
+                        <div className="container">
+                            <div className="home-section-row">
+                                <div>
+                                    <p className="home-eyebrow">
+                                        {userLocation ? (language === 'ta' ? `${userLocation} இல் உள்ள வேலைகள்` : `Jobs in ${userLocation}`) : t('home.jobs.openJobs')}
+                                    </p>
+                                    <h2>{userLocation ? t('home.jobs.jobsNearYou') : t('home.jobs.recentOpenings')}</h2>
                                 </div>
-                            ))
-                        ) : featuredJobs.length > 0 ? (
-                            featuredJobs.map((job) => {
-                                const title = job.title?.en || job.title || 'Job opening'
-                                const jobId = job._id || job.id
+                                <Link to="/jobs" className="home-text-link">
+                                    {t('home.jobs.viewAll')} <FiArrowRight aria-hidden="true" />
+                                </Link>
+                            </div>
 
-                                return (
-                                    <Link to={`/jobs/${jobId}`} key={jobId} className="home-job-card">
-                                        <div className="home-job-topline">
-                                            <span>{job.category || 'General'}</span>
-                                            {job.urgent && <strong>Urgent</strong>}
+                            <div className="home-jobs-grid">
+                                {isLoadingJobs ? (
+                                    [...Array(4)].map((_, index) => (
+                                        <div key={index} className="home-job-card skeleton-card">
+                                            <div className="skeleton-title"></div>
+                                            <div className="skeleton-text"></div>
+                                            <div className="skeleton-text short"></div>
                                         </div>
-                                        <h3>{title}</h3>
-                                        <p>{job.employer?.name || 'Employer'}</p>
-                                        <div className="home-job-meta">
-                                            <span>{job.location || 'Location pending'}</span>
-                                            <strong>Rs. {job.wage?.toLocaleString() || '--'}/day</strong>
-                                        </div>
+                                    ))
+                                ) : featuredJobs.length > 0 ? (
+                                    featuredJobs.map((job) => {
+                                        const title = job.title?.en || job.title || 'Job opening'
+                                        const jobId = job._id || job.id
+
+                                        return (
+                                            <Link to={`/jobs/${jobId}`} key={jobId} className="home-job-card">
+                                                <div className="home-job-topline">
+                                                    <span>{job.category || 'General'}</span>
+                                                    {job.urgent && <strong>Urgent</strong>}
+                                                </div>
+                                                <h3>{title}</h3>
+                                                <p>{job.employer?.name || 'Employer'}</p>
+                                                <div className="home-job-meta">
+                                                    <span>{job.location || 'Location pending'}</span>
+                                                    <strong>Rs. {job.wage?.toLocaleString() || '--'}/day</strong>
+                                                </div>
+                                            </Link>
+                                        )
+                                    })
+                                ) : (
+                                    <p className="home-empty">{t('home.jobs.empty')}</p>
+                                )}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="home-section">
+                        <div className="container">
+                            <div className="home-section-row">
+                                <div>
+                                    <p className="home-eyebrow">{t('home.categories.title')}</p>
+                                    <h2>{t('home.categories.subtitle')}</h2>
+                                </div>
+                                <Link to="/jobs" className="home-text-link">
+                                    {t('home.categories.explore')} <FiArrowRight aria-hidden="true" />
+                                </Link>
+                            </div>
+
+                            <div className="home-category-grid">
+                                {displayCategories.map((category) => (
+                                    <Link
+                                        to={`/jobs?category=${category.id}`}
+                                        key={category.id}
+                                        className="home-category-card"
+                                    >
+                                        <span>{category.name?.[language] || category.name?.en || category.label || category.id}</span>
+                                        <small>{category.jobCount || 0}+ {t('home.categories.jobsSuffix')}</small>
                                     </Link>
-                                )
-                            })
-                        ) : (
-                            <p className="home-empty">{t('home.jobs.empty')}</p>
-                        )}
-                    </div>
-                </div>
-            </section>
-
-            <section className="home-section">
-                <div className="container">
-                    <div className="home-section-row">
-                        <div>
-                            <p className="home-eyebrow">{t('home.categories.title')}</p>
-                            <h2>{t('home.categories.subtitle')}</h2>
+                                ))}
+                            </div>
                         </div>
-                        <Link to="/jobs" className="home-text-link">
-                            {t('home.categories.explore')} <FiArrowRight aria-hidden="true" />
-                        </Link>
-                    </div>
-
-                    <div className="home-category-grid">
-                        {displayCategories.map((category) => (
-                            <Link
-                                to={`/jobs?category=${category.id}`}
-                                key={category.id}
-                                className="home-category-card"
-                            >
-                                <span>{category.name?.[language] || category.name?.en || category.label || category.id}</span>
-                                <small>{category.jobCount || 0}+ {t('home.categories.jobsSuffix')}</small>
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-            </section>
+                    </section>
+                </>
+            )}
 
             <section className="home-testimonials-section">
                 <div className="container">
@@ -492,57 +450,7 @@ function Home() {
                 </div>
             </section>
 
-            <section className="home-about-section">
-                <div className="container">
-                    <div className="about-content">
-                        <div className="about-text">
-                            <span className="about-badge">{t('home.about.badge')}</span>
-                            <h2>
-                                {t('home.about.titlePre')} <span className="text-gradient">{t('home.about.titleGrad')}</span> {t('home.about.titlePost')}
-                            </h2>
-                            <p className="about-description">
-                                {t('home.about.desc1')}
-                            </p>
-                            <p className="about-description">
-                                {t('home.about.desc2')}
-                            </p>
-                            <Link to="/register" className="btn btn-primary btn-lg about-cta-btn">
-                                {t('home.about.cta')} <FiArrowRight aria-hidden="true" />
-                            </Link>
-                        </div>
-                        <div className="about-features-grid">
-                            <div className="about-feature-card">
-                                <div className="about-feature-icon-wrap">
-                                    <FiShield aria-hidden="true" />
-                                </div>
-                                <h4>{t('home.about.feat1.title')}</h4>
-                                <p>{t('home.about.feat1.desc')}</p>
-                            </div>
-                            <div className="about-feature-card">
-                                <div className="about-feature-icon-wrap">
-                                    <FiMapPin aria-hidden="true" />
-                                </div>
-                                <h4>{t('home.about.feat2.title')}</h4>
-                                <p>{t('home.about.feat2.desc')}</p>
-                            </div>
-                            <div className="about-feature-card">
-                                <div className="about-feature-icon-wrap">
-                                    <FiBriefcase aria-hidden="true" />
-                                </div>
-                                <h4>{t('home.about.feat3.title')}</h4>
-                                <p>{t('home.about.feat3.desc')}</p>
-                            </div>
-                            <div className="about-feature-card">
-                                <div className="about-feature-icon-wrap">
-                                    <FiCheckCircle aria-hidden="true" />
-                                </div>
-                                <h4>{t('home.about.feat4.title')}</h4>
-                                <p>{t('home.about.feat4.desc')}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+
 
             <section className="home-cta">
                 <div className="container home-cta-inner">

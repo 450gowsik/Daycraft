@@ -1,4 +1,5 @@
 import { useState, useEffect, createContext, useContext } from 'react'
+import { FiCheckCircle, FiXCircle, FiInfo, FiAlertTriangle, FiAward } from 'react-icons/fi'
 import './Toast.css'
 
 // Toast Context for global access
@@ -18,11 +19,11 @@ function ToastItem({ toast, onRemove }) {
     }, [toast.id, toast.duration, onRemove])
 
     const icons = {
-        success: '✅',
-        error: '❌',
-        info: 'ℹ️',
-        warning: '⚠️',
-        celebrate: '🎉'
+        success: <FiCheckCircle className="toast-react-icon success" />,
+        error: <FiXCircle className="toast-react-icon error" />,
+        info: <FiInfo className="toast-react-icon info" />,
+        warning: <FiAlertTriangle className="toast-react-icon warning" />,
+        celebrate: <FiAward className="toast-react-icon celebrate" />
     }
 
     return (

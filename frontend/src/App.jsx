@@ -37,14 +37,26 @@ function App() {
                 <Routes>
                     {/* Public routes */}
                     <Route path="/" element={<Home />} />
-                    <Route path="/jobs" element={<Jobs />} />
-                    <Route path="/jobs/:jobId" element={<JobDetails />} />
+                    <Route path="/jobs" element={
+                        <ProtectedRoute>
+                            <Jobs />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/jobs/:jobId" element={
+                        <ProtectedRoute>
+                            <JobDetails />
+                        </ProtectedRoute>
+                    } />
                     <Route path="/jobs/:jobId/applicants" element={
                         <ProtectedRoute>
                             <JobApplicants />
                         </ProtectedRoute>
                     } />
-                    <Route path="/workers" element={<Workers />} />
+                    <Route path="/workers" element={
+                        <ProtectedRoute>
+                            <Workers />
+                        </ProtectedRoute>
+                    } />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     {/* Protected routes - require authentication */}

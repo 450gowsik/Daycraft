@@ -1,15 +1,15 @@
 /**
- * AuthContext - World-Class State Machine
+ * AuthContext - Production-Grade State Machine
  * 
  * Features:
- * - Step-based authentication flows
- * - Multi-role support (roles array + activeRole)
- * - Token stored in memory (not localStorage)
- * - Automatic token refresh
- * - Role switching capability
+ * - Single useReducer for predictable, atomic state transitions.
+ * - Stale closures solved via refs and dependency hygiene.
+ * - Tokens stored in memory (accessToken) and HttpOnly Secure cookies (refreshToken).
+ * - Automatic background token refresh.
+ * - Re-render optimized via useMemo.
  */
 
-import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
+import { createContext, useContext, useReducer, useEffect, useCallback, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api, { setAccessToken as setApiAccessToken } from '../services/api'
 
@@ -28,19 +28,13 @@ export const AUTH_STATES = {
     ERROR: 'error'
 }
 
-export function AuthProvider({ children }) {
-    // Core state
-    const [user, setUser] = useState(null)
-    const [accessToken, setAccessToken] = useState(null)
-    const [refreshToken, setRefreshToken] = useState(() => {
-        return localStorage.getItem('refreshToken')
-    })
-    const [loading, setLoading] = useState(true)
-    const [authState, setAuthState] = useState(AUTH_STATES.IDLE)
-    const [error, setError] = useState(null)
-
-    // Step flow data
-    const [stepData, setStepData] = useState({
+const initialState = {
+    user: null,
+    accessToken: null,
+    loading: true,
+    authState: AUTH_STATES.IDLE,
+    error: null,
+    stepData: {
         email: '',
         phone: '',
         name: '',
@@ -48,73 +42,125 @@ export function AuthProvider({ children }) {
         location: '',
         isNewUser: false,
         cooldownRemaining: 0
-    })
+    }
+}
 
+function authReducer(state, action) {
+    switch (action.type) {
+        case 'INIT_START':
+            return {
+                ...state,
+                loading: true
+            }
+        case 'AUTH_SUCCESS':
+            localStorage.setItem('daycraft_logged_in', 'true')
+            return {
+                ...state,
+                user: action.payload.user,
+                accessToken: action.payload.accessToken,
+                authState: AUTH_STATES.AUTHENTICATED,
+                loading: false,
+                error: null
+            }
+        case 'AUTH_FAIL':
+            localStorage.removeItem('daycraft_logged_in')
+            return {
+                ...initialState,
+                loading: false
+            }
+        case 'SET_AUTH_STATE':
+            return {
+                ...state,
+                authState: action.payload
+            }
+        case 'SET_ERROR':
+            return {
+                ...state,
+                error: action.payload,
+                loading: false
+            }
+        case 'CLEAR_ERROR':
+            return {
+                ...state,
+                error: null
+            }
+        case 'SET_LOADING':
+            return {
+                ...state,
+                loading: action.payload
+            }
+        case 'UPDATE_STEP_DATA':
+            return {
+                ...state,
+                stepData: {
+                    ...state.stepData,
+                    ...action.payload
+                }
+            }
+        case 'RESET_FLOW':
+            return {
+                ...state,
+                authState: AUTH_STATES.IDLE,
+                error: null,
+                stepData: initialState.stepData
+            }
+        case 'UPDATE_USER_PROFILE':
+            return {
+                ...state,
+                user: action.payload
+            }
+        default:
+            return state
+    }
+}
+
+export function AuthProvider({ children }) {
+    const [state, dispatch] = useReducer(authReducer, initialState)
     const navigate = useNavigate()
     const refreshTimeoutRef = useRef(null)
+
+    // Keep active state values in refs to prevent stale closure bugs in timers/effects
+    const stateRef = useRef(state)
+    useEffect(() => {
+        stateRef.current = state
+    }, [state])
 
     // ===========================================
     // TOKEN MANAGEMENT
     // ===========================================
 
-    const saveTokens = useCallback((access, refresh) => {
-        setAccessToken(access)
-        setApiAccessToken(access) // Fix: Sync to API service
-        if (refresh) {
-            setRefreshToken(refresh)
-            localStorage.setItem('refreshToken', refresh)
-        }
-
+    const scheduleRefresh = useCallback((access) => {
         if (refreshTimeoutRef.current) {
             clearTimeout(refreshTimeoutRef.current)
         }
+        
+        // Refresh 1 minute before access token expires (14 minutes)
         refreshTimeoutRef.current = setTimeout(() => {
             refreshAccessToken()
         }, 14 * 60 * 1000)
     }, [])
 
     const refreshAccessToken = useCallback(async () => {
-        const storedRefresh = refreshToken || localStorage.getItem('refreshToken')
-        if (!storedRefresh) {
-            setLoading(false)
-            return false
-        }
-
         try {
-            const response = await api.post('/auth/refresh-token', {
-                refreshToken: storedRefresh
-            })
+            // POST request to refresh endpoint. Cookie is sent automatically by Axios (withCredentials: true)
+            const response = await api.post('/auth/refresh-token')
 
             if (response.data.success) {
-                saveTokens(response.data.accessToken, response.data.refreshToken)
-                return true
+                const newAccessToken = response.data.accessToken
+                setApiAccessToken(newAccessToken)
+                scheduleRefresh(newAccessToken)
+                return newAccessToken
             }
         } catch (error) {
-            console.error('Token refresh failed:', error)
-            clearAuth()
+            // Only log unexpected server/network errors, not expected 401s when the user is logged out
+            if (error.response?.status !== 401) {
+                console.error('Silent token refresh failed:', error)
+            }
+            dispatch({ type: 'AUTH_FAIL' })
+            setApiAccessToken(null)
         }
-        return false
-    }, [refreshToken, saveTokens])
-
-    const clearAuth = useCallback(() => {
-        setUser(null)
-        setAccessToken(null)
-        setRefreshToken(null)
-        setAuthState(AUTH_STATES.IDLE)
-        setStepData({
-            email: '',
-            phone: '',
-            name: '',
-            role: '',
-            location: '',
-            isNewUser: false,
-            cooldownRemaining: 0
-        })
-        localStorage.removeItem('refreshToken')
-        if (refreshTimeoutRef.current) {
-            clearTimeout(refreshTimeoutRef.current)
-        }
-    }, [])
+        return null
+    }, [scheduleRefresh])
 
     const fetchCurrentUser = useCallback(async (token) => {
         try {
@@ -122,94 +168,108 @@ export function AuthProvider({ children }) {
                 headers: { Authorization: `Bearer ${token}` }
             })
             if (response.data.success) {
-                setUser(response.data.user)
-                setAuthState(AUTH_STATES.AUTHENTICATED)
+                dispatch({
+                    type: 'AUTH_SUCCESS',
+                    payload: { user: response.data.user, accessToken: token }
+                })
                 return response.data.user
             }
         } catch (error) {
-            console.error('Fetch user failed:', error)
-            clearAuth()
+            console.error('Fetch current user failed:', error)
+            dispatch({ type: 'AUTH_FAIL' })
+            setApiAccessToken(null)
         }
         return null
-    }, [clearAuth])
-
-    // Role management methods removed at user request to revert to old structure
+    }, [])
 
     // ===========================================
     // EMAIL AUTH FLOW
     // ===========================================
 
     const emailStart = async (email) => {
-        setError(null)
-        setAuthState(AUTH_STATES.EMAIL_ENTERED)
+        dispatch({ type: 'CLEAR_ERROR' })
+        dispatch({ type: 'SET_AUTH_STATE', payload: AUTH_STATES.EMAIL_ENTERED })
 
         try {
             const response = await api.post('/auth/email/start', { email })
 
-            setStepData(prev => ({
-                ...prev,
-                email,
-                isNewUser: !response.data.exists
-            }))
+            dispatch({
+                type: 'UPDATE_STEP_DATA',
+                payload: {
+                    email,
+                    isNewUser: !response.data.exists
+                }
+            })
 
-            setAuthState(AUTH_STATES.PASSWORD_STEP)
+            dispatch({ type: 'SET_AUTH_STATE', payload: AUTH_STATES.PASSWORD_STEP })
             return {
                 success: true,
                 exists: response.data.exists,
                 message: response.data.message
             }
         } catch (error) {
-            setError(error.response?.data?.message || 'Failed to check email')
-            setAuthState(AUTH_STATES.ERROR)
-            return { success: false, message: error.response?.data?.message }
+            const msg = error.response?.data?.message || 'Failed to check email'
+            dispatch({ type: 'SET_ERROR', payload: msg })
+            dispatch({ type: 'SET_AUTH_STATE', payload: AUTH_STATES.ERROR })
+            return { success: false, message: msg }
         }
     }
 
     const emailRegister = async (password, userData = {}) => {
-        setError(null)
-        setAuthState(AUTH_STATES.REGISTERING)
+        dispatch({ type: 'CLEAR_ERROR' })
+        dispatch({ type: 'SET_AUTH_STATE', payload: AUTH_STATES.REGISTERING })
 
         try {
             const response = await api.post('/auth/email/register', {
-                email: stepData.email,
+                email: stateRef.current.stepData.email,
                 password,
-                name: userData.name || stepData.name,
-                role: userData.role || stepData.role,
-                location: userData.location || stepData.location,
+                name: userData.name || stateRef.current.stepData.name,
+                role: userData.role || stateRef.current.stepData.role,
+                location: userData.location || stateRef.current.stepData.location,
                 geoLocation: userData.geoLocation
             })
 
             if (response.data.success) {
-                saveTokens(response.data.accessToken, response.data.refreshToken)
-                setUser(response.data.user)
-                setAuthState(AUTH_STATES.AUTHENTICATED)
+                const access = response.data.accessToken
+                setApiAccessToken(access)
+                scheduleRefresh(access)
+
+                dispatch({
+                    type: 'AUTH_SUCCESS',
+                    payload: { user: response.data.user, accessToken: access }
+                })
                 return { success: true, user: response.data.user }
             }
         } catch (error) {
-            setError(error.response?.data?.message || 'Registration failed')
-            setAuthState(AUTH_STATES.ERROR)
-            return { success: false, message: error.response?.data?.message }
+            const msg = error.response?.data?.message || 'Registration failed'
+            dispatch({ type: 'SET_ERROR', payload: msg })
+            dispatch({ type: 'SET_AUTH_STATE', payload: AUTH_STATES.ERROR })
+            return { success: false, message: msg }
         }
     }
 
     const login = async (email, password) => {
-        setError(null)
-        setLoading(true)
+        dispatch({ type: 'CLEAR_ERROR' })
+        dispatch({ type: 'SET_LOADING', payload: true })
 
         try {
             const response = await api.post('/auth/login', { email, password })
 
             if (response.data.success) {
-                saveTokens(response.data.accessToken, response.data.refreshToken)
-                setUser(response.data.user)
-                setAuthState(AUTH_STATES.AUTHENTICATED)
-                setLoading(false)
+                const access = response.data.accessToken
+                setApiAccessToken(access)
+                scheduleRefresh(access)
+
+                dispatch({
+                    type: 'AUTH_SUCCESS',
+                    payload: { user: response.data.user, accessToken: access }
+                })
                 return { success: true, user: response.data.user }
             }
         } catch (error) {
-            setError(error.response?.data?.message || 'Login failed')
-            setLoading(false)
-            return { success: false, message: error.response?.data?.message }
+            const msg = error.response?.data?.message || 'Login failed'
+            dispatch({ type: 'SET_ERROR', payload: msg })
+            return { success: false, message: msg }
         }
     }
 
@@ -217,28 +277,44 @@ export function AuthProvider({ children }) {
     // PHONE AUTH FLOW (OTP)
     // ===========================================
 
+    const startCooldown = (seconds) => {
+        dispatch({ type: 'UPDATE_STEP_DATA', payload: { cooldownRemaining: seconds } })
+
+        const interval = setInterval(() => {
+            const currentCooldown = stateRef.current.stepData.cooldownRemaining
+            if (currentCooldown <= 1) {
+                clearInterval(interval)
+                dispatch({ type: 'UPDATE_STEP_DATA', payload: { cooldownRemaining: 0 } })
+            } else {
+                dispatch({ type: 'UPDATE_STEP_DATA', payload: { cooldownRemaining: currentCooldown - 1 } })
+            }
+        }, 1000)
+    }
+
     const sendOtp = async (phone, userData = {}) => {
-        setError(null)
-        setAuthState(AUTH_STATES.PHONE_ENTERED)
+        dispatch({ type: 'CLEAR_ERROR' })
+        dispatch({ type: 'SET_AUTH_STATE', payload: AUTH_STATES.PHONE_ENTERED })
 
         try {
             const response = await api.post('/auth/phone/send-otp', {
                 phone,
-                name: userData.name || stepData.name,
-                role: userData.role || stepData.role,
-                location: userData.location || stepData.location
+                name: userData.name || stateRef.current.stepData.name,
+                role: userData.role || stateRef.current.stepData.role,
+                location: userData.location || stateRef.current.stepData.location
             })
 
             if (response.data.success) {
-                setStepData(prev => ({
-                    ...prev,
-                    phone: response.data.phone,
-                    isNewUser: response.data.isNewUser,
-                    name: userData.name || prev.name,
-                    role: userData.role || prev.role,
-                    location: userData.location || prev.location
-                }))
-                setAuthState(AUTH_STATES.OTP_SENT)
+                dispatch({
+                    type: 'UPDATE_STEP_DATA',
+                    payload: {
+                        phone: response.data.phone,
+                        isNewUser: response.data.isNewUser,
+                        name: userData.name || stateRef.current.stepData.name,
+                        role: userData.role || stateRef.current.stepData.role,
+                        location: userData.location || stateRef.current.stepData.location
+                    }
+                })
+                dispatch({ type: 'SET_AUTH_STATE', payload: AUTH_STATES.OTP_SENT })
 
                 if (response.data.cooldownRemaining) {
                     startCooldown(response.data.cooldownRemaining)
@@ -253,7 +329,7 @@ export function AuthProvider({ children }) {
             }
         } catch (error) {
             const msg = error.response?.data?.message || 'Failed to send OTP'
-            setError(msg)
+            dispatch({ type: 'SET_ERROR', payload: msg })
 
             if (error.response?.status === 429) {
                 const remaining = error.response.data?.cooldownRemaining || 30
@@ -273,22 +349,27 @@ export function AuthProvider({ children }) {
     }
 
     const verifyOtp = async (otp) => {
-        setError(null)
-        setAuthState(AUTH_STATES.OTP_VERIFYING)
+        dispatch({ type: 'CLEAR_ERROR' })
+        dispatch({ type: 'SET_AUTH_STATE', payload: AUTH_STATES.OTP_VERIFYING })
 
         try {
             const response = await api.post('/auth/phone/verify-otp', {
-                phone: stepData.phone,
+                phone: stateRef.current.stepData.phone,
                 otp,
-                name: stepData.name,
-                role: stepData.role,
-                location: stepData.location
+                name: stateRef.current.stepData.name,
+                role: stateRef.current.stepData.role,
+                location: stateRef.current.stepData.location
             })
 
             if (response.data.success) {
-                saveTokens(response.data.accessToken, response.data.refreshToken)
-                setUser(response.data.user)
-                setAuthState(AUTH_STATES.AUTHENTICATED)
+                const access = response.data.accessToken
+                setApiAccessToken(access)
+                scheduleRefresh(access)
+
+                dispatch({
+                    type: 'AUTH_SUCCESS',
+                    payload: { user: response.data.user, accessToken: access }
+                })
                 return {
                     success: true,
                     user: response.data.user,
@@ -297,8 +378,8 @@ export function AuthProvider({ children }) {
             }
         } catch (error) {
             const msg = error.response?.data?.message || 'OTP verification failed'
-            setError(msg)
-            setAuthState(AUTH_STATES.OTP_SENT)
+            dispatch({ type: 'SET_ERROR', payload: msg })
+            dispatch({ type: 'SET_AUTH_STATE', payload: AUTH_STATES.OTP_SENT })
             return {
                 success: false,
                 message: msg,
@@ -308,26 +389,11 @@ export function AuthProvider({ children }) {
     }
 
     const resendOtp = async () => {
-        return sendOtp(stepData.phone, {
-            name: stepData.name,
-            role: stepData.role,
-            location: stepData.location
+        return sendOtp(stateRef.current.stepData.phone, {
+            name: stateRef.current.stepData.name,
+            role: stateRef.current.stepData.role,
+            location: stateRef.current.stepData.location
         })
-    }
-
-    const startCooldown = (seconds) => {
-        setStepData(prev => ({ ...prev, cooldownRemaining: seconds }))
-
-        const interval = setInterval(() => {
-            setStepData(prev => {
-                const remaining = prev.cooldownRemaining - 1
-                if (remaining <= 0) {
-                    clearInterval(interval)
-                    return { ...prev, cooldownRemaining: 0 }
-                }
-                return { ...prev, cooldownRemaining: remaining }
-            })
-        }, 1000)
     }
 
     // ===========================================
@@ -335,22 +401,26 @@ export function AuthProvider({ children }) {
     // ===========================================
 
     const googleAuth = async (token, userData = {}) => {
-        setError(null)
-        setLoading(true)
+        dispatch({ type: 'CLEAR_ERROR' })
+        dispatch({ type: 'SET_LOADING', payload: true })
 
         try {
             const response = await api.post('/auth/google', {
                 token,
-                role: userData.role || stepData.role,
-                location: userData.location || stepData.location,
+                role: userData.role || stateRef.current.stepData.role,
+                location: userData.location || stateRef.current.stepData.location,
                 geoLocation: userData.geoLocation
             })
 
             if (response.data.success) {
-                saveTokens(response.data.accessToken, response.data.refreshToken)
-                setUser(response.data.user)
-                setAuthState(AUTH_STATES.AUTHENTICATED)
-                setLoading(false)
+                const access = response.data.accessToken
+                setApiAccessToken(access)
+                scheduleRefresh(access)
+
+                dispatch({
+                    type: 'AUTH_SUCCESS',
+                    payload: { user: response.data.user, accessToken: access }
+                })
                 return {
                     success: true,
                     user: response.data.user,
@@ -358,9 +428,9 @@ export function AuthProvider({ children }) {
                 }
             }
         } catch (error) {
-            setError(error.response?.data?.message || 'Google auth failed')
-            setLoading(false)
-            return { success: false, message: error.response?.data?.message }
+            const msg = error.response?.data?.message || 'Google auth failed'
+            dispatch({ type: 'SET_ERROR', payload: msg })
+            return { success: false, message: msg }
         }
     }
 
@@ -370,23 +440,23 @@ export function AuthProvider({ children }) {
 
     const logout = async () => {
         try {
-            await api.post('/auth/logout', { refreshToken })
+            await api.post('/auth/logout') // Cookie cleared automatically by backend
         } catch (error) {
             console.error('Logout error:', error)
         }
-        clearAuth()
+        dispatch({ type: 'AUTH_FAIL' })
+        setApiAccessToken(null)
         navigate('/login')
     }
 
     const logoutAllDevices = async () => {
         try {
-            await api.post('/auth/logout-all', {}, {
-                headers: { Authorization: `Bearer ${accessToken}` }
-            })
+            await api.post('/auth/logout-all')
         } catch (error) {
             console.error('Logout all error:', error)
         }
-        clearAuth()
+        dispatch({ type: 'AUTH_FAIL' })
+        setApiAccessToken(null)
         navigate('/login')
     }
 
@@ -396,11 +466,9 @@ export function AuthProvider({ children }) {
 
     const updateProfile = async (updates) => {
         try {
-            const response = await api.put('/auth/profile', updates, {
-                headers: { Authorization: `Bearer ${accessToken}` }
-            })
+            const response = await api.put('/auth/profile', updates)
             if (response.data.success) {
-                setUser(response.data.user)
+                dispatch({ type: 'UPDATE_USER_PROFILE', payload: response.data.user })
                 return { success: true, user: response.data.user }
             }
         } catch (error) {
@@ -409,21 +477,11 @@ export function AuthProvider({ children }) {
     }
 
     const updateStepData = (updates) => {
-        setStepData(prev => ({ ...prev, ...updates }))
+        dispatch({ type: 'UPDATE_STEP_DATA', payload: updates })
     }
 
     const resetAuthFlow = () => {
-        setAuthState(AUTH_STATES.IDLE)
-        setError(null)
-        setStepData({
-            email: '',
-            phone: '',
-            name: '',
-            role: '',
-            location: '',
-            isNewUser: false,
-            cooldownRemaining: 0
-        })
+        dispatch({ type: 'RESET_FLOW' })
     }
 
     // ===========================================
@@ -432,16 +490,21 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         const initAuth = async () => {
-            const storedRefresh = localStorage.getItem('refreshToken')
+            dispatch({ type: 'INIT_START' })
 
-            if (storedRefresh) {
-                const refreshed = await refreshAccessToken()
-                if (refreshed && accessToken) {
-                    await fetchCurrentUser(accessToken)
-                }
+            const hasSession = localStorage.getItem('daycraft_logged_in') === 'true'
+            if (!hasSession) {
+                dispatch({ type: 'AUTH_FAIL' })
+                return
             }
 
-            setLoading(false)
+            // Try to refresh token silently on startup using the HttpOnly cookie
+            const access = await refreshAccessToken()
+            if (access) {
+                await fetchCurrentUser(access)
+            } else {
+                dispatch({ type: 'AUTH_FAIL' })
+            }
         }
 
         initAuth()
@@ -451,36 +514,30 @@ export function AuthProvider({ children }) {
                 clearTimeout(refreshTimeoutRef.current)
             }
         }
-    }, [])
-
-    useEffect(() => {
-        if (accessToken && !user) {
-            fetchCurrentUser(accessToken)
-        }
-    }, [accessToken, user, fetchCurrentUser])
+    }, [refreshAccessToken, fetchCurrentUser])
 
     // ===========================================
-    // CONTEXT VALUE
+    // MEMOIZED CONTEXT VALUE
     // ===========================================
 
-    const value = {
+    const value = useMemo(() => ({
         // State
-        user,
-        token: accessToken,
-        accessToken,
-        refreshToken,
-        loading,
-        authState,
-        error,
-        stepData,
+        user: state.user,
+        token: state.accessToken,
+        accessToken: state.accessToken,
+        refreshToken: null, // Left for legacy compatibility (omitted)
+        loading: state.loading,
+        authState: state.authState,
+        error: state.error,
+        stepData: state.stepData,
 
         // Computed properties
-        isAuthenticated: !!user && !!accessToken,
-        role: user?.activeRole || user?.role || 'worker',
-        profile: user?.profile || null,
-        isWorker: user?.roles?.includes('worker') || user?.role === 'worker',
-        isEmployer: user?.roles?.includes('employer') || user?.role === 'employer',
-        isAdmin: user?.roles?.includes('admin') || user?.role === 'admin',
+        isAuthenticated: !!state.user && !!state.accessToken,
+        role: state.user?.activeRole || state.user?.role || 'worker',
+        profile: state.user?.profile || null,
+        isWorker: state.user?.roles?.includes('worker') || state.user?.role === 'worker',
+        isEmployer: state.user?.roles?.includes('employer') || state.user?.role === 'employer',
+        isAdmin: state.user?.roles?.includes('admin') || state.user?.role === 'admin',
 
         // Email auth
         emailStart,
@@ -505,9 +562,28 @@ export function AuthProvider({ children }) {
         // Flow control
         updateStepData,
         resetAuthFlow,
-        setAuthState,
-        clearError: () => setError(null)
-    }
+        setAuthState: (status) => dispatch({ type: 'SET_AUTH_STATE', payload: status }),
+        clearError: () => dispatch({ type: 'CLEAR_ERROR' })
+    }), [
+        state.user,
+        state.accessToken,
+        state.loading,
+        state.authState,
+        state.error,
+        state.stepData,
+        emailStart,
+        emailRegister,
+        login,
+        sendOtp,
+        verifyOtp,
+        resendOtp,
+        googleAuth,
+        logout,
+        logoutAllDevices,
+        updateProfile,
+        updateStepData,
+        resetAuthFlow
+    ])
 
     return (
         <AuthContext.Provider value={value}>

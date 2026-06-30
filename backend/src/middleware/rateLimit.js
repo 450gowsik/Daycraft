@@ -1,27 +1,83 @@
 /**
- * Rate Limiting Middleware
- * Prevents brute force attacks on auth endpoints
+ * Rate Limiting Middleware - Redis-backed
+ * 
+ * Prevents brute force attacks on auth endpoints.
+ * Uses Redis INCR + EXPIRE for atomic, distributed rate limiting
+ * that works across all API instances behind the load balancer.
+ * 
+ * Falls back to in-memory store if Redis is unavailable.
  */
+const { getRedisClient, isRedisConnected } = require('../config/redis')
+const env = require('../config/env')
 
-// In-memory store (use Redis in production)
-const rateLimitStore = new Map()
+const RATE_LIMIT_PREFIX = 'daycraft:ratelimit:'
 
-// Cleanup old entries every 5 minutes
+// Fallback in-memory store (used only when Redis is down)
+const memoryStore = new Map()
 setInterval(() => {
     const now = Date.now()
-    for (const [key, data] of rateLimitStore.entries()) {
+    for (const [key, data] of memoryStore.entries()) {
         if (data.resetAt < now) {
-            rateLimitStore.delete(key)
+            memoryStore.delete(key)
         }
     }
 }, 5 * 60 * 1000)
+
+/**
+ * Redis-based rate limit check
+ * @returns {{ allowed: boolean, count: number, retryAfter: number }}
+ */
+const checkRedisRateLimit = async (key, windowMs, max) => {
+    const redis = getRedisClient()
+    const redisKey = `${RATE_LIMIT_PREFIX}${key}`
+    const windowSec = Math.ceil(windowMs / 1000)
+
+    // Atomic increment + set expiry
+    const count = await redis.incr(redisKey)
+
+    if (count === 1) {
+        // First request — set expiry
+        await redis.expire(redisKey, windowSec)
+    }
+
+    if (count > max) {
+        const ttl = await redis.ttl(redisKey)
+        return { allowed: false, count, retryAfter: ttl > 0 ? ttl : windowSec }
+    }
+
+    return { allowed: true, count, retryAfter: 0 }
+}
+
+/**
+ * In-memory fallback rate limit check
+ */
+const checkMemoryRateLimit = (key, windowMs, max) => {
+    const now = Date.now()
+    let data = memoryStore.get(key)
+
+    if (!data || data.resetAt < now) {
+        data = { count: 1, resetAt: now + windowMs }
+        memoryStore.set(key, data)
+        return { allowed: true, count: 1, retryAfter: 0 }
+    }
+
+    data.count++
+    memoryStore.set(key, data)
+
+    if (data.count > max) {
+        const retryAfter = Math.ceil((data.resetAt - now) / 1000)
+        return { allowed: false, count: data.count, retryAfter }
+    }
+
+    return { allowed: true, count: data.count, retryAfter: 0 }
+}
 
 /**
  * Create rate limiter middleware
  * @param {Object} options
  * @param {number} options.windowMs - Time window in milliseconds
  * @param {number} options.max - Max requests per window
- * @param {string} options.keyGenerator - Function to generate key
+ * @param {Function} options.keyGenerator - Function to generate key from request
  * @param {string} options.message - Error message
  */
 const createRateLimiter = (options = {}) => {
@@ -32,33 +88,37 @@ const createRateLimiter = (options = {}) => {
         message = 'Too many requests, please try again later'
     } = options
 
-    return (req, res, next) => {
+    const maxRequests = env.isDevelopment() ? 10000 : max
+
+    return async (req, res, next) => {
         const key = keyGenerator(req)
-        const now = Date.now()
+        let result
 
-        let data = rateLimitStore.get(key)
-
-        if (!data || data.resetAt < now) {
-            data = {
-                count: 1,
-                resetAt: now + windowMs
+        try {
+            if (isRedisConnected()) {
+                result = await checkRedisRateLimit(key, windowMs, maxRequests)
+            } else {
+                result = checkMemoryRateLimit(key, windowMs, maxRequests)
             }
-            rateLimitStore.set(key, data)
+        } catch (err) {
+            console.error('Rate limit error:', err.message)
+            // Fail open — allow request if rate limiting fails
             return next()
         }
 
-        data.count++
+        // Set rate limit headers
+        res.set('X-RateLimit-Limit', maxRequests)
+        res.set('X-RateLimit-Remaining', Math.max(0, maxRequests - result.count))
 
-        if (data.count > max) {
-            const retryAfter = Math.ceil((data.resetAt - now) / 1000)
+        if (!result.allowed) {
+            res.set('Retry-After', result.retryAfter)
             return res.status(429).json({
                 success: false,
                 message,
-                retryAfter
+                retryAfter: result.retryAfter
             })
         }
 
-        rateLimitStore.set(key, data)
         next()
     }
 }

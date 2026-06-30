@@ -5,12 +5,50 @@ const WorkerPreference = require('../models/WorkerPreference')
 const { getRecommendedJobs, getPersonalizedRecommendations } = require('../services/matchingService')
 const { createNotification } = require('./notificationController')
 const smsService = require('../services/smsService')
+const { isDbConnected } = require('../config/db')
 
+const getMockJobs = () => {
+    try {
+        const demoJobs = require('../../../frontend/src/data/demoJobs.json')
+        return demoJobs.map(job => ({
+            ...job,
+            _id: job.id || job._id,
+            employer: typeof job.employer === 'string'
+                ? { name: job.employer, rating: 4.8, companyName: job.employer }
+                : job.employer
+        }))
+    } catch (err) {
+        console.error('Failed to load mock jobs in backend:', err)
+        return []
+    }
+}
 
 // @desc    Get all jobs (with filters)
 // @route   GET /api/jobs
 // @access  Public
 exports.getJobs = async (req, res) => {
+    if (!isDbConnected()) {
+        const { category, location, urgent, limit } = req.query
+        let list = getMockJobs()
+        if (category) {
+            list = list.filter(j => j.category === category)
+        }
+        if (urgent === 'true') {
+            list = list.filter(j => j.urgent)
+        }
+        if (location) {
+            const searchLoc = location.toLowerCase()
+            list = list.filter(j => j.location && j.location.toLowerCase().includes(searchLoc))
+        }
+        if (limit && parseInt(limit) > 0) {
+            list = list.slice(0, parseInt(limit))
+        }
+        return res.json({
+            success: true,
+            count: list.length,
+            jobs: list
+        })
+    }
     try {
         const { category, role, location, urgent, lat, lng, distance, limit } = req.query
 
@@ -191,6 +229,14 @@ exports.createJob = async (req, res) => {
 // @route   GET /api/jobs/:id
 // @access  Public
 exports.getJob = async (req, res) => {
+    if (!isDbConnected()) {
+        const demoJobs = getMockJobs()
+        const job = demoJobs.find(j => j._id === req.params.id || j.id === req.params.id)
+        if (!job) {
+            return res.status(404).json({ success: false, message: 'Job not found' })
+        }
+        return res.json({ success: true, job })
+    }
     try {
         const job = await Job.findById(req.params.id).populate('employer', 'name companyName avatar')
 
@@ -391,6 +437,40 @@ exports.getJobMatches = async (req, res) => {
 // @route   GET /api/jobs/location-matched
 // @access  Public
 exports.getLocationMatchedJobs = async (req, res) => {
+    if (!isDbConnected()) {
+        const { district, category } = req.query
+        let demoJobs = getMockJobs()
+        
+        if (category) {
+            demoJobs = demoJobs.filter(j => j.category === category)
+        }
+        
+        let priorityJobs = []
+        let otherJobs = []
+        
+        if (district) {
+            const districtLower = district.toLowerCase()
+            priorityJobs = demoJobs.filter(j => j.location && j.location.toLowerCase().includes(districtLower))
+            otherJobs = demoJobs.filter(j => !j.location || !j.location.toLowerCase().includes(districtLower))
+        } else {
+            priorityJobs = demoJobs.slice(0, 8)
+            otherJobs = demoJobs.slice(8)
+        }
+        
+        priorityJobs = priorityJobs.map(j => ({ ...j, matchScore: 85 }))
+        otherJobs = otherJobs.map(j => ({ ...j, matchScore: 50 }))
+        
+        return res.json({
+            success: true,
+            priorityJobs: priorityJobs.slice(0, 8),
+            otherJobs: otherJobs,
+            counts: {
+                priority: priorityJobs.length,
+                other: otherJobs.length,
+                total: priorityJobs.length + otherJobs.length
+            }
+        })
+    }
     try {
         const { district, lat, lng, category } = req.query
         const { calculateMatchScore } = require('../services/matchingService')

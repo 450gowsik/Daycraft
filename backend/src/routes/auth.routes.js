@@ -208,12 +208,8 @@ router.post('/google', googleAuth)
 // TOKEN MANAGEMENT
 // ===========================================
 
-// Refresh access token
-router.post('/refresh-token',
-    refreshTokenValidation,
-    validate,
-    refreshToken
-)
+// Refresh access token (reads from HttpOnly cookie)
+router.post('/refresh-token', refreshToken)
 
 // Logout (revoke current token)
 router.post('/logout', logout)

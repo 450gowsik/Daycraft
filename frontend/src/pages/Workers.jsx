@@ -3,6 +3,7 @@ import { useLanguage } from '../context/LanguageContext.jsx'
 import { useWorkers } from '../context/WorkerContext.jsx'
 import { useToast } from '../components/common/Toast.jsx'
 import WorkerCard from '../components/workers/WorkerCard.jsx'
+import { FiSearch, FiCheckCircle, FiLock, FiStar, FiMapPin, FiUsers } from 'react-icons/fi'
 import './Workers.css'
 
 // Lazy load modal for performance
@@ -33,9 +34,9 @@ function Workers() {
         // TODO: Connect to proper request API
         console.log('Request sent for worker:', worker._id)
 
-        // Show celebration toast! 🎉
+        // Show celebration toast
         toast.celebrate(
-            language === 'ta' ? 'கோரிக்கை அனுப்பப்பட்டது! 🎉' : 'Request Sent Successfully! 🎉',
+            language === 'ta' ? 'கோரிக்கை அனுப்பப்பட்டது!' : 'Request Sent Successfully!',
             {
                 submessage: language === 'ta'
                     ? `${worker.name} விரைவில் உங்களை தொடர்பு கொள்வார்.`
@@ -56,38 +57,49 @@ function Workers() {
     return (
         <div className="workers-page">
             <div className="container">
-                <header className="page-header">
-                    <h1 className="h1">{t('workers.title')}</h1>
-                    <p className="text-lg text-secondary">{t('workers.subtitle')}</p>
+                <header className="page-header-premium">
+                    <div className="header-info">
+                        <h1 className="h1">{t('workers.title')}</h1>
+                        <p className="subtitle-text">{t('workers.subtitle')}</p>
+                    </div>
+
+                    <div className="status-highlight">
+                        <div className="availability-status">
+                            <span className="pulse-dot"></span>
+                            <span className="status-text">
+                                <strong>{displayedWorkers.length}</strong> {language === 'ta' ? 'சரிபார்க்கப்பட்ட தொழிலாளர்கள் இன்று' : 'verified employees available'}
+                                {selectedDistrict === 'All Districts'
+                                    ? (language === 'ta' ? ' 20 மாவட்டங்களில்' : ' across 20 districts')
+                                    : ` ${language === 'ta' ? 'இல்' : 'in'} ${selectedDistrict}`}
+                            </span>
+                        </div>
+
+                        <div className="premium-trust-badges">
+                            <span className="p-badge">
+                                <FiCheckCircle className="badge-icon" />
+                                {language === 'ta' ? 'ஐடி சரிபார்க்கப்பட்டது' : 'ID Verified'}
+                            </span>
+                            <span className="p-badge">
+                                <FiLock className="badge-icon" />
+                                {language === 'ta' ? 'பாதுகாப்பான தொடர்பு' : 'Safe Contact'}
+                            </span>
+                            <span className="p-badge">
+                                <FiStar className="badge-icon" />
+                                {language === 'ta' ? 'மதிப்பீடு செய்யப்பட்டது' : 'Top Rated'}
+                            </span>
+                        </div>
+                    </div>
                 </header>
-
-                {/* Trust Messaging - Story format */}
-                <div className="workers-trust-banner">
-                    <span className="trust-text">
-                        👷 <strong>{displayedWorkers.length}</strong> {language === 'ta' ? 'சரிபார்க்கப்பட்ட தொழிலாளர்கள் இன்று' : 'verified employees available'}
-                        {selectedDistrict === 'All Districts'
-                            ? (language === 'ta' ? ' 20 மாவட்டங்களில்' : ' across 20 districts today')
-                            : ` ${language === 'ta' ? 'இல்' : 'in'} ${selectedDistrict}`}
-                    </span>
-                </div>
-
-                {/* Trust Badges Row */}
-                <div className="trust-badges-row">
-                    <span className="trust-badge">✅ {language === 'ta' ? 'ஐடி சரிபார்க்கப்பட்டது' : 'ID Verified'}</span>
-                    <span className="trust-badge">🔒 {language === 'ta' ? 'பாதுகாப்பான தொடர்பு' : 'Safe Contact'}</span>
-                    <span className="trust-badge">⭐ {language === 'ta' ? 'மதிப்பீடு செய்யப்பட்டது' : 'Rated Employees'}</span>
-                </div>
-
 
                 {/* Filters */}
                 <div className="workers-filters">
                     <div className="filters-row" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                         <div className="search-box" style={{ flex: 1, minWidth: '200px' }}>
-                            <span className="search-icon">🔍</span>
+                            <FiSearch className="search-icon" />
                             <input
                                 type="text"
                                 className="input w-full"
-                                style={{ paddingLeft: '2.5rem' }}
+                                style={{ paddingLeft: '2.75rem' }}
                                 placeholder={t('workers.search')}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}

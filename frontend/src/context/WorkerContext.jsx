@@ -51,23 +51,30 @@ export function WorkerProvider({ children }) {
         result = result.filter(worker => worker.idVerified)
 
         if (searchQuery) {
-            const query = searchQuery.toLowerCase()
-            result = result.filter(worker => {
-                const name = worker.name?.toLowerCase() || ''
-                const bio = worker.bio?.toLowerCase() || ''
-                const location = worker.location?.toLowerCase() || ''
+            // Split search query by commas, spaces, or tabs, and filter empty strings
+            const queryTerms = searchQuery.toLowerCase().split(/[\s,]+/).filter(t => t.length > 0)
 
-                // Handle skills that can be strings or objects with en/ta properties
-                const skillsText = worker.skills?.map(s => {
-                    if (typeof s === 'string') return s.toLowerCase()
-                    return `${s?.en || ''} ${s?.ta || ''}`.toLowerCase()
-                }).join(' ') || ''
+            if (queryTerms.length > 0) {
+                result = result.filter(worker => {
+                    const name = worker.name?.toLowerCase() || ''
+                    const bio = worker.bio?.toLowerCase() || ''
+                    const location = worker.location?.toLowerCase() || ''
 
-                return name.includes(query) ||
-                    bio.includes(query) ||
-                    location.includes(query) ||
-                    skillsText.includes(query)
-            })
+                    // Handle skills that can be strings or objects with en/ta properties
+                    const skillsText = worker.skills?.map(s => {
+                        if (typeof s === 'string') return s.toLowerCase()
+                        return `${s?.en || ''} ${s?.ta || ''}`.toLowerCase()
+                    }).join(' ') || ''
+
+                    // EVERY term in the query must match AT LEAST ONE field of the worker
+                    return queryTerms.every(term =>
+                        name.includes(term) ||
+                        bio.includes(term) ||
+                        location.includes(term) ||
+                        skillsText.includes(term)
+                    )
+                })
+            }
         }
 
         setFilteredWorkers(result)

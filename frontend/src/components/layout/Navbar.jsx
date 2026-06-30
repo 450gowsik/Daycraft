@@ -108,16 +108,18 @@ function Navbar() {
                     <NavLink to="/" className="nav-link" onClick={closeAllMenus}>
                         {t('nav.home')}
                     </NavLink>
-                    <NavLink to="/jobs" className="nav-link" onClick={closeAllMenus}>
-                        {t('nav.jobs')}
-                    </NavLink>
-                    <NavLink to="/workers" className="nav-link" onClick={closeAllMenus}>
-                        {t('nav.workers')}
-                    </NavLink>
                     {isAuthenticated && (
-                        <NavLink to="/dashboard" className="nav-link" onClick={closeAllMenus}>
-                            {t('nav.dashboard')}
-                        </NavLink>
+                        <>
+                            <NavLink to="/jobs" className="nav-link" onClick={closeAllMenus}>
+                                {t('nav.jobs')}
+                            </NavLink>
+                            <NavLink to="/workers" className="nav-link" onClick={closeAllMenus}>
+                                {t('nav.workers')}
+                            </NavLink>
+                            <NavLink to="/dashboard" className="nav-link" onClick={closeAllMenus}>
+                                {t('nav.dashboard')}
+                            </NavLink>
+                        </>
                     )}
 
                     {isAuthenticated && (

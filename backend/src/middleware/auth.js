@@ -2,11 +2,15 @@ const { verifyToken } = require('../utils/jwt')
 const User = require('../models/User')
 const Worker = require('../models/Worker')
 const Employer = require('../models/Employer')
+const cacheService = require('../services/cacheService')
+
+const USER_CACHE_TTL = 300 // 5 minutes
 
 /**
  * Protect routes - verify JWT token
  * 
  * Now uses single User collection for auth lookup.
+ * Caches user data in Redis for faster subsequent requests.
  * Attaches user with profile data to request.
  */
 exports.protect = async (req, res, next) => {
@@ -28,8 +32,23 @@ exports.protect = async (req, res, next) => {
         // Verify token
         const decoded = verifyToken(token)
 
-        // Single collection lookup
-        const user = await User.findById(decoded.id)
+        // Try Redis cache first for user lookup
+        const cacheKey = `user:${decoded.id}`
+        let user = await cacheService.get(cacheKey)
+
+        if (user) {
+            // Restore Mongoose document methods by creating a lightweight proxy
+            user._id = user._id
+            user.id = user._id
+        } else {
+            // Cache miss — fetch from MongoDB
+            user = await User.findById(decoded.id)
+
+            if (user) {
+                // Cache the user data (plain object)
+                await cacheService.set(cacheKey, user.toObject(), USER_CACHE_TTL)
+            }
+        }
 
         if (!user) {
             console.log('Auth Debug - Token user ID not found:', decoded.id)

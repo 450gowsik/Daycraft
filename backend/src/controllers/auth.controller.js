@@ -18,11 +18,12 @@
  * - POST /auth/add-role - Add new role to account
  */
 
+const env = require('../config/env')
 const bcrypt = require('bcryptjs')
 const User = require('../models/User')
 const Worker = require('../models/Worker')
 const Employer = require('../models/Employer')
-const RefreshToken = require('../models/RefreshToken')
+const refreshTokenService = require('../services/refreshTokenService')
 const axios = require('axios')
 const { sendWelcomeEmail } = require('../services/emailService')
 const {
@@ -31,6 +32,38 @@ const {
     hashRefreshToken,
     getTokenExpiry
 } = require('../utils/jwt')
+
+// ===========================================
+// COOKIE HELPER
+// ===========================================
+
+const REFRESH_COOKIE_NAME = 'refreshToken'
+const REFRESH_COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000 // 7 days
+
+/**
+ * Set refresh token as an HttpOnly Secure cookie
+ */
+const setRefreshTokenCookie = (res, token) => {
+    res.cookie(REFRESH_COOKIE_NAME, token, {
+        httpOnly: true,
+        secure: env.COOKIE_SECURE,
+        sameSite: env.COOKIE_SECURE ? 'strict' : 'lax',
+        maxAge: REFRESH_COOKIE_MAX_AGE,
+        path: '/api/auth'
+    })
+}
+
+/**
+ * Clear refresh token cookie
+ */
+const clearRefreshTokenCookie = (res) => {
+    res.clearCookie(REFRESH_COOKIE_NAME, {
+        httpOnly: true,
+        secure: env.COOKIE_SECURE,
+        sameSite: env.COOKIE_SECURE ? 'strict' : 'lax',
+        path: '/api/auth'
+    })
+}
 
 // ===========================================
 // HELPER FUNCTIONS
@@ -86,28 +119,28 @@ const getUserProfile = async (user) => {
 }
 
 /**
- * Create tokens and save refresh token to DB
+ * Create tokens, save refresh token to Redis, and set cookie
  */
-const createAuthTokens = async (user, req) => {
-    // Generate tokens with single role
+const createAuthTokens = async (user, req, res) => {
     const accessToken = generateAccessToken({
         id: user._id,
         role: user.role
     })
     const refreshToken = generateRefreshToken()
 
-    // Save refresh token to DB (hashed)
-    await RefreshToken.create({
-        userId: user._id,
-        userModel: 'User',
-        tokenHash: hashRefreshToken(refreshToken),
-        deviceInfo: {
+    // Save refresh token to Redis (hashed)
+    await refreshTokenService.storeToken(
+        user._id.toString(),
+        hashRefreshToken(refreshToken),
+        {
             userAgent: req.headers['user-agent'] || 'unknown',
             ip: req.ip || req.connection.remoteAddress,
             deviceName: req.body.deviceName || 'Web Browser'
-        },
-        expiresAt: getTokenExpiry('refresh')
-    })
+        }
+    )
+
+    // Set HttpOnly cookie
+    setRefreshTokenCookie(res, refreshToken)
 
     return { accessToken, refreshToken }
 }
@@ -255,7 +288,7 @@ exports.emailRegister = async (req, res) => {
         }
 
         // Create auth tokens
-        const { accessToken, refreshToken } = await createAuthTokens(user, req)
+        const { accessToken } = await createAuthTokens(user, req, res)
 
         // Send welcome email
         try {
@@ -271,7 +304,6 @@ exports.emailRegister = async (req, res) => {
             success: true,
             message: 'Registration successful',
             accessToken,
-            refreshToken,
             user: userResponse
         })
     } catch (error) {
@@ -332,14 +364,14 @@ exports.login = async (req, res) => {
 
         const emailLower = email.toLowerCase().trim()
 
-        // Find user with password (single collection lookup)
-        const user = await User.findOne({ email: emailLower }).select('+password')
+        // Find user with passwordHash (single collection lookup)
+        const user = await User.findOne({ email: emailLower }).select('+passwordHash')
 
         if (!user) {
             return res.status(401).json({
                 success: false,
-                code: 'USER_NOT_FOUND',
-                message: 'No account found with this email address'
+                code: 'INVALID_CREDENTIALS',
+                message: 'Invalid email or password'
             })
         }
 
@@ -351,17 +383,17 @@ exports.login = async (req, res) => {
             })
         }
 
-        const isMatch = await bcrypt.compare(password, user.password)
+        const isMatch = user.passwordHash ? await bcrypt.compare(password, user.passwordHash) : false
         if (!isMatch) {
             return res.status(401).json({
                 success: false,
-                code: 'WRONG_PASSWORD',
-                message: 'Incorrect password. Please try again.'
+                code: 'INVALID_CREDENTIALS',
+                message: 'Invalid email or password'
             })
         }
 
         // Create auth tokens
-        const { accessToken, refreshToken } = await createAuthTokens(user, req)
+        const { accessToken } = await createAuthTokens(user, req, res)
 
         // Build response with profile
         const userResponse = await buildUserResponse(user)
@@ -370,7 +402,6 @@ exports.login = async (req, res) => {
             success: true,
             message: 'Login successful',
             accessToken,
-            refreshToken,
             user: userResponse
         })
     } catch (error) {
@@ -666,7 +697,7 @@ exports.googleAuth = async (req, res) => {
         // ===================================
         // STEP 5: Generate JWT Tokens
         // ===================================
-        const { accessToken, refreshToken } = await createAuthTokens(user, req)
+        const { accessToken } = await createAuthTokens(user, req, res)
 
         // ===================================
         // STEP 6: Build Response
@@ -677,7 +708,6 @@ exports.googleAuth = async (req, res) => {
             success: true,
             message: isNewUser ? 'Account created successfully' : 'Login successful',
             accessToken,
-            refreshToken,
             user: userResponse,
             isNewUser
         })
