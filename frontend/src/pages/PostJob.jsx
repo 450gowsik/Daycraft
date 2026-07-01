@@ -11,6 +11,7 @@ import { useLanguage } from '../context/LanguageContext.jsx'
 import jobService from '../services/jobService.js'
 import { toast } from 'react-hot-toast'
 import ErrorBoundary from '../components/common/ErrorBoundary.jsx'
+import { detectLocation } from '../services/locationService.js'
 import logo from '../assets/images/logo.png'
 import './PostJob.css'
 
@@ -257,6 +258,38 @@ function PostJob() {
             const dd = String(defaultDate.getDate()).padStart(2, '0')
             setFormData(prev => ({ ...prev, expiryDate: `${yyyy}-${mm}-${dd}` }))
         }
+    }, [])
+
+    // Auto-detect location from IP on mount
+    useEffect(() => {
+        const autoDetect = async () => {
+            // Skip if district already set (e.g. from draft)
+            if (formData.district) return
+
+            const detected = await detectLocation(language)
+            if (detected && detected.districtName) {
+                // Check if the detected district exists in the DISTRICTS array
+                const matchedDistrict = DISTRICTS.find(
+                    d => d.toLowerCase() === detected.districtName.toLowerCase()
+                )
+                if (matchedDistrict) {
+                    setFormData(prev => ({
+                        ...prev,
+                        district: matchedDistrict,
+                        lat: detected.lat ? String(detected.lat) : prev.lat,
+                        lng: detected.lon ? String(detected.lon) : prev.lng
+                    }))
+                    setMapQuery(`${matchedDistrict}, Tamil Nadu, India`)
+                    toast.success(
+                        language === 'en'
+                            ? `📍 Location auto-detected: ${matchedDistrict}`
+                            : `📍 இருப்பிடம் தானாகக் கண்டறியப்பட்டது: ${matchedDistrict}`,
+                        { duration: 3000, id: 'ip-detect' }
+                    )
+                }
+            }
+        }
+        autoDetect()
     }, [])
 
     // Handle scroll to track active section

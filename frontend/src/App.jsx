@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 // Layout components
 import Navbar from './components/layout/Navbar.jsx'
@@ -28,10 +28,13 @@ import Wallet from './pages/Wallet.jsx'
 import Notifications from './pages/Notifications.jsx'
 
 function App() {
+    const location = useLocation()
+    const showNavbar = location.pathname !== '/post-job'
+
     return (
         <div className="app">
             <Toaster position="top-center" reverseOrder={false} />
-            <Navbar />
+            {showNavbar && <Navbar />}
             <VerificationBanner />
             <main className="main-content">
                 <Routes>

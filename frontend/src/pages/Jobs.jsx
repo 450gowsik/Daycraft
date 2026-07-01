@@ -8,6 +8,7 @@ import LocationModal from '../components/common/LocationModal.jsx'
 import { JOB_CATEGORIES } from '../constants/categories.js'
 import CategoryIcon from '../components/jobs/CategoryIcon.jsx'
 import { FaThLarge, FaSearch } from 'react-icons/fa'
+import { detectLocation } from '../services/locationService.js'
 import './Jobs.css'
 
 // Skeleton Loader Component
@@ -77,6 +78,24 @@ function Jobs() {
             }
         }
     }, [searchParams])
+
+    // Auto-detect location from IP if no location is set
+    useEffect(() => {
+        if (selectedLocation) return // Already have a location
+
+        const autoDetect = async () => {
+            const detected = await detectLocation(language)
+            if (detected && detected.displayText) {
+                setSelectedLocation({
+                    displayText: detected.displayText,
+                    district: detected.district,
+                    city: detected.city,
+                    source: 'ip_auto'
+                })
+            }
+        }
+        autoDetect()
+    }, []) // Run once on mount
 
     // Handle location change with animation
     const handleLocationSelect = (location) => {

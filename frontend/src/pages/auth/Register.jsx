@@ -18,6 +18,7 @@ import { toast } from 'react-hot-toast'
 import logo from '../../assets/images/logo.png'
 import roleEmployer from '../../assets/images/role-employer.png'
 import roleWorker from '../../assets/images/role-worker.png'
+import { detectLocation } from '../../services/locationService.js'
 import './Auth.css'
 
 // Step definitions
@@ -96,6 +97,26 @@ function Register() {
         if (/[^A-Za-z0-9]/.test(password)) strength++
         setPasswordStrength(strength)
     }, [formData.password])
+
+    // Auto-detect location from IP when entering DETAILS step
+    useEffect(() => {
+        if (step !== STEPS.DETAILS) return
+        if (formData.location) return // Already has a location
+
+        const autoDetect = async () => {
+            const detected = await detectLocation(language)
+            if (detected && detected.displayText) {
+                setFormData(prev => ({
+                    ...prev,
+                    location: detected.displayText,
+                    geoLocation: detected.lat && detected.lon
+                        ? [detected.lon, detected.lat]
+                        : null
+                }))
+            }
+        }
+        autoDetect()
+    }, [step])
 
     // Handle input changes
     const handleChange = (e) => {
