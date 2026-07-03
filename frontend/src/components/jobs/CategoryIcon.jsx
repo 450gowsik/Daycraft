@@ -4,7 +4,8 @@ import {
     FaBolt, FaHammer, FaCubes, FaMoon, FaSun, FaParking, FaDoorOpen,
     FaWarehouse, FaCamera, FaHome, FaTint, FaSnowflake, FaBox,
     FaBaby, FaUserTie, FaCheckCircle, FaClock, FaTimesCircle, FaSyncAlt,
-    FaLaptopCode
+    FaLaptopCode, FaHeartbeat, FaGraduationCap, FaCoins, FaPalette,
+    FaStore, FaHotel, FaGavel, FaClipboardList, FaPenNib
 } from 'react-icons/fa'
 import { MdSecurity, MdEvent, MdLocalShipping, MdAgriculture } from 'react-icons/md'
 import { GiFactory, GiBrickWall, GiAnvil } from 'react-icons/gi'
@@ -26,7 +27,17 @@ const CATEGORY_ICONS = {
     housekeeping: FaBroom,
     cooking: FaUtensils,
     security: FaShieldAlt,
-    development: FaLaptopCode
+    development: FaLaptopCode,
+    healthcare: FaHeartbeat,
+    education: FaGraduationCap,
+    finance: FaCoins,
+    design: FaPalette,
+    retail: FaStore,
+    hospitality: FaHotel,
+    legal: FaGavel,
+    admin: FaClipboardList,
+    creative: FaPenNib,
+    other: FaUserTie
 }
 
 // Title-based icon mapping (more specific icons)

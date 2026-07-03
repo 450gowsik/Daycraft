@@ -15,21 +15,17 @@ import { detectLocation } from '../services/locationService.js'
 import logo from '../assets/images/logo.png'
 import './PostJob.css'
 
+import { JOB_CATEGORIES, DESCRIPTION_TEMPLATES, categorySkills } from '../constants/categories.js'
+
 // Categories — values MUST match backend category controller IDs exactly
 // abbr = 2-letter badge shown instead of emoji, color = badge background
-const CATEGORIES = [
-    { value: 'construction', label: 'Construction',    labelTa: 'கட்டுமானம்',          abbr: 'CO', color: '#f97316' },
-    { value: 'gardening',    label: 'Agriculture',     labelTa: 'விவசாயம்',            abbr: 'AG', color: '#22c55e' },
-    { value: 'driving',      label: 'Delivery/Driver', labelTa: 'டெலிவரி / ஓட்டுநர்', abbr: 'DR', color: '#3b82f6' },
-    { value: 'cleaning',     label: 'House Work',      labelTa: 'வீட்டு வேலை',        abbr: 'HW', color: '#a855f7' },
-    { value: 'electrical',   label: 'Electrician',     labelTa: 'மின்சார வேலை',       abbr: 'EL', color: '#eab308' },
-    { value: 'plumbing',     label: 'Plumbing',        labelTa: 'குழாய் பணி',          abbr: 'PL', color: '#06b6d4' },
-    { value: 'painting',     label: 'Painting',        labelTa: 'வண்ணம் பூசுதல்',     abbr: 'PA', color: '#ec4899' },
-    { value: 'carpentry',    label: 'Carpentry',       labelTa: 'தச்சு வேலை',         abbr: 'CA', color: '#78716c' },
-    { value: 'cooking',      label: 'Cooking',         labelTa: 'சமையல்',             abbr: 'CK', color: '#ef4444' },
-    { value: 'security',     label: 'Security',        labelTa: 'பாதுகாப்பு',          abbr: 'SE', color: '#0f172a' },
-    { value: 'other',        label: 'Others',          labelTa: 'இதர வேலைகள்',        abbr: 'OT', color: '#64748b' }
-]
+const CATEGORIES = JOB_CATEGORIES.map(cat => ({
+    value: cat.id,
+    label: cat.label,
+    labelTa: cat.ta,
+    abbr: cat.abbr,
+    color: cat.color
+}))
 
 // Tamil Nadu Districts for dropdown
 const DISTRICTS = [
@@ -222,6 +218,48 @@ function PostJob() {
     const [activeSection, setActiveSection] = useState(1)
     // Map query — updates when district changes
     const [mapQuery, setMapQuery] = useState('Tamil Nadu, India')
+    const [mapCoords, setMapCoords] = useState(null)
+
+    // Geocode mapQuery or use GPS coordinates
+    useEffect(() => {
+        let active = true
+
+        // 1. If GPS coordinates are set, use them
+        if (formData.lat && formData.lng && formData.lat !== '0' && formData.lng !== '0') {
+            setMapCoords({
+                lat: parseFloat(formData.lat),
+                lng: parseFloat(formData.lng)
+            })
+            return
+        }
+
+        // 2. Otherwise geocode mapQuery
+        if (!mapQuery || mapQuery === 'Tamil Nadu, India') {
+            setMapCoords(null)
+            return
+        }
+
+        const geocode = async () => {
+            try {
+                const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(mapQuery)}&format=json&limit=1`)
+                const data = await res.json()
+                if (active && data && data.length > 0) {
+                    setMapCoords({
+                        lat: parseFloat(data[0].lat),
+                        lng: parseFloat(data[0].lon)
+                    })
+                }
+            } catch (err) {
+                console.error('Nominatim geocoding error:', err)
+            }
+        }
+
+        geocode()
+
+        return () => {
+            active = false
+        }
+    }, [mapQuery, formData.lat, formData.lng])
 
     // Load initial user details and draft
     useEffect(() => {
@@ -260,8 +298,9 @@ function PostJob() {
         }
     }, [])
 
-    // Auto-detect location from IP on mount
+    // Auto-detect location from IP on mount (disabled by default so no place is automatically shown)
     useEffect(() => {
+        /*
         const autoDetect = async () => {
             // Skip if district already set (e.g. from draft)
             if (formData.district) return
@@ -290,6 +329,7 @@ function PostJob() {
             }
         }
         autoDetect()
+        */
     }, [])
 
     // Handle scroll to track active section
@@ -607,6 +647,31 @@ function PostJob() {
                                     className={errors.description ? 'input-error' : ''}
                                 />
                                 {errors.description && <span className="error-msg">⚠️ {errors.description}</span>}
+
+                                {formData.category && DESCRIPTION_TEMPLATES[formData.category] && (
+                                    <div className="description-templates-container">
+                                        <span className="templates-label">
+                                            {language === 'en'
+                                                ? 'Suggested templates (tap to auto-fill):'
+                                                : 'பரிந்துரைக்கப்பட்ட விவரங்கள் (தானாக நிரப்ப தட்டவும்):'}
+                                        </span>
+                                        <div className="templates-list">
+                                            {DESCRIPTION_TEMPLATES[formData.category][language === 'en' ? 'en' : 'ta'].map((template, idx) => (
+                                                <button
+                                                    key={idx}
+                                                    type="button"
+                                                    className="template-chip"
+                                                    onClick={() => {
+                                                        setFormData(prev => ({ ...prev, description: template }))
+                                                        setErrors(prev => ({ ...prev, description: '' }))
+                                                    }}
+                                                >
+                                                    {template}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Workers Required */}
@@ -777,16 +842,29 @@ function PostJob() {
                                         ? `Showing: ${formData.district}, Tamil Nadu`
                                         : 'Select a district to see location on map'}
                                 </div>
-                                <div className="map-frame-container">
-                                    <iframe
-                                        key={mapQuery}
-                                        title="Job Location Map"
-                                        className="map-iframe"
-                                        src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=13&output=embed&hl=en`}
-                                        allowFullScreen
-                                        loading="lazy"
-                                        referrerPolicy="no-referrer-when-downgrade"
-                                    />
+                                 <div className="map-frame-container" style={{ position: 'relative', height: '240px', background: '#e2e8f0', overflow: 'hidden' }}>
+                                    {mapCoords ? (
+                                        <iframe
+                                            title="Job Location Map"
+                                            className="map-iframe"
+                                            src={`https://www.openstreetmap.org/export/embed.html?bbox=${mapCoords.lng - 0.015}%2C${mapCoords.lat - 0.015}%2C${mapCoords.lng + 0.015}%2C${mapCoords.lat + 0.015}&layer=mapnik&marker=${mapCoords.lat}%2C${mapCoords.lng}`}
+                                            allowFullScreen
+                                            loading="lazy"
+                                        />
+                                    ) : (
+                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                                            {/* Grid background styling */}
+                                            <div style={{ position: 'absolute', inset: 0, opacity: 0.15, background: 'radial-gradient(circle, #475569 10%, transparent 10%)', backgroundSize: '20px 20px' }}></div>
+                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 2 }}>
+                                                <span style={{ fontSize: '40px', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.15))' }}>📍</span>
+                                                {formData.district && (
+                                                    <span style={{ background: 'rgba(15, 23, 42, 0.85)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: '600', marginTop: '8px', backdropFilter: 'blur(4px)', whiteSpace: 'nowrap' }}>
+                                                        {formData.district}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </fieldset>
@@ -849,7 +927,46 @@ function PostJob() {
 
                             {/* Required Skills */}
                             <div className="form-group">
-                                <label htmlFor="skillInput">{t.skillsLabel}</label>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                    <label htmlFor="skillInput" style={{ marginBottom: 0 }}>{t.skillsLabel}</label>
+                                    {((formData.category && categorySkills[formData.category]
+                                        ? categorySkills[formData.category]
+                                        : COMMON_SKILLS
+                                    ).filter(s => !formData.skills.includes(s)).length > 0) && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const suggestions = (formData.category && categorySkills[formData.category]
+                                                    ? categorySkills[formData.category]
+                                                    : COMMON_SKILLS
+                                                ).filter(s => !formData.skills.includes(s));
+                                                setFormData(prev => ({ ...prev, skills: [...prev.skills, ...suggestions] }));
+                                            }}
+                                            style={{
+                                                background: 'rgba(16, 185, 129, 0.1)',
+                                                border: 'none',
+                                                color: 'var(--brand-green)',
+                                                fontWeight: '700',
+                                                fontSize: '0.78rem',
+                                                cursor: 'pointer',
+                                                padding: '4px 10px',
+                                                borderRadius: '20px',
+                                                transition: 'all 0.2s',
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: '4px'
+                                            }}
+                                            onMouseOver={(e) => {
+                                                e.currentTarget.style.background = 'rgba(16, 185, 129, 0.2)';
+                                            }}
+                                            onMouseOut={(e) => {
+                                                e.currentTarget.style.background = 'rgba(16, 185, 129, 0.1)';
+                                            }}
+                                        >
+                                            {language === 'en' ? '+ Add All Suggestions' : '+ அனைத்தையும் சேர்'}
+                                        </button>
+                                    )}
+                                </div>
                                 <div className="skills-input-box">
                                     <input
                                         type="text"
@@ -863,7 +980,10 @@ function PostJob() {
 
                                 {/* Skills Suggestion Chips */}
                                 <div className="skills-suggestions-chips">
-                                    {COMMON_SKILLS.filter(s => !formData.skills.includes(s)).map(s => (
+                                    {(formData.category && categorySkills[formData.category]
+                                        ? categorySkills[formData.category]
+                                        : COMMON_SKILLS
+                                    ).filter(s => !formData.skills.includes(s)).map(s => (
                                         <button
                                             key={s}
                                             type="button"
@@ -1006,7 +1126,7 @@ function PostJob() {
                                 
                                 {formData.isOtpVerified ? (
                                     <div className="otp-success-alert">
-                                        🛡️ {t.otpVerifiedText}
+                                        {t.otpVerifiedText}
                                     </div>
                                 ) : (
                                     <div className="otp-action-row">
@@ -1015,7 +1135,7 @@ function PostJob() {
                                             onClick={handleSendOtp}
                                             className="btn-send-otp"
                                         >
-                                            📲 {t.otpSendBtn}
+                                            {t.otpSendBtn}
                                         </button>
                                         {errors.otp && <span className="error-msg otp-error">⚠️ {errors.otp}</span>}
                                     </div>
@@ -1030,14 +1150,14 @@ function PostJob() {
                                 className="btn-cta-secondary"
                                 onClick={handleSaveDraft}
                             >
-                                💾 {t.saveDraft}
+                                {t.saveDraft}
                             </button>
                             <button
                                 type="button"
                                 className="btn-cta-info"
                                 onClick={() => setShowPreviewModal(true)}
                             >
-                                👁️ {t.preview}
+                                {t.preview}
                             </button>
                             <button
                                 type="button"
@@ -1045,7 +1165,7 @@ function PostJob() {
                                 onClick={handleSubmit}
                                 disabled={isLoading}
                             >
-                                {isLoading ? t.loading : `🚀 ${t.publish}`}
+                                {isLoading ? t.loading : t.publish}
                             </button>
                         </div>
 
@@ -1106,12 +1226,12 @@ function PostJob() {
                                 <div>
                                     <h4 className="job-preview-title">{formData.title || (language === 'en' ? 'Untitled Job Post' : 'தலைப்பற்ற வேலை விளம்பரம்')}</h4>
                                     <p className="job-preview-meta">
-                                        🏢 {formData.employerName || 'Employer'} | 📍 {formData.address || 'Address'}, {formData.district || 'District'}
+                                        {formData.employerName || 'Employer'} | {formData.address || 'Address'}, {formData.district || 'District'}
                                     </p>
                                 </div>
                                 {formData.category && (
                                     <span className="preview-cat-badge">
-                                        {CATEGORIES.find(c => c.value === formData.category)?.icon} {CATEGORIES.find(c => c.value === formData.category)?.label}
+                                        {CATEGORIES.find(c => c.value === formData.category)?.label}
                                     </span>
                                 )}
                             </div>
@@ -1122,19 +1242,19 @@ function PostJob() {
 
                                 <div className="job-preview-grid">
                                     <div className="preview-meta-box">
-                                        <span>💵 {language === 'en' ? 'Salary' : 'சம்பளம்'}</span>
+                                        <span>{language === 'en' ? 'Salary' : 'சம்பளம்'}</span>
                                         <strong>₹{formData.salaryAmount || '0'} / {formData.salaryType}</strong>
                                     </div>
                                     <div className="preview-meta-box">
-                                        <span>👥 {language === 'en' ? 'Workers' : 'தொழிலாளர்கள்'}</span>
+                                        <span>{language === 'en' ? 'Workers' : 'தொழிலாளர்கள்'}</span>
                                         <strong>{formData.workersNeeded} {language === 'en' ? 'Workers' : 'தொழிலாளர்கள்'}</strong>
                                     </div>
                                     <div className="preview-meta-box">
-                                        <span>👔 {language === 'en' ? 'Experience' : 'அனுபவம்'}</span>
+                                        <span>{language === 'en' ? 'Experience' : 'அனுபவம்'}</span>
                                         <strong>{formData.experience}</strong>
                                     </div>
                                     <div className="preview-meta-box">
-                                        <span>🚻 {language === 'en' ? 'Gender' : 'பாலினம்'}</span>
+                                        <span>{language === 'en' ? 'Gender' : 'பாலினம்'}</span>
                                         <strong>{formData.gender}</strong>
                                     </div>
                                 </div>
@@ -1181,7 +1301,7 @@ function PostJob() {
                                     onClick={handleCopyLink}
                                     className="share-btn-copy"
                                 >
-                                    📋 {t.copyLink}
+                                    {t.copyLink}
                                 </button>
                                 <a
                                     href={`https://wa.me/?text=${encodeURIComponent(`New job post: ${formData.title} - Salary ₹${formData.salaryAmount}/${formData.salaryType} in ${formData.district}. Apply here: ${getJobUrl()}`)}`}
@@ -1189,7 +1309,7 @@ function PostJob() {
                                     rel="noopener noreferrer"
                                     className="share-btn-whatsapp"
                                 >
-                                    💬 WhatsApp
+                                    WhatsApp
                                 </a>
                             </div>
                         </div>

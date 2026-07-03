@@ -79,10 +79,11 @@ function Jobs() {
         }
     }, [searchParams])
 
-    // Auto-detect location from IP if no location is set
+    // Auto-detect location from IP if no location is set (disabled by default so no place is shown near automatically)
     useEffect(() => {
-        if (selectedLocation) return // Already have a location
-
+        // Disabled by default
+        /*
+        if (selectedLocation) return
         const autoDetect = async () => {
             const detected = await detectLocation(language)
             if (detected && detected.displayText) {
@@ -95,6 +96,7 @@ function Jobs() {
             }
         }
         autoDetect()
+        */
     }, []) // Run once on mount
 
     // Handle location change with animation

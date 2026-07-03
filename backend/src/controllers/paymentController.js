@@ -34,6 +34,22 @@ const paymentController = {
     },
 
     /**
+     * @desc    Confirm Mock Payment
+     * @route   POST /api/payments/confirm-mock
+     * @access  Private (Employer)
+     */
+    confirmMockPayment: async (req, res) => {
+        try {
+            const { paymentId } = req.body;
+            const result = await paymentService.confirmMockPayment(paymentId, req.user.id);
+            res.json({ success: true, payment: result });
+        } catch (error) {
+            console.error('Confirm Mock Payment Error:', error);
+            res.status(500).json({ success: false, message: error.message });
+        }
+    },
+
+    /**
      * @desc    Verify Payment Webhook
      * @route   POST /api/payments/webhook
      * @access  Public (Razorpay)

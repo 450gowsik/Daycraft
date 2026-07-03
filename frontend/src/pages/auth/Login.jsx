@@ -11,6 +11,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useGoogleLogin } from '@react-oauth/google'
 import { useAuth, AUTH_STATES } from '../../context/AuthContext.jsx'
 import { useLanguage } from '../../context/LanguageContext.jsx'
+import { toast } from 'react-hot-toast'
 import logo from '../../assets/images/logo.png'
 import './Auth.css'
 
@@ -122,7 +123,8 @@ function Login() {
             const result = await emailStart(formData.email)
             if (result.success) {
                 if (!result.exists) {
-                    setLocalError('No account found with this email. Please register.')
+                    toast.success("We couldn't find your account. Let's create one!")
+                    navigate('/register', { state: { email: formData.email, authMethod: 'email' } })
                     setLoading(false)
                     return
                 }
@@ -141,6 +143,12 @@ function Login() {
                     console.log('DEV OTP:', result.devOtp)
                 }
             } else {
+                if (result.requiresRegistration) {
+                    toast.success("We couldn't find your account. Let's create one!")
+                    navigate('/register', { state: { phone: formData.phone, authMethod: 'phone' } })
+                    setLoading(false)
+                    return
+                }
                 setLocalError(result.message || 'Failed to send OTP')
             }
         }
@@ -237,7 +245,6 @@ function Login() {
                 {/* Error Message */}
                 {displayError && (
                     <div className="auth-error">
-                        <span className="error-icon">⚠️</span>
                         <span>{displayError}</span>
                     </div>
                 )}
@@ -257,14 +264,14 @@ function Login() {
                                 className={`method-tab ${authMethod === 'email' ? 'active' : ''}`}
                                 onClick={() => setAuthMethod('email')}
                             >
-                                ✉️ Email
+                                Email
                             </button>
                             <button
                                 type="button"
                                 className={`method-tab ${authMethod === 'phone' ? 'active' : ''}`}
                                 onClick={() => setAuthMethod('phone')}
                             >
-                                📱 Phone
+                                Phone
                             </button>
                         </div>
 
@@ -320,7 +327,17 @@ function Login() {
                         <button
                             type="button"
                             className="btn btn-google btn-full"
-                            onClick={() => handleGoogleLogin()}
+                            onClick={() => {
+                                if (window.google) {
+                                    handleGoogleLogin()
+                                } else {
+                                    toast.error(
+                                        language === 'ta'
+                                            ? 'கூகுள் உள்நுழைவு சேவை தற்போது கிடைக்கவில்லை. இணைய இணைப்பை சரிபார்க்கவும் அல்லது மின்னஞ்சல்/தொலைபேசியை பயன்படுத்தவும்.'
+                                            : 'Google Sign-In is currently unavailable. Please check your internet connection or use Email/Phone authentication.'
+                                    )
+                                }
+                            }}
                             disabled={loading}
                         >
                             <svg viewBox="0 0 24 24" width="20" height="20">
@@ -373,8 +390,9 @@ function Login() {
                                                 type="button"
                                                 className="password-toggle"
                                                 onClick={() => setShowPassword(!showPassword)}
+                                                style={{ fontSize: '0.85rem', fontWeight: 600, color: '#14a800' }}
                                             >
-                                                {showPassword ? '🙈' : '👁️'}
+                                                {showPassword ? 'Hide' : 'Show'}
                                             </button>
                                         </div>
                                     </div>

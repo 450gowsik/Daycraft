@@ -9,7 +9,7 @@
  */
 
 import { useState, useEffect, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useGoogleLogin } from '@react-oauth/google'
 import { useAuth, AUTH_STATES } from '../../context/AuthContext.jsx'
 import { useLanguage } from '../../context/LanguageContext.jsx'
@@ -32,6 +32,7 @@ const STEPS = {
 function Register() {
     const { language } = useLanguage()
     const navigate = useNavigate()
+    const location = useLocation()
     const {
         isAuthenticated,
         authState,
@@ -39,6 +40,7 @@ function Register() {
         error,
         emailStart,
         emailRegister,
+        login,
         sendOtp,
         verifyOtp,
         resendOtp,
@@ -51,6 +53,8 @@ function Register() {
     // Local state
     const [step, setStep] = useState(STEPS.METHOD)
     const [authMethod, setAuthMethod] = useState('email') // 'email' or 'phone'
+    const [isLoggingInInstead, setIsLoggingInInstead] = useState(false)
+    const [infoMessage, setInfoMessage] = useState(null)
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -76,6 +80,16 @@ function Register() {
         }
     }, [isAuthenticated, navigate])
 
+    // Pre-populate fields if redirected from Login page
+    useEffect(() => {
+        if (location.state) {
+            const { email, phone, authMethod: method } = location.state
+            if (method) setAuthMethod(method)
+            if (email) setFormData(prev => ({ ...prev, email }))
+            if (phone) setFormData(prev => ({ ...prev, phone }))
+        }
+    }, [location.state])
+
     // Sync with auth state
     useEffect(() => {
         if (authState === AUTH_STATES.OTP_SENT) {
@@ -98,8 +112,9 @@ function Register() {
         setPasswordStrength(strength)
     }, [formData.password])
 
-    // Auto-detect location from IP when entering DETAILS step
+    // Auto-detect location from IP when entering DETAILS step (disabled by default so no place is automatically shown)
     useEffect(() => {
+        /*
         if (step !== STEPS.DETAILS) return
         if (formData.location) return // Already has a location
 
@@ -116,6 +131,7 @@ function Register() {
             }
         }
         autoDetect()
+        */
     }, [step])
 
     // Handle input changes
@@ -170,7 +186,7 @@ function Register() {
     }
 
     // Step 1: Choose auth method and continue
-    const handleMethodContinue = () => {
+    const handleMethodContinue = async () => {
         if (!formData.role) {
             setLocalError('Please select your role')
             return
@@ -186,13 +202,73 @@ function Register() {
             return
         }
 
-        updateStepData({
-            email: formData.email,
-            phone: formData.phone,
-            role: formData.role
-        })
+        setLoading(true)
+        setLocalError('')
+        clearError()
 
-        setStep(STEPS.DETAILS)
+        if (authMethod === 'email') {
+            const result = await emailStart(formData.email)
+            setLoading(false)
+            if (result.success) {
+                if (result.exists) {
+                    setIsLoggingInInstead(true)
+                    setInfoMessage('An account with this email already exists. Enter your password to sign in.')
+                    updateStepData({
+                        email: formData.email,
+                        role: formData.role
+                    })
+                    setStep(STEPS.CREDENTIALS)
+                } else {
+                    setIsLoggingInInstead(false)
+                    setInfoMessage(null)
+                    updateStepData({
+                        email: formData.email,
+                        role: formData.role
+                    })
+                    setStep(STEPS.DETAILS)
+                }
+            } else {
+                setLocalError(result.message || 'Something went wrong')
+            }
+        } else {
+            const result = await sendOtp(formData.phone, {
+                role: formData.role
+            })
+            setLoading(false)
+            if (result.success) {
+                setIsLoggingInInstead(true)
+                setInfoMessage('An account with this phone number already exists. Verifying code to log you in.')
+                updateStepData({
+                    phone: formData.phone,
+                    role: formData.role
+                })
+                setStep(STEPS.CREDENTIALS)
+                if (result.devOtp) {
+                    console.log('DEV OTP:', result.devOtp)
+                    toast('DEV MODE: Your OTP is ' + result.devOtp, {
+                        icon: '🔑',
+                        duration: 6000,
+                        style: {
+                            borderRadius: '10px',
+                            background: '#333',
+                            color: '#fff',
+                        },
+                    })
+                }
+            } else {
+                if (result.requiresRegistration) {
+                    setIsLoggingInInstead(false)
+                    setInfoMessage(null)
+                    updateStepData({
+                        phone: formData.phone,
+                        role: formData.role
+                    })
+                    setStep(STEPS.DETAILS)
+                } else {
+                    setLocalError(result.message || 'Failed to check phone number')
+                }
+            }
+        }
     }
 
     // Step 2: Enter details and continue
@@ -219,8 +295,9 @@ function Register() {
             const result = await emailStart(formData.email)
             if (result.success) {
                 if (result.exists) {
-                    // Email exists - redirect to login
-                    setLocalError('An account with this email already exists. Please login.')
+                    setIsLoggingInInstead(true)
+                    setInfoMessage('An account with this email already exists. Enter your password to sign in.')
+                    setStep(STEPS.CREDENTIALS)
                     setLoading(false)
                     return
                 }
@@ -259,33 +336,47 @@ function Register() {
         setLoading(false)
     }
 
-    // Step 3a: Submit email registration
+    // Step 3a: Submit email registration or login
     const handleEmailSubmit = async (e) => {
         e.preventDefault()
 
-        if (formData.password.length < 6) {
+        if (!formData.password) {
+            setLocalError('Please enter your password')
+            return
+        }
+
+        if (!isLoggingInInstead && formData.password.length < 6) {
             setLocalError('Password must be at least 6 characters')
             return
         }
 
-        if (formData.password !== formData.confirmPassword) {
+        if (!isLoggingInInstead && formData.password !== formData.confirmPassword) {
             setLocalError('Passwords do not match')
             return
         }
 
         setLoading(true)
 
-        const result = await emailRegister(formData.password, {
-            name: formData.name,
-            role: formData.role,
-            location: formData.location,
-            geoLocation: formData.geoLocation ? { type: 'Point', coordinates: formData.geoLocation } : undefined
-        })
-
-        if (result.success) {
-            setStep(STEPS.SUCCESS)
+        if (isLoggingInInstead) {
+            const result = await login(formData.email, formData.password)
+            if (result.success) {
+                setStep(STEPS.SUCCESS)
+            } else {
+                setLocalError(result.message || 'Login failed')
+            }
         } else {
-            setLocalError(result.message || 'Registration failed')
+            const result = await emailRegister(formData.password, {
+                name: formData.name,
+                role: formData.role,
+                location: formData.location,
+                geoLocation: formData.geoLocation ? { type: 'Point', coordinates: formData.geoLocation } : undefined
+            })
+
+            if (result.success) {
+                setStep(STEPS.SUCCESS)
+            } else {
+                setLocalError(result.message || 'Registration failed')
+            }
         }
 
         setLoading(false)
@@ -365,10 +456,15 @@ function Register() {
         if (step === STEPS.DETAILS) {
             setStep(STEPS.METHOD)
         } else if (step === STEPS.CREDENTIALS) {
-            setStep(STEPS.DETAILS)
+            if (isLoggingInInstead) {
+                setStep(STEPS.METHOD)
+            } else {
+                setStep(STEPS.DETAILS)
+            }
         }
         clearError()
         setLocalError('')
+        setInfoMessage(null)
     }
 
     // Get password strength label
@@ -424,8 +520,14 @@ function Register() {
                 {/* Error Message */}
                 {displayError && (
                     <div className="auth-error">
-                        <span className="error-icon">⚠️</span>
                         <span>{displayError}</span>
+                    </div>
+                )}
+
+                {/* Info Message */}
+                {infoMessage && !displayError && (
+                    <div className="auth-info-banner">
+                        <span>{infoMessage}</span>
                     </div>
                 )}
 
@@ -483,14 +585,14 @@ function Register() {
                                 className={`method-tab ${authMethod === 'email' ? 'active' : ''}`}
                                 onClick={() => setAuthMethod('email')}
                             >
-                                ✉️ Email
+                                Email
                             </button>
                             <button
                                 type="button"
                                 className={`method-tab ${authMethod === 'phone' ? 'active' : ''}`}
                                 onClick={() => setAuthMethod('phone')}
                             >
-                                📱 Phone
+                                Phone
                             </button>
                         </div>
 
@@ -545,7 +647,17 @@ function Register() {
                         <button
                             type="button"
                             className="btn btn-google btn-full"
-                            onClick={() => handleGoogleLogin()}
+                            onClick={() => {
+                                if (window.google) {
+                                    handleGoogleLogin()
+                                } else {
+                                    toast.error(
+                                        language === 'ta'
+                                            ? 'கூகுள் உள்நுழைவு சேவை தற்போது கிடைக்கவில்லை. இணைய இணைப்பை சரிபார்க்கவும் அல்லது மின்னஞ்சல்/தொலைபேசியை பயன்படுத்தவும்.'
+                                            : 'Google Sign-In is currently unavailable. Please check your internet connection or use Email/Phone authentication.'
+                                    )
+                                }
+                            }}
                             disabled={loading || !formData.role}
                         >
                             <svg viewBox="0 0 24 24" width="20" height="20">
@@ -626,9 +738,12 @@ function Register() {
                         {authMethod === 'email' ? (
                             // EMAIL: Password
                             <>
-                                <h1 className="auth-title">Create password</h1>
+                                <h1 className="auth-title">{isLoggingInInstead ? 'Sign In' : 'Create password'}</h1>
                                 <p className="auth-subtitle">
-                                    Choose a strong password for {formData.email}
+                                    {isLoggingInInstead 
+                                        ? `Enter your password for ${formData.email}`
+                                        : `Choose a strong password for ${formData.email}`
+                                    }
                                 </p>
 
                                 <form className="auth-form" onSubmit={handleEmailSubmit}>
@@ -640,20 +755,21 @@ function Register() {
                                                 name="password"
                                                 value={formData.password}
                                                 onChange={handleChange}
-                                                placeholder="At least 6 characters"
-                                                autoComplete="new-password"
+                                                placeholder={isLoggingInInstead ? "Enter your password" : "At least 6 characters"}
+                                                autoComplete={isLoggingInInstead ? "current-password" : "new-password"}
                                             />
                                             <button
                                                 type="button"
                                                 className="password-toggle"
                                                 onClick={() => setShowPassword(!showPassword)}
+                                                style={{ fontSize: '0.85rem', fontWeight: 600, color: '#14a800' }}
                                             >
-                                                {showPassword ? '🙈' : '👁️'}
+                                                {showPassword ? 'Hide' : 'Show'}
                                             </button>
                                         </div>
 
-                                        {/* Password Strength */}
-                                        {formData.password && (
+                                        {/* Password Strength - only show in registration */}
+                                        {!isLoggingInInstead && formData.password && (
                                             <div className="password-strength">
                                                 <div className="strength-bar">
                                                     <div
@@ -674,17 +790,20 @@ function Register() {
                                         )}
                                     </div>
 
-                                    <div className="form-group">
-                                        <label>Confirm Password</label>
-                                        <input
-                                            type="password"
-                                            name="confirmPassword"
-                                            value={formData.confirmPassword}
-                                            onChange={handleChange}
-                                            placeholder="Re-enter password"
-                                            autoComplete="new-password"
-                                        />
-                                    </div>
+                                    {/* Confirm Password - only show in registration */}
+                                    {!isLoggingInInstead && (
+                                        <div className="form-group">
+                                            <label>Confirm Password</label>
+                                            <input
+                                                type="password"
+                                                name="confirmPassword"
+                                                value={formData.confirmPassword}
+                                                onChange={handleChange}
+                                                placeholder="Re-enter password"
+                                                autoComplete="new-password"
+                                            />
+                                        </div>
+                                    )}
 
                                     <button
                                         type="submit"
@@ -694,7 +813,7 @@ function Register() {
                                         {loading ? (
                                             <span className="btn-loader"></span>
                                         ) : (
-                                            'Create Account'
+                                            isLoggingInInstead ? 'Sign In' : 'Create Account'
                                         )}
                                     </button>
                                 </form>

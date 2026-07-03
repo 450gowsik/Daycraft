@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext.jsx'
 import demoJobs from '../data/demoJobs.json'
 import recommendationService from '../services/recommendationService'
 import paymentService from '../services/paymentService'
+import { jobService } from '../services/jobService'
 import { buildApiUrl } from '../services/apiConfig'
 import PaymentButton from '../components/payment/PaymentButton'
 import { toast } from 'react-hot-toast'
@@ -70,6 +71,55 @@ function JobDetails() {
     const [loadingWorkers, setLoadingWorkers] = useState(false)
     const [payment, setPayment] = useState(null)
     const [releasing, setReleasing] = useState(false)
+    const [mapCoords, setMapCoords] = useState(null)
+    const [showApplyModal, setShowApplyModal] = useState(false)
+    const [applyForm, setApplyForm] = useState({
+        name: '',
+        phone: '',
+        experience: '',
+        location: '',
+        skills: ''
+    })
+    const [applyErrors, setApplyErrors] = useState({})
+
+    // Geocode location using OpenStreetMap Nominatim if needed
+    useEffect(() => {
+        if (!job) return
+
+        let active = true
+
+        // 1. If geoLocation coordinates are present and valid, use them
+        if (job.geoLocation && job.geoLocation.coordinates && (job.geoLocation.coordinates[0] !== 0 || job.geoLocation.coordinates[1] !== 0)) {
+            setMapCoords({
+                lng: job.geoLocation.coordinates[0],
+                lat: job.geoLocation.coordinates[1]
+            })
+            return
+        }
+
+        // 2. Otherwise geocode address string
+        const geocode = async () => {
+            try {
+                const queryStr = job.location?.split(',')[0] || job.location
+                const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(queryStr)}&format=json&limit=1`)
+                const data = await res.json()
+                if (active && data && data.length > 0) {
+                    setMapCoords({
+                        lat: parseFloat(data[0].lat),
+                        lng: parseFloat(data[0].lon)
+                    })
+                }
+            } catch (err) {
+                console.error('Nominatim search failed:', err)
+            }
+        }
+
+        geocode()
+
+        return () => {
+            active = false
+        }
+    }, [job])
 
     // Fetch job details
     useEffect(() => {
@@ -171,6 +221,18 @@ function JobDetails() {
     const isOwner = user && job && (job.employer?._id === user?._id || job.employer === user?._id)
 
     useEffect(() => {
+        if (user) {
+            setApplyForm({
+                name: user.name || '',
+                phone: user.phone || user.mobileNumber || '',
+                experience: user.experience || '',
+                location: user.location || '',
+                skills: Array.isArray(user.skills) ? user.skills.join(', ') : (user.skills || '')
+            })
+        }
+    }, [user, showApplyModal])
+
+    useEffect(() => {
         if (isOwner && jobId) {
             fetchTopWorkers()
         }
@@ -191,25 +253,59 @@ function JobDetails() {
     }
 
     // Handle apply
-    const handleApply = async () => {
-        if (!isAuthenticated) {
-            navigate('/login', { state: { from: `/jobs/${jobId}` } })
+    const handleApply = () => {
+        setShowApplyModal(true)
+    }
+
+    const handleApplySubmit = async (e) => {
+        if (e) e.preventDefault()
+        
+        // Validate form
+        const errors = {}
+        if (!applyForm.name.trim()) {
+            errors.name = language === 'ta' ? 'பெயர் தேவை' : 'Name is required'
+        }
+        if (!applyForm.phone.trim()) {
+            errors.phone = language === 'ta' ? 'தொலைபேசி எண் தேவை' : 'Phone number is required'
+        } else if (!/^\d{10}$/.test(applyForm.phone.trim())) {
+            errors.phone = language === 'ta' ? 'சரியான 10 இலக்க தொலைபேசி எண்ணை உள்ளிடவும்' : 'Enter a valid 10-digit phone number'
+        }
+        if (!applyForm.location.trim()) {
+            errors.location = language === 'ta' ? 'இருப்பிடம் தேவை' : 'Location is required'
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setApplyErrors(errors)
             return
         }
 
+        setApplyErrors({})
         setIsApplying(true)
         try {
-            // For demo, simulate API call
+            if (isAuthenticated) {
+                try {
+                    await jobService.applyForJob(jobId)
+                } catch (err) {
+                    console.log('Backend apply error (ignored for demo):', err)
+                }
+            }
+
+            // Simulate API processing delay
             await new Promise(resolve => setTimeout(resolve, 1000))
 
-            // Store in localStorage for demo
+            // Save in localStorage
             localStorage.setItem(`applied_${jobId}`, 'true')
+            localStorage.setItem(`applied_details_${jobId}`, JSON.stringify(applyForm))
 
             setHasApplied(true)
+            setShowApplyModal(false)
+            toast.success(language === 'ta' ? 'விண்ணப்பம் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!' : 'Application submitted successfully!')
+            
             setShowSuccess(true)
             setTimeout(() => setShowSuccess(false), 3000)
         } catch (error) {
             console.error('Apply error:', error)
+            toast.error(language === 'ta' ? 'விண்ணப்பிப்பதில் தோல்வி' : 'Failed to apply')
         } finally {
             setIsApplying(false)
         }
@@ -402,7 +498,6 @@ function JobDetails() {
                         <h2 className="section-heading">{language === 'ta' ? 'வேலை விவரங்கள்' : 'Job Details'}</h2>
                         <div className="job-details-grid">
                             <div className="detail-box">
-                                <span className="detail-icon">📅</span>
                                 <div className="detail-text">
                                     <span className="detail-label">{t.duration}</span>
                                     <span className="detail-value">{job.duration}</span>
@@ -410,7 +505,6 @@ function JobDetails() {
                             </div>
                             {job.startTime && (
                                 <div className="detail-box">
-                                    <span className="detail-icon">🕐</span>
                                     <div className="detail-text">
                                         <span className="detail-label">{language === 'ta' ? 'நேரம்' : 'Timing'}</span>
                                         <span className="detail-value">{job.startTime} - {job.endTime}</span>
@@ -418,7 +512,6 @@ function JobDetails() {
                                 </div>
                             )}
                             <div className="detail-box">
-                                <span className="detail-icon">👷</span>
                                 <div className="detail-text">
                                     <span className="detail-label">{t.workersNeeded}</span>
                                     <span className="detail-value">{job.requiredWorkers} {language === 'ta' ? 'நபர்கள்' : 'People'}</span>
@@ -426,7 +519,6 @@ function JobDetails() {
                             </div>
                             {job.paymentMethod && (
                                 <div className="detail-box">
-                                    <span className="detail-icon">💳</span>
                                     <div className="detail-text">
                                         <span className="detail-label">{language === 'ta' ? 'கட்டண முறை' : 'Payment Type'}</span>
                                         <span className="detail-value">{job.paymentMethod}</span>
@@ -457,18 +549,77 @@ function JobDetails() {
                     <section className="job-section">
                         <h2 className="section-heading">{t.location}</h2>
                         <p className="location-full-text">{job.location}</p>
-                        <div className="map-embed-modern">
-                            <iframe
-                                title="Job Location Map"
-                                width="100%"
-                                height="280"
-                                style={{ border: 0, display: 'block' }}
-                                loading="lazy"
-                                allowFullScreen
-                                referrerPolicy="no-referrer-when-downgrade"
-                                src={`https://www.google.com/maps?q=${encodeURIComponent(job.location)}&output=embed`}
-                            />
+                        <div className="map-embed-modern" style={{ position: 'relative', height: '280px', background: '#e2e8f0', overflow: 'hidden', border: '1px solid #cbd5e1', borderRadius: '12px' }}>
+                            {mapCoords ? (
+                                <iframe
+                                    title="Job Location Map"
+                                    width="100%"
+                                    height="100%"
+                                    style={{ border: 0, display: 'block' }}
+                                    loading="lazy"
+                                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${mapCoords.lng - 0.01}%2C${mapCoords.lat - 0.01}%2C${mapCoords.lng + 0.01}%2C${mapCoords.lat + 0.01}&layer=mapnik&marker=${mapCoords.lat}%2C${mapCoords.lng}`}
+                                />
+                            ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                                    {/* Grid/contour background styling */}
+                                    <div style={{ position: 'absolute', inset: 0, opacity: 0.15, background: 'radial-gradient(circle, #475569 10%, transparent 10%)', backgroundSize: '20px 20px' }}></div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 2 }}>
+                                        <span style={{ fontSize: '48px', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.15))' }}>📍</span>
+                                        <span style={{ background: 'rgba(15, 23, 42, 0.85)', color: 'white', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: '600', marginTop: '10px', backdropFilter: 'blur(4px)' }}>
+                                            {job.location?.split(',')[0]}
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
+                    </section>
+
+                    {/* Apply Button Section at the bottom of left column */}
+                    <hr className="divider" />
+                    <section className="job-section apply-bottom-section" style={{ marginTop: '30px', padding: '24px', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+                        <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: '#0f172a' }}>
+                            {hasApplied 
+                                ? (language === 'ta' ? 'விண்ணப்பம் சமர்ப்பிக்கப்பட்டது' : 'Application Submitted') 
+                                : (language === 'ta' ? 'இந்த வேலைக்கு விண்ணப்பிக்கவும்' : 'Apply for this Job')}
+                        </h3>
+                        <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '20px' }}>
+                            {hasApplied 
+                                ? (language === 'ta' ? 'உங்கள் விவரங்கள் முதலாளிக்கு வெற்றிகரமாக அனுப்பப்பட்டுள்ளன.' : 'Submit your basic profile details to apply instantly.') 
+                                : (language === 'ta' ? 'உங்கள் அடிப்படை விவரங்களுடன் உடனடியாக விண்ணப்பிக்கவும்.' : 'Submit your basic profile details to apply instantly.')}
+                        </p>
+                        
+                        {hasApplied ? (
+                            <div style={{ maxWidth: '400px', margin: '0 auto 20px', padding: '16px', background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', textAlign: 'left' }}>
+                                <h4 style={{ fontSize: '14px', fontWeight: '600', color: '#334155', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px', marginBottom: '12px' }}>
+                                    {language === 'ta' ? 'சமர்ப்பிக்கப்பட்ட விவரங்கள்:' : 'Submitted Details:'}
+                                </h4>
+                                {(() => {
+                                    try {
+                                        const savedDetails = JSON.parse(localStorage.getItem(`applied_details_${jobId}`) || '{}')
+                                        return (
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px', color: '#475569' }}>
+                                                <div><strong>{language === 'ta' ? 'பெயர்:' : 'Name:'}</strong> {savedDetails.name || user?.name || 'Worker'}</div>
+                                                <div><strong>{language === 'ta' ? 'கைபேசி எண்:' : 'Mobile:'}</strong> {savedDetails.phone || user?.phone || '-'}</div>
+                                                <div><strong>{language === 'ta' ? 'இருப்பிடம்:' : 'Location:'}</strong> {savedDetails.location || user?.location || '-'}</div>
+                                                {savedDetails.experience && <div><strong>{language === 'ta' ? 'அனுபவம்:' : 'Experience:'}</strong> {savedDetails.experience}</div>}
+                                                {savedDetails.skills && <div><strong>{language === 'ta' ? 'திறன்கள்:' : 'Skills:'}</strong> {savedDetails.skills}</div>}
+                                            </div>
+                                        )
+                                    } catch (e) {
+                                        return null
+                                    }
+                                })()}
+                            </div>
+                        ) : null}
+
+                        <button
+                            className={`btn-apply-modern ${hasApplied ? 'applied' : ''} ${isApplying ? 'loading' : ''}`}
+                            onClick={handleApply}
+                            disabled={hasApplied || isApplying}
+                            style={{ width: '100%', maxWidth: '280px', margin: '0 auto' }}
+                        >
+                            {isApplying ? t.applying : hasApplied ? t.applied : t.apply}
+                        </button>
                     </section>
 
                     {/* Suggested Workers (For Employers) */}
@@ -491,7 +642,7 @@ function JobDetails() {
                                             </div>
                                             <div className="worker-rec-stats">
                                                 <span>{worker.location}</span>
-                                                <span>💼 {worker.completedJobs} {language === 'ta' ? 'வேலைகள் முடிந்தது' : 'jobs'}</span>
+                                                <span>{worker.completedJobs} {language === 'ta' ? 'வேலைகள் முடிந்தது' : 'jobs'}</span>
                                             </div>
                                             <div className="match-tag">
                                                 {worker.match?.total}% {language === 'ta' ? 'பொருத்தம்' : 'Match'}
@@ -548,7 +699,7 @@ function JobDetails() {
                                         <div className={`payment-status-badge ${payment.status === 'released' ? 'released' : 'escrowed'}`}>
                                             {payment.status === 'released'
                                                 ? `✓ ${language === 'ta' ? 'கட்டணம் பெறப்பட்டது' : 'Payment Received'}`
-                                                : `🛡️ ${language === 'ta' ? 'கட்டணம் எஸ்க்ரோவில் உள்ளது' : 'Payment in Escrow'}`}
+                                                : `${language === 'ta' ? 'கட்டணம் எஸ்க்ரோவில் உள்ளது' : 'Payment in Escrow'}`}
                                         </div>
                                     )}
                                 </div>
@@ -558,7 +709,7 @@ function JobDetails() {
                                     onClick={handleApply}
                                     disabled={hasApplied || isApplying}
                                 >
-                                    {isApplying ? t.applying : hasApplied ? t.applied : (isAuthenticated ? t.apply : t.loginToApply)}
+                                    {isApplying ? t.applying : hasApplied ? t.applied : t.apply}
                                 </button>
                             )}
                         </div>
@@ -588,7 +739,7 @@ function JobDetails() {
                             </div>
                             <div className="employer-info-basic">
                                 <strong className="employer-name-modern">{job.employer?.name}</strong>
-                                {job.employer?.companyName && <span className="employer-company">🏢 {job.employer.companyName}</span>}
+                                {job.employer?.companyName && <span className="employer-company">{job.employer.companyName}</span>}
                             </div>
                         </div>
 
@@ -638,10 +789,173 @@ function JobDetails() {
                         onClick={handleApply}
                         disabled={hasApplied || isApplying}
                     >
-                        {isApplying ? t.applying : hasApplied ? t.applied : (isAuthenticated ? t.apply : t.loginToApply)}
+                        {isApplying ? t.applying : hasApplied ? t.applied : t.apply}
                     </button>
                 )}
             </div>
+
+            {/* Apply Modal */}
+            {showApplyModal && (
+                <div className="modal-backdrop-post">
+                    <div className="modal-content-post animate-pop" style={{ maxWidth: '500px', width: '90%' }}>
+                        <div className="modal-header-post" style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '12px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#1e293b', margin: 0 }}>
+                                {language === 'ta' ? 'பணிக்கு விண்ணப்பிக்கவும்' : 'Apply for this Job'}
+                            </h3>
+                            <button 
+                                type="button"
+                                className="modal-close-btn"
+                                onClick={() => setShowApplyModal(false)}
+                                style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#64748b', lineHeight: 1 }}
+                            >
+                                &times;
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleApplySubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                            <div>
+                                <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#334155', marginBottom: '6px' }}>
+                                    {language === 'ta' ? 'முழு பெயர்' : 'Full Name'} *
+                                </label>
+                                <input
+                                    type="text"
+                                    value={applyForm.name}
+                                    onChange={(e) => setApplyForm({ ...applyForm, name: e.target.value })}
+                                    placeholder={language === 'ta' ? 'உங்கள் பெயரை உள்ளிடவும்' : 'Enter your name'}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px 12px',
+                                        borderRadius: '8px',
+                                        border: applyErrors.name ? '1px solid #ef4444' : '1px solid #cbd5e1',
+                                        fontSize: '15px'
+                                    }}
+                                />
+                                {applyErrors.name && (
+                                    <span style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{applyErrors.name}</span>
+                                )}
+                            </div>
+
+                            <div>
+                                <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#334155', marginBottom: '6px' }}>
+                                    {language === 'ta' ? 'கைபேசி எண்' : 'Mobile Number'} *
+                                </label>
+                                <input
+                                    type="tel"
+                                    value={applyForm.phone}
+                                    onChange={(e) => setApplyForm({ ...applyForm, phone: e.target.value })}
+                                    placeholder={language === 'ta' ? 'கைபேசி எண் (10 இலக்கங்கள்)' : '10-digit mobile number'}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px 12px',
+                                        borderRadius: '8px',
+                                        border: applyErrors.phone ? '1px solid #ef4444' : '1px solid #cbd5e1',
+                                        fontSize: '15px'
+                                    }}
+                                />
+                                {applyErrors.phone && (
+                                    <span style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{applyErrors.phone}</span>
+                                )}
+                            </div>
+
+                            <div>
+                                <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#334155', marginBottom: '6px' }}>
+                                    {language === 'ta' ? 'இருப்பிடம் / நகரம்' : 'Location / City'} *
+                                </label>
+                                <input
+                                    type="text"
+                                    value={applyForm.location}
+                                    onChange={(e) => setApplyForm({ ...applyForm, location: e.target.value })}
+                                    placeholder={language === 'ta' ? 'உதாரணம்: சென்னை' : 'e.g. Coimbatore'}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px 12px',
+                                        borderRadius: '8px',
+                                        border: applyErrors.location ? '1px solid #ef4444' : '1px solid #cbd5e1',
+                                        fontSize: '15px'
+                                    }}
+                                />
+                                {applyErrors.location && (
+                                    <span style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{applyErrors.location}</span>
+                                )}
+                            </div>
+
+                            <div>
+                                <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#334155', marginBottom: '6px' }}>
+                                    {language === 'ta' ? 'அனுபவம் (ஆண்டுகளில்)' : 'Experience (in Years)'}
+                                </label>
+                                <input
+                                    type="text"
+                                    value={applyForm.experience}
+                                    onChange={(e) => setApplyForm({ ...applyForm, experience: e.target.value })}
+                                    placeholder={language === 'ta' ? 'உதாரணம்: 2 வருடங்கள்' : 'e.g. 3 Years'}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px 12px',
+                                        borderRadius: '8px',
+                                        border: '1px solid #cbd5e1',
+                                        fontSize: '15px'
+                                    }}
+                                />
+                            </div>
+
+                            <div>
+                                <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#334155', marginBottom: '6px' }}>
+                                    {language === 'ta' ? 'திறன்கள்' : 'Skills / Specialization'}
+                                </label>
+                                <input
+                                    type="text"
+                                    value={applyForm.skills}
+                                    onChange={(e) => setApplyForm({ ...applyForm, skills: e.target.value })}
+                                    placeholder={language === 'ta' ? 'உதாரணம்: வயரிங், பிளம்பிங்' : 'e.g. House wiring, Leak repair'}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px 12px',
+                                        borderRadius: '8px',
+                                        border: '1px solid #cbd5e1',
+                                        fontSize: '15px'
+                                    }}
+                                />
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '12px', borderTop: '1px solid #e2e8f0', paddingTop: '16px' }}>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowApplyModal(false)}
+                                    style={{
+                                        padding: '10px 18px',
+                                        borderRadius: '8px',
+                                        border: '1px solid #cbd5e1',
+                                        background: 'white',
+                                        color: '#334155',
+                                        fontWeight: '600',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    {language === 'ta' ? 'ரத்துசெய்' : 'Cancel'}
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={isApplying}
+                                    style={{
+                                        padding: '10px 22px',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        background: '#3b82f6',
+                                        color: 'white',
+                                        fontWeight: '600',
+                                        cursor: 'pointer',
+                                        opacity: isApplying ? 0.7 : 1
+                                    }}
+                                >
+                                    {isApplying 
+                                        ? (language === 'ta' ? 'சமர்ப்பிக்கிறது...' : 'Submitting...') 
+                                        : (language === 'ta' ? 'விண்ணப்பத்தை சமர்ப்பி' : 'Submit Application')}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

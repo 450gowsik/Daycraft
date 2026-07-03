@@ -3,6 +3,8 @@ const User = require('../models/User')
 const Worker = require('../models/Worker')
 const Employer = require('../models/Employer')
 const cacheService = require('../services/cacheService')
+const env = require('../config/env')
+const { isDbConnected } = require('../config/db')
 
 const USER_CACHE_TTL = 300 // 5 minutes
 
@@ -42,11 +44,26 @@ exports.protect = async (req, res, next) => {
             user.id = user._id
         } else {
             // Cache miss — fetch from MongoDB
-            user = await User.findById(decoded.id)
+            if (!isDbConnected() && env.isDevelopment()) {
+                console.log(`[DEV BYPASS] protect - DB offline, returning mock user for token ID: ${decoded.id}`)
+                user = {
+                    _id: decoded.id || 'dev_user_123',
+                    name: 'Praveen',
+                    email: 'praveen@example.com',
+                    role: decoded.role || 'worker',
+                    location: 'Singanallur, Coimbatore',
+                    authProvider: 'local',
+                    isActive: true,
+                    profileCompleted: true,
+                    createdAt: new Date().toISOString()
+                }
+            } else {
+                user = await User.findById(decoded.id)
 
-            if (user) {
-                // Cache the user data (plain object)
-                await cacheService.set(cacheKey, user.toObject(), USER_CACHE_TTL)
+                if (user) {
+                    // Cache the user data (plain object)
+                    await cacheService.set(cacheKey, user.toObject(), USER_CACHE_TTL)
+                }
             }
         }
 
@@ -103,6 +120,19 @@ exports.authorize = (...roles) => {
 exports.attachProfile = async (req, res, next) => {
     try {
         const user = req.user
+
+        if (!isDbConnected() && env.isDevelopment()) {
+            console.log(`[DEV BYPASS] attachProfile - DB offline, returning mock profile`)
+            req.profile = {
+                userId: user._id,
+                skills: ['Plumbing', 'Electrical'],
+                experience: 3,
+                availability: 'available',
+                dailyRate: 500,
+                bio: 'Experienced worker'
+            }
+            return next()
+        }
 
         if (user.role === 'worker') {
             req.profile = await Worker.findOne({ userId: user._id })

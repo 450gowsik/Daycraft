@@ -18,6 +18,20 @@ const paymentService = {
     },
 
     /**
+     * Confirm Mock Payment
+     */
+    confirmMockPayment: async (paymentId) => {
+        try {
+            const response = await api.post('/payments/confirm-mock', {
+                paymentId
+            });
+            return response.data;
+        } catch (error) {
+            throw error.response?.data?.message || 'Failed to confirm payment';
+        }
+    },
+
+    /**
      * Release Funds to Worker
      */
     releaseFunds: async (paymentId) => {

@@ -119,6 +119,28 @@ const paymentService = {
         });
 
         return payment;
+    },
+
+    /**
+     * Confirm Mock Payment
+     */
+    confirmMockPayment: async (paymentId, employerId) => {
+        const payment = await Payment.findById(paymentId);
+
+        if (!payment) throw new Error('Payment not found');
+        if (payment.employer.toString() !== employerId.toString()) {
+            throw new Error('Unauthorized: Only the employer can confirm this payment');
+        }
+        if (payment.status !== 'pending') {
+            throw new Error('Payment is not in pending state');
+        }
+
+        payment.status = 'escrowed';
+        payment.razorpayPaymentId = 'pay_mock_' + Date.now();
+        payment.escrowLockedAt = new Date();
+        await payment.save();
+
+        return payment;
     }
 };
 

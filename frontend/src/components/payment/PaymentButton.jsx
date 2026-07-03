@@ -13,40 +13,18 @@ const PaymentButton = ({ jobId, workerId, amount, onPaymentSuccess }) => {
             // 1. Create Order on Backend
             const { order, paymentId } = await paymentService.createOrder(jobId, workerId, amount);
 
-            // 2. Configure Razorpay Options
-            const options = {
-                key: import.meta.env.VITE_RAZORPAY_KEY_ID || '', // Needs to be in .env
-                amount: order.amount,
-                currency: order.currency,
-                name: "DayCraft",
-                description: "Escrow Payment for Job",
-                order_id: order.id,
-                prefill: {
-                    name: user?.name,
-                    email: user?.email,
-                    contact: user?.phone
-                },
-                theme: {
-                    color: "#14a800"
-                },
-                handler: function (response) {
-                    // This is called after success
-                    toast.success("Payment Received! Funds are now securely held in escrow.");
-                    if (onPaymentSuccess) onPaymentSuccess(response, paymentId);
-                },
-                modal: {
-                    ondismiss: function () {
-                        setLoading(false);
-                    }
+            // 2. Simulate secure escrow payment processing
+            setTimeout(async () => {
+                try {
+                    await paymentService.confirmMockPayment(paymentId);
+                    toast.success("Demo Mode: Payment Successful! Funds held in escrow.");
+                    if (onPaymentSuccess) onPaymentSuccess({ razorpay_payment_id: 'pay_mock_' + Date.now() }, paymentId);
+                } catch (err) {
+                    toast.error(err);
+                } finally {
+                    setLoading(false);
                 }
-            };
-
-            const rzp = new window.Razorpay(options);
-            rzp.on('payment.failed', function (response) {
-                toast.error("Payment Failed: " + response.error.description);
-                setLoading(false);
-            });
-            rzp.open();
+            }, 800);
 
         } catch (error) {
             console.error('Payment Initiation Error:', error);

@@ -26,6 +26,7 @@ const Employer = require('../models/Employer')
 const refreshTokenService = require('../services/refreshTokenService')
 const axios = require('axios')
 const { sendWelcomeEmail } = require('../services/emailService')
+const { isDbConnected } = require('../config/db')
 const {
     generateAccessToken,
     generateRefreshToken,
@@ -191,6 +192,18 @@ exports.emailStart = async (req, res) => {
         }
 
         const emailLower = email.toLowerCase().trim()
+
+        // Dev bypass: when MongoDB is offline, return mock response
+        if (!isDbConnected() && env.isDevelopment()) {
+            console.log(`[DEV BYPASS] emailStart - DB offline, returning mock for: ${emailLower}`)
+            return res.json({
+                success: true,
+                exists: false,
+                message: 'Email available. Please complete registration.',
+                devBypass: true
+            })
+        }
+
         const existingUser = await findUserByEmail(emailLower)
 
         res.json({
@@ -250,6 +263,31 @@ exports.emailRegister = async (req, res) => {
 
         const emailLower = email.toLowerCase().trim()
 
+        // Dev bypass: when MongoDB is offline, return mock registration
+        if (!isDbConnected() && env.isDevelopment()) {
+            console.log(`[DEV BYPASS] emailRegister - DB offline, mock registration for: ${emailLower}`)
+            const mockUser = {
+                _id: 'dev_' + Date.now(),
+                name: name.trim(),
+                email: emailLower,
+                role,
+                location: location || '',
+                authProvider: 'local',
+                isActive: true,
+                profileCompleted: true,
+                profile: null,
+                createdAt: new Date().toISOString()
+            }
+            const accessToken = generateAccessToken({ id: mockUser._id, role })
+            return res.status(201).json({
+                success: true,
+                message: 'Registration successful (dev bypass)',
+                accessToken,
+                user: mockUser,
+                devBypass: true
+            })
+        }
+
         // Check if user already exists
         const existingUser = await findUserByEmail(emailLower)
         if (existingUser) {
@@ -268,7 +306,7 @@ exports.emailRegister = async (req, res) => {
             name: name.trim(),
             email: emailLower,
             phone: phone || undefined,
-            password: hashedPassword,
+            passwordHash: hashedPassword,
             role: role,
             roles: [role],
             activeRole: role,
@@ -363,6 +401,31 @@ exports.login = async (req, res) => {
         }
 
         const emailLower = email.toLowerCase().trim()
+
+        // Dev bypass: when MongoDB is offline, return mock login
+        if (!isDbConnected() && env.isDevelopment()) {
+            console.log(`[DEV BYPASS] login - DB offline, mock login for: ${emailLower}`)
+            const mockUser = {
+                _id: 'dev_user_123',
+                name: 'Praveen',
+                email: emailLower,
+                role: 'worker',
+                location: 'Singanallur, Coimbatore',
+                authProvider: 'local',
+                isActive: true,
+                profileCompleted: true,
+                profile: null,
+                createdAt: new Date().toISOString()
+            }
+            const accessToken = generateAccessToken({ id: mockUser._id, role: mockUser.role })
+            return res.json({
+                success: true,
+                message: 'Login successful (dev bypass)',
+                accessToken,
+                user: mockUser,
+                devBypass: true
+            })
+        }
 
         // Find user with passwordHash (single collection lookup)
         const user = await User.findOne({ email: emailLower }).select('+passwordHash')

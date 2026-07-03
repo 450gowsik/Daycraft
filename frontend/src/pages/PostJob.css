@@ -373,6 +373,48 @@
     text-align: center;
 }
 
+/* Description Templates */
+.description-templates-container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.templates-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.templates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.template-chip {
+    padding: 10px 14px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #334155;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.template-chip:hover {
+    background: white;
+    border-color: var(--brand-green);
+    color: var(--brand-green);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.08);
+}
+
 /* Counter Control */
 .counter-wrapper {
     display: flex;

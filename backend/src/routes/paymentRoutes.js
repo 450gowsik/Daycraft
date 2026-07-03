@@ -11,6 +11,7 @@ router.post('/webhook', paymentController.handleWebhook);
 router.use(protect);
 
 router.post('/create-order', paymentController.createOrder);
+router.post('/confirm-mock', paymentController.confirmMockPayment);
 router.post('/release/:paymentId', paymentController.releaseFunds);
 router.get('/history', paymentController.getHistory);
 

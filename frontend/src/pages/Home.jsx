@@ -69,20 +69,14 @@ function Home() {
     const [userLocation, setUserLocation] = useState(null)
     const [showLocationModal, setShowLocationModal] = useState(false)
 
-    // Sync userLocation state with global selectedLocation or user.location
+    // Sync userLocation state with global selectedLocation
     useEffect(() => {
         if (selectedLocation) {
             setUserLocation(selectedLocation.displayText)
-        } else if (user?.location) {
-            setUserLocation(user.location)
-            setSelectedLocation({
-                displayText: user.location,
-                source: 'user_profile'
-            })
         } else {
             setUserLocation(null)
         }
-    }, [selectedLocation, user, setSelectedLocation])
+    }, [selectedLocation])
 
     const handleLocationSelect = async (loc) => {
         setSelectedLocation(loc)
